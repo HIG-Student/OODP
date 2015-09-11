@@ -9,7 +9,7 @@ import se.hig.oodp.Vertex2D;
 public class TestRectangle {
 
 	@Test
-	public void test() 
+	public void testCenter() 
 	{
 		Rectangle r = new Rectangle(new Vertex2D(1, 1),new Vertex2D(3, 3));
 		
