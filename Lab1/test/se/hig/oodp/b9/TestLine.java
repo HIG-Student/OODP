@@ -1,6 +1,7 @@
 package se.hig.oodp.b9;
 
 import static org.junit.Assert.*;
+
 import org.junit.*;
 
 import se.hig.oodp.Vertex2D;
@@ -9,57 +10,69 @@ import se.hig.oodp.b9.Line;
 
 public class TestLine 
 {
-	public Line l;
+//	public Line l;
 	
-	@Before
-	public void setUp()
-	{
-		l = new Line(new Vertex2D(2, 5),new Vertex2D(8,5));
-	}
-	
+//	@Before
+//	public void setUp()
+//	{
+//		l = new Line(new Vertex2D(4,0 ),new Vertex2D(2,0));
+//	}
+
 	@Test
 	public void testCenter() 
 	{
-		assertEquals(new Vertex2D(5, 5), l.getCenter());
+		Line l = new Line(new Vertex2D(0,0 ),new Vertex2D(4,2));
+		assertEquals(new Vertex2D(2, 1), l.getCenter());
 	}
 	
 	@Test
 	public void testMoveBy() 
 	{
-		l.moveBy(3, 7);
-		assertEquals("getCenter()",new Vertex2D(8, 12), l.getCenter());
+		Line l = new Line(new Vertex2D(0,0 ),new Vertex2D(4,2));
+		l.moveBy(3, 3);
+		assertEquals("getCenter()",new Vertex2D(5, 4), l.getCenter());
 		
-		assertEquals("pointA",new Vertex2D(5, 12), l.getPointA());
-		assertEquals("pointB",new Vertex2D(11,12), l.getPointB());
+		assertTrue("Position is off",l.getPointA().dist(new Vertex2D(3, 3)) <= 0.5d);
+		assertTrue("Position is off",l.getPointB().dist(new Vertex2D(7, 5)) <= 0.5d);
+
 	}
 	
 	@Test
 	public void testMoveTo() 
 	{
-		l.moveTo(new Vertex2D(4, 10));
-		assertEquals("getCenter()",new Vertex2D(4, 10), l.getCenter());
+		Line l = new Line(new Vertex2D(0,0 ),new Vertex2D(4,2));
+		l.moveTo(new Vertex2D(5, 4));
+		assertEquals("getCenter()",new Vertex2D(5, 4), l.getCenter());
 		
-		assertEquals("pointA",new Vertex2D(1, 10), l.getPointA());
-		assertEquals("pointB",new Vertex2D(7,10), l.getPointB());
+		System.out.println(l.getPointA());
+		
+		assertTrue("Position is off",l.getPointA().dist(new Vertex2D(3, 3)) <= 0.5d);
+		assertTrue("Position is off",l.getPointB().dist(new Vertex2D(7, 5)) <= 0.5d);
+
 	}
 	
 	@Test
 	public void testScale() 
 	{
-		l.scale(2);
-		assertEquals("getCenter()",new Vertex2D(5, 5), l.getCenter());
+		Line l = new Line(new Vertex2D(0,0 ),new Vertex2D(4,2));
+		l.scale(1.21);
+		assertEquals("getCenter()",new Vertex2D(2, 1), l.getCenter());
 		
-		assertEquals("pointA",new Vertex2D(-1, 5), l.getPointA());
-		assertEquals("pointB",new Vertex2D(11,5), l.getPointB());
+		assertTrue("Position is off",l.getPointA().dist(new Vertex2D(-0.42, -0.21)) <= 0.5d);
+		assertTrue("Position is off",l.getPointB().dist(new Vertex2D(4.42, 2.21)) <= 0.5d);
+	
 	}
 	
 	@Test
 	public void testRotate() 
 	{
-		l.rotate(90);
-		assertEquals("getCenter()",new Vertex2D(5, 5), l.getCenter());
+		Line l = new Line(new Vertex2D(0,0 ),new Vertex2D(4,2));
+		l.rotate(30);
+
+		assertTrue("Position is off gnu",l.getCenter().dist(new Vertex2D(2, 1)) <= 0.5d);
 		
-		assertEquals("pointA",new Vertex2D(5,2), l.getPointA());
-		assertEquals("pointB",new Vertex2D(5,8), l.getPointB());
+		assertTrue("Position is off 1",l.getPointA().dist(new Vertex2D(0.768, -0.866)) <= 0.5d);
+		assertTrue("Position is off 2",l.getPointB().dist(new Vertex2D(3.232, 2.866)) <= 0.5d);
+
 	}
 }
