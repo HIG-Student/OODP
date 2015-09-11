@@ -9,12 +9,12 @@ public class Rectangle
 	Vertex2D pointC;
 	Vertex2D pointD;
 
-	public Rectangle(Vertex2D pointA, Vertex2D pointB, Vertex2D pointC, Vertex2D pointD)
+	public Rectangle(Vertex2D max, Vertex2D min)
 	{
-		this.pointA = pointA;
-		this.pointB = pointB;
-		this.pointC = pointC;
-		this.pointD = pointD;
+		pointA = new Vertex2D(min.getX(),max.getY());
+		pointB = new Vertex2D(min.getX(),min.getY());
+		pointC = new Vertex2D(max.getX(),min.getY());
+		pointD = new Vertex2D(max.getX(),max.getY());
 	}
 	
 	public void moveTo(Vertex2D position)

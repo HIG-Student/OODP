@@ -23,7 +23,7 @@ public class Point
 	
 	public Vertex2D getCenter()
 	{
-		return this.position;
+		return position;
 	}
 	
 	public void remove()

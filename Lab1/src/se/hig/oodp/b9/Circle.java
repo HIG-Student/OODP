@@ -20,17 +20,17 @@ public class Circle
 	
 	public void moveBy(double x,double y)
 	{
-		this.position = this.position.moveBy(x,y);
+		position = this.position.moveBy(x,y);
 	}
 	
 	public void scale(double scale)
 	{
-		this.size *= scale;
+		size *= scale;
 	}
 	
 	public Vertex2D getCenter()
 	{
-		return this.position;
+		return position;
 	}
 	
 	public void remove()
