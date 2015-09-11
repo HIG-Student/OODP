@@ -1,51 +1,64 @@
 package se.hig.oodp.b9;
 
+import se.hig.oodp.Vertex2D;
+
 public class Rectangle 
 {
-	Position position;
-	double rotation;
-	double width;
-	double height;
+	Vertex2D pointA;
+	Vertex2D pointB;
+	Vertex2D pointC;
+	Vertex2D pointD;
 
-	public Rectangle(Position position,double width,double height)
+	public Rectangle(Vertex2D pointA, Vertex2D pointB, Vertex2D pointC, Vertex2D pointD)
 	{
-		this.position = position;
-		this.width = width;
-		this.height = height;
+		this.pointA = pointA;
+		this.pointB = pointB;
+		this.pointC = pointC;
+		this.pointD = pointD;
 	}
 	
-	public Rectangle(Position position,double width,double height,double rotation)
+	public void moveTo(Vertex2D position)
 	{
-		this.position = position;
-		this.width = width;
-		this.height = height;
-		this.rotation = rotation;
+		Vertex2D center = getCenter();
+		pointA = pointA.moveBy(-center.getX(), -center.getY()).moveBy(position.getX(), position.getY());
+		pointB = pointB.moveBy(-center.getX(), -center.getY()).moveBy(position.getX(), position.getY());
+		pointC = pointC.moveBy(-center.getX(), -center.getY()).moveBy(position.getX(), position.getY());
+		pointD = pointD.moveBy(-center.getX(), -center.getY()).moveBy(position.getX(), position.getY());
 	}
 	
-	public void moveTo(Position position)
+	public void moveBy(double x,double y)
 	{
-		this.position = position;
-	}
-	
-	public void moveBy(Position position)
-	{
-		this.position = this.position.add(position);
+		pointA = pointA.moveBy(x,y);
+		pointB = pointB.moveBy(x,y);
+		pointC = pointC.moveBy(x,y);
+		pointD = pointD.moveBy(x,y);
 	}
 	
 	public void scale(double scale)
 	{
-		this.width *= scale;
-		this.height *= scale;
+		Vertex2D center = getCenter();
+		pointA = pointA.scale(center, scale, scale);
+		pointB = pointB.scale(center, scale, scale);
+		pointC = pointC.scale(center, scale, scale);
+		pointD = pointD.scale(center, scale, scale);
 	}
 	
 	public void rotate(double angle)
 	{
-		this.rotation += angle;
+		Vertex2D center = getCenter();
+		pointA = pointA.rotate(center, angle);
+		pointB = pointB.rotate(center, angle);
+		pointC = pointC.rotate(center, angle);
+		pointD = pointD.rotate(center, angle);
 	}
 	
-	public Position getCenter()
+	public Vertex2D getCenter()
 	{
-		return this.position;
+		Vertex2D pointAB = pointB.scale(pointA, 0.5, 0.5);
+		Vertex2D pointCD = pointD.scale(pointC, 0.5, 0.5);
+		
+		return pointAB.scale(pointCD, 0.5, 0.5);
+		
 	}
 	
 	public void remove()
@@ -61,6 +74,7 @@ public class Rectangle
 	@Override
 	public String toString()
 	{
-		return "Rectangle " + position + " @ " + rotation + " " + width + " x " + height;
+		
+		return "Rectangle " + pointA + " to " + pointB + " to " + pointC + " to " + pointD;
 	}
 }
