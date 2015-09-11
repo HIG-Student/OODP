@@ -1,26 +1,27 @@
 package se.hig.oodp.b9;
 
+import se.hig.oodp.Vertex2D;
+
 public class Point 
 {
+	Vertex2D position;
 	
-	private Position position;
-	
-	public Point(Position position)
+	public Point(Vertex2D position)
 	{
 		this.position = position;
 	}
 
-	public void moveTo(Position position)
+	public void moveTo(Vertex2D position)
 	{
 		this.position = position;
 	}
 	
-	public void moveBy(Position position)
+	public void moveBy(Vertex2D position)
 	{
 		this.position = position;
 	}
 	
-	public Position getCenter()
+	public Vertex2D getCenter()
 	{
 		return this.position;
 	}
@@ -39,5 +40,4 @@ public class Point
 	{
 		return "Point " + position;
 	}
-	
 }
