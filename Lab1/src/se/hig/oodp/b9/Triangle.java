@@ -15,6 +15,27 @@ public class Triangle
 		this.pointC = pointC;
 	}
 	
+	/**
+	 * @return the pointA
+	 */
+	public Vertex2D getPointA() {
+		return pointA;
+	}
+
+	/**
+	 * @return the pointB
+	 */
+	public Vertex2D getPointB() {
+		return pointB;
+	}
+
+	/**
+	 * @return the pointC
+	 */
+	public Vertex2D getPointC() {
+		return pointC;
+	}
+
 	public void moveTo(Vertex2D position)
 	{
 		Vertex2D center = getCenter();

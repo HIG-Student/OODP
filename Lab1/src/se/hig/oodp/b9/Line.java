@@ -13,6 +13,20 @@ public class Line
 		this.pointB = pointB;
 	}
 	
+	/**
+	 * @return the pointA
+	 */
+	public Vertex2D getPointA() {
+		return pointA;
+	}
+
+	/**
+	 * @return the pointB
+	 */
+	public Vertex2D getPointB() {
+		return pointB;
+	}
+
 	public void moveTo(Vertex2D position)
 	{
 		Vertex2D center = getCenter();

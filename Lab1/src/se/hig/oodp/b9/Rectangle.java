@@ -17,6 +17,34 @@ public class Rectangle
 		pointD = new Vertex2D(max.getX(),max.getY());
 	}
 	
+	/**
+	 * @return the pointA
+	 */
+	public Vertex2D getPointA() {
+		return pointA;
+	}
+
+	/**
+	 * @return the pointB
+	 */
+	public Vertex2D getPointB() {
+		return pointB;
+	}
+
+	/**
+	 * @return the pointC
+	 */
+	public Vertex2D getPointC() {
+		return pointC;
+	}
+
+	/**
+	 * @return the pointD
+	 */
+	public Vertex2D getPointD() {
+		return pointD;
+	}
+
 	public void moveTo(Vertex2D position)
 	{
 		Vertex2D center = getCenter();

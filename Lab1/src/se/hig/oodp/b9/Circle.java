@@ -13,6 +13,13 @@ public class Circle
 		this.size = size;
 	}
 	
+	/**
+	 * @return the size
+	 */
+	public double getSize() {
+		return size;
+	}
+
 	public void moveTo(Vertex2D position)
 	{
 		this.position = position;
