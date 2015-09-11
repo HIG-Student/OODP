@@ -1,55 +1,55 @@
 package se.hig.oodp.b9;
 
-
+import se.hig.oodp.Vertex2D;
 
 public class Triangle 
 {
-	
-	private Position pointA;
-	private Position pointB;
-	private Position pointC;
+	Vertex2D pointA;
+	Vertex2D pointB;
+	Vertex2D pointC;
 
-	public Triangle(Position pointA, Position pointB, Position pointC)
+	public Triangle(Vertex2D pointA, Vertex2D pointB, Vertex2D pointC)
 	{
 		this.pointA = pointA;
 		this.pointB = pointB;
 		this.pointC = pointC;
 	}
 	
-	public void moveTo(Position position)
+	public void moveTo(Vertex2D position)
 	{
-		Position center = getCenter();
-		pointA = pointA.sub(center).add(position);
-		pointB = pointB.sub(center).add(position);
-		pointC = pointC.sub(center).add(position);
+		Vertex2D center = getCenter();
+		pointA = pointA.moveBy(-center.getX(), -center.getY()).moveBy(position.getX(), position.getY());
+		pointB = pointB.moveBy(-center.getX(), -center.getY()).moveBy(position.getX(), position.getY());
+		pointC = pointC.moveBy(-center.getX(), -center.getY()).moveBy(position.getX(), position.getY());
 	}
 	
-	public void moveBy(Position position)
+	public void moveBy(double x,double y)
 	{
-		pointA = pointA.add(position);
-		pointB = pointB.add(position);
-		pointC = pointC.add(position);
+		pointA = pointA.moveBy(x,y);
+		pointB = pointB.moveBy(x,y);
+		pointC = pointC.moveBy(x,y);
 	}
 	
 	public void scale(double scale)
 	{
-		Position center = getCenter();
-		pointA = pointA.sub(center).mul((1/3) * scale).add(center);
-		pointB = pointB.sub(center).mul((1/3) * scale).add(center);
-		pointC = pointC.sub(center).mul((1/3) * scale).add(center);
+		Vertex2D center = getCenter();
+		pointA = pointA.scale(center, scale, scale);
+		pointB = pointB.scale(center, scale, scale);
+		pointC = pointC.scale(center, scale, scale);
 	}
 	
 	public void rotate(double angle)
 	{
-		Position center = getCenter();
+		Vertex2D center = getCenter();
 		pointA = pointA.rotate(center, angle);
 		pointB = pointB.rotate(center, angle);
 		pointC = pointC.rotate(center, angle);
 	}
 	
-	public Position getCenter()
+	public Vertex2D getCenter()
 	{
-		return pointA.add(pointB).add(pointC).div(3d);
+		return new Vertex2D((pointA.getX() + pointB.getX() + pointC.getX()) / 3,
+							(pointA.getY() + pointB.getY() + pointC.getY()) / 3);
 	}
 	
 	public void remove()
@@ -68,7 +68,6 @@ public class Triangle
 		
 		return "Triangle " + pointA + " to " + pointB + " to " + pointC;
 	}
-	
 }
 
 

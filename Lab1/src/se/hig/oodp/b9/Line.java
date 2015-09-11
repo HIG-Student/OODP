@@ -2,50 +2,47 @@ package se.hig.oodp.b9;
 
 import se.hig.oodp.Vertex2D;
 
-
-
 public class Line 
 {
-	
-	private Position pointA;
-	private Position pointB;
+	Vertex2D pointA;
+	Vertex2D pointB;
 
-	public Line(Position pointA, Position pointB)
+	public Line(Vertex2D pointA, Vertex2D pointB)
 	{
 		this.pointA = pointA;
 		this.pointB = pointB;
 	}
 	
-	public void moveTo(Position position)
+	public void moveTo(Vertex2D position)
 	{
-		Position center = getCenter();
-		pointA = pointA.sub(center).add(position);
-		pointB = pointB.sub(center).add(position);
+		Vertex2D center = getCenter();
+		pointA = pointA.moveBy(-center.getX(), -center.getY()).moveBy(position.getX(), position.getY());
+		pointB = pointB.moveBy(-center.getX(), -center.getY()).moveBy(position.getX(), position.getY());
 	}
 	
-	public void moveBy(Position position)
+	public void moveBy(double x,double y)
 	{
-		pointA = pointA.add(position);
-		pointB = pointB.add(position);
+		pointA = pointA.moveBy(x,y);
+		pointA = pointA.moveBy(x,y);
 	}
 	
 	public void scale(double scale)
 	{
-		Position center = getCenter();
-		pointA = pointA.sub(center).mul(0.5 * scale).add(center);
-		pointB = pointB.sub(center).mul(0.5 * scale).add(center);
+		Vertex2D center = getCenter();
+		pointA = pointA.scale(center, scale, scale);
+		pointB = pointB.scale(center, scale, scale);
 	}
 	
 	public void rotate(double angle)
 	{
-		Position center = getCenter();
+		Vertex2D center = getCenter();
 		pointA = pointA.rotate(center, angle);
 		pointB = pointB.rotate(center, angle);
 	}
 	
-	public Position getCenter()
+	public Vertex2D getCenter()
 	{
-		return pointA.add(pointB.sub(pointA).div(2d));
+		return pointB.scale(pointA, 0.5, 0.5);
 	}
 	
 	public void remove()
