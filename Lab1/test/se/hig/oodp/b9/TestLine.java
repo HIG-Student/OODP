@@ -1,4 +1,4 @@
-package se.hig.oodb.b9;
+package se.hig.oodp.b9;
 
 import static org.junit.Assert.*;
 
