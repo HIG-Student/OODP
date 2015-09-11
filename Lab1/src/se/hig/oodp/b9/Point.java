@@ -16,9 +16,9 @@ public class Point
 		this.position = position;
 	}
 	
-	public void moveBy(Vertex2D position)
+	public void moveBy(double x , double y)
 	{
-		this.position = position;
+		this.position = position.moveBy(x, y);
 	}
 	
 	public Vertex2D getCenter()

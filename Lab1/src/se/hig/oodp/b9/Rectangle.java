@@ -58,7 +58,6 @@ public class Rectangle
 		Vertex2D pointCD = pointD.scale(pointC, 0.5, 0.5);
 		
 		return pointAB.scale(pointCD, 0.5, 0.5);
-		
 	}
 	
 	public void remove()
@@ -74,7 +73,6 @@ public class Rectangle
 	@Override
 	public String toString()
 	{
-		
 		return "Rectangle " + pointA + " to " + pointB + " to " + pointC + " to " + pointD;
 	}
 }

@@ -65,7 +65,6 @@ public class Triangle
 	@Override
 	public String toString()
 	{
-		
 		return "Triangle " + pointA + " to " + pointB + " to " + pointC;
 	}
 }
