@@ -1,0 +1,16 @@
+// TODO
+
+(a) 
+	En superklass kan innehålla attribut och operationer som är gemensamma för ett antal klasser.
+	Beskriv en superklass till klasserna ni skapade i uppgift 1! Beskrivningen ska innehålla information om vilka attribut det ska finnas i superklassen och vilka meddelanden (kommandon och frågor) man kan skicka till instanser av superklasstypen.
+	Förklara varför ni bestämde er för just den uppsättning attribut/operationer som ni valde!
+
+(b) 
+	Ska superklassen vara en abstrakt klass eller inte? Diskutera vad som talar emot och vad som talar för!
+
+(c) 
+	Uppdatera klassdiagrammet från uppgift 1, så att den nya klassen ingår i modellen samt relationerna mellan superklassen och befintliga klasser!
+
+(d) 
+	Implementera modellen som ni skapade i (c), dvs. aktualisera koden från uppgift 1 så att den motsvarar klassdiagrammet från (c)!
+	Använd testen som ni utvecklade i uppgift 1 för att visa att klasserna fungerar som förut!

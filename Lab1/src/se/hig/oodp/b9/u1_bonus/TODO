@@ -1,0 +1,29 @@
+// TODO
+
+(a) 
+	En polygon är en figur som består av ett godtyckligt antal noder med linjedrag mellan noderna. 
+	Noderna är ordnade; ett linjedrag ritas ut bara mellan en nod och nodens efterföljare (efterföljare av sista noden är den första) - för ett exempel se figur 6.
+	Modellera en klass Polygon (beskrivning, klassdiagram) och implementera klassen samt skapa lämpliga testfall på ett liknande sätt som i uppgifterna ovan!
+	Det finns två möjligheter att tilldela noderna till en Polygon-instans: En är att använda konstruktorn, den andra en metod som tar emot en position, skapar en nod och lägger den till noderna som redan finns.
+	Vilken du väljer bestämmer du själv (kanske att det finns andra möjligheter också), men du ska förklara ditt val och diskutera för och nackdelar med det!
+
+(b) 
+	Diskutera: Vilken klass ärver av vilken (det är möjligt att vissa klasser varken är sub- eller superklass)
+	
+	* Punkt
+	* Ellips
+	* Triangel
+	* Kvadrat
+	* Linje
+	* Polygon
+	* Cirkel
+	* Rektangel
+	
+	Använd svaret på frågan om en viss klass B är mer specialiserad än en viss klass A resp. omvänt: Representerar A något som är mer generellt än B?
+
+(c) 
+	Utgå från resultaten från (b) och uppdatera klassdiagrammet en gång till:
+	Lägg till klasser som representerar typerna ellips och kvadrat! 
+	Uppdatera även relationerna mellan klasserna.
+	Implementera ändringarna i kod: Lägg till klasserna för figurtyperna ellips och kvadrat till datamodellen. 
+	Uppdatera de andra klasserna så att förhållandena i koden motsvarar UML-klassdiagrammet.

@@ -1,0 +1,13 @@
+// TODO
+
+(a) 
+	Betrakta nu modellen en gång till: Ser ni likheter när det gäller objektens beteenden? 
+	Vilka är dessa? 
+	Ge en beskrivning!
+
+(b) 
+	Utöka nu klassdiagrammet en gång till: Lägg till minst ett interface som deklarerar någon metod som passar till det som ni beskrev ovan. 
+	Låt klasserna implementera interfacet ifall det passar!
+
+(c)
+	Uppdatera koden från uppgift 2 så att den motsvarar den utökade modellen från (b)!
