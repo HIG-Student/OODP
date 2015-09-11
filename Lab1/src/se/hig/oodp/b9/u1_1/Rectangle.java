@@ -1,18 +1,20 @@
-package se.hig.oodp.b9;
+package se.hig.oodp.b9.u1_1;
 
 import se.hig.oodp.Vertex2D;
 
-public class Triangle 
+public class Rectangle 
 {
 	Vertex2D pointA;
 	Vertex2D pointB;
 	Vertex2D pointC;
+	Vertex2D pointD;
 
-	public Triangle(Vertex2D pointA, Vertex2D pointB, Vertex2D pointC)
+	public Rectangle(Vertex2D max, Vertex2D min)
 	{
-		this.pointA = pointA;
-		this.pointB = pointB;
-		this.pointC = pointC;
+		pointA = new Vertex2D(max.getX(),min.getY());
+		pointB = new Vertex2D(min.getX(),min.getY());
+		pointC = new Vertex2D(min.getX(),max.getY());
+		pointD = new Vertex2D(max.getX(),max.getY());
 	}
 	
 	/**
@@ -36,12 +38,20 @@ public class Triangle
 		return pointC;
 	}
 
+	/**
+	 * @return the pointD
+	 */
+	public Vertex2D getPointD() {
+		return pointD;
+	}
+
 	public void moveTo(Vertex2D position)
 	{
 		Vertex2D center = getCenter();
 		pointA = pointA.moveBy(-center.getX(), -center.getY()).moveBy(position.getX(), position.getY());
 		pointB = pointB.moveBy(-center.getX(), -center.getY()).moveBy(position.getX(), position.getY());
 		pointC = pointC.moveBy(-center.getX(), -center.getY()).moveBy(position.getX(), position.getY());
+		pointD = pointD.moveBy(-center.getX(), -center.getY()).moveBy(position.getX(), position.getY());
 	}
 	
 	public void moveBy(double x,double y)
@@ -49,6 +59,7 @@ public class Triangle
 		pointA = pointA.moveBy(x,y);
 		pointB = pointB.moveBy(x,y);
 		pointC = pointC.moveBy(x,y);
+		pointD = pointD.moveBy(x,y);
 	}
 	
 	public void scale(double scale)
@@ -57,6 +68,7 @@ public class Triangle
 		pointA = pointA.scale(center, scale, scale);
 		pointB = pointB.scale(center, scale, scale);
 		pointC = pointC.scale(center, scale, scale);
+		pointD = pointD.scale(center, scale, scale);
 	}
 	
 	public void rotate(double angle)
@@ -65,12 +77,15 @@ public class Triangle
 		pointA = pointA.rotate(center, angle);
 		pointB = pointB.rotate(center, angle);
 		pointC = pointC.rotate(center, angle);
+		pointD = pointD.rotate(center, angle);
 	}
 	
 	public Vertex2D getCenter()
 	{
-		return new Vertex2D((pointA.getX() + pointB.getX() + pointC.getX()) / 3,
-							(pointA.getY() + pointB.getY() + pointC.getY()) / 3);
+		Vertex2D pointAB = pointB.scale(pointA, 0.5, 0.5);
+		Vertex2D pointCD = pointD.scale(pointC, 0.5, 0.5);
+		
+		return pointAB.scale(pointCD, 0.5, 0.5);
 	}
 	
 	public void remove()
@@ -86,10 +101,6 @@ public class Triangle
 	@Override
 	public String toString()
 	{
-		return "Triangle " + pointA + " to " + pointB + " to " + pointC;
+		return "Rectangle " + pointA + " to " + pointB + " to " + pointC + " to " + pointD;
 	}
 }
-
-
-
-

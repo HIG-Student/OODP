@@ -1,4 +1,4 @@
-package se.hig.oodp.b9;
+package se.hig.oodp.b9.u1_1;
 
 import se.hig.oodp.Vertex2D;
 

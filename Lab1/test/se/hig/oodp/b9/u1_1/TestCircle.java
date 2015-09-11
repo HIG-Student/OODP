@@ -1,4 +1,4 @@
-package se.hig.oodp.b9;
+package se.hig.oodp.b9.u1_1;
 
 import static org.junit.Assert.*;
 
@@ -6,6 +6,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import se.hig.oodp.Vertex2D;
+import se.hig.oodp.b9.T;
+import se.hig.oodp.b9.u1_1.Circle;
 
 public class TestCircle 
 {
