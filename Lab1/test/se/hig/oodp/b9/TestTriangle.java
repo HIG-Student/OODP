@@ -2,45 +2,71 @@ package se.hig.oodp.b9;
 
 import static org.junit.Assert.*;
 
+
 import org.junit.Before;
 import org.junit.Test;
 
 import se.hig.oodp.Vertex2D;
 
-public class TestTriangle {
+// TODO Fix testScale and testRotation
 
+public class TestTriangle 
+{
 	Triangle t;
 	
 	@Before
-	public void setUp(){
-		
-      t = new Triangle(new Vertex2D(27, 24), new Vertex2D(47, 40), new Vertex2D(65, 20));
-		
+	public void setUp()
+	{
+		t = new Triangle(new Vertex2D(-1.0, 1.0), new Vertex2D(3.0, -1.0), new Vertex2D(5.0, 3.0));
 	}
 	
 	@Test
-	public void testCenter() {
-		
-		assertTrue("The center is off",new Vertex2D(46, 28).dist(t.getCenter()) <= 0.5);
-		
-		
-		
+	public void testCenter() 
+	{
+		assertTrue("The center is off",new Vertex2D(7d/3d, 1.0).dist(t.getCenter()) <= T.PRECISION);
 	}
-	
 
 	@Test 
-	public void testMoveTo(){
+	public void testMoveBy()
+	{
+		t.moveBy(3,3);
 		
-		Triangle t = new Triangle(new Vertex2D(27, 24), new Vertex2D(47, 40), new Vertex2D(65, 20));
-		t.moveTo(new Vertex2D(56,38));
-		
-
-		assertTrue("The center is off",new Vertex2D(56, 38).dist(t.getCenter()) <= 0.5);
-		assertTrue("PointA is off",new Vertex2D(37, 34).dist(t.getPointA()) <= 0.5);
-		assertTrue("PointB is off",new Vertex2D(57, 50).dist(t.getPointB()) <= 0.5);
-		assertTrue("PointC is off",new Vertex2D(75, 30).dist(t.getPointC()) <= 0.5);
-	
-		
+		assertTrue("The center is off",new Vertex2D(16d/3d, 4.0).dist(t.getCenter()) <= T.PRECISION);
+		assertTrue("PointA is off",new Vertex2D(2.0, 4.0).dist(t.getPointA()) <= T.PRECISION);
+		assertTrue("PointB is off",new Vertex2D(6.0, 2.0).dist(t.getPointB()) <= T.PRECISION);
+		assertTrue("PointC is off",new Vertex2D(8.0, 6.0).dist(t.getPointC()) <= T.PRECISION);
 	}
-
+	
+	@Test 
+	public void testMoveTo()
+	{
+		t.moveTo(new Vertex2D(16d/3d, 4.0));
+		
+		assertTrue("The center is off",new Vertex2D(16d/3d, 4.0).dist(t.getCenter()) <= T.PRECISION);
+		assertTrue("PointA is off",new Vertex2D(2.0, 4.0).dist(t.getPointA()) <= T.PRECISION);
+		assertTrue("PointB is off",new Vertex2D(6.0, 2.0).dist(t.getPointB()) <= T.PRECISION);
+		assertTrue("PointC is off",new Vertex2D(8.0, 6.0).dist(t.getPointC()) <= T.PRECISION);
+	}
+	
+	@Test
+	public void testScale()
+	{
+		t.scale(1.21);
+		
+		assertTrue("The center is off",new Vertex2D(7d/3d, 1.0).dist(t.getCenter()) <= T.PRECISION);
+		assertTrue("PointA is off",new Vertex2D(-1.7, 1.0).dist(t.getPointA()) <= T.PRECISION);
+		assertTrue("PointB is off",new Vertex2D(3.14, -1.42).dist(t.getPointB()) <= T.PRECISION);
+		assertTrue("PointC is off",new Vertex2D(5.60, 3.42).dist(t.getPointC()) <= T.PRECISION);
+	}
+	
+	@Test
+	public void testRotate()
+	{
+		t.rotate(30.0);
+		System.out.println(t);
+		assertTrue("The center is off",new Vertex2D(7d/3d, 1.0).dist(t.getCenter()) <= T.PRECISION);
+		assertTrue("PointA is off",new Vertex2D(-0.553, -0.666).dist(t.getPointA()) <= T.PRECISION);
+		assertTrue("PointB is off",new Vertex2D(3.910, -0.398).dist(t.getPointB()) <= T.PRECISION);
+		assertTrue("PointC is off",new Vertex2D(3.642, 4.065).dist(t.getPointC()) <= T.PRECISION);
+	}
 }
