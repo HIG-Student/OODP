@@ -2,72 +2,71 @@ package se.hig.oodp.b9;
 
 
 
-public class Triangle {
+public class Triangle 
+{
+	
 	private Position pointA;
 	private Position pointB;
 	private Position pointC;
 
-	
-	
-	public Triangle(Position pointA, Position pointB, Position pointC){
+	public Triangle(Position pointA, Position pointB, Position pointC)
+	{
 		this.pointA = pointA;
 		this.pointB = pointB;
 		this.pointC = pointC;
 	}
 	
-	public void moveTo(double x, double y){
-		
-	moveTo(new Position(x, y));
-	
+	public void moveTo(Position position)
+	{
+		Position center = getCenter();
+		pointA = pointA.sub(center).add(position);
+		pointB = pointB.sub(center).add(position);
+		pointC = pointC.sub(center).add(position);
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public void moveTo(Position position){
-		
-		Position pointA_diff = pointA.sub(getCenter());
-		Position pointB_diff = pointB.sub(getCenter());
-		Position pointC_diff = pointC.sub(getCenter());
-		
-		pointA = pointA_diff.add(position);
-		pointB = pointB_diff.add(position);
-		pointC = pointC_diff.add(position);
-	}
-	
-	public void moveBy(double x,  double y){
-		
-		moveBy(new Position(x, y));
-	}
-	public void moveBy(Position position){
-		
+	public void moveBy(Position position)
+	{
 		pointA = pointA.add(position);
 		pointB = pointB.add(position);
 		pointC = pointC.add(position);
-		}
-	public Position getCenter(){
-		
+	}
+	
+	public void scale(double scale)
+	{
+		Position center = getCenter();
+		pointA = pointA.sub(center).mul((1/3) * scale).add(center);
+		pointB = pointB.sub(center).mul((1/3) * scale).add(center);
+		pointC = pointC.sub(center).mul((1/3) * scale).add(center);
+	}
+	
+	public void rotate(double angle)
+	{
+		Position center = getCenter();
+		pointA = pointA.rotate(center, angle);
+		pointB = pointB.rotate(center, angle);
+		pointC = pointC.rotate(center, angle);
+	}
+	
+	public Position getCenter()
+	{
 		return pointA.add(pointB).add(pointC).div(3d);
+	}
+	
+	public void remove()
+	{
 		
 	}
 	
-	public void remove(){
+	public void draw()
+	{
 		
 	}
-	public void draw(){
-		
-	}
+	
 	@Override
-	public String toString(){
+	public String toString()
+	{
 		
-		return "Line " + pointA+ " to "+pointB ;
+		return "Triangle " + pointA + " to " + pointB + " to " + pointC;
 	}
 	
 }
