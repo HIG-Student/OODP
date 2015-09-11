@@ -2,23 +2,32 @@ package se.hig.oodp.b9;
 
 import static org.junit.Assert.*;
 
-import java.awt.Point;
+import org.junit.*;
 
-import org.junit.Test;
+import se.hig.oodp.Vertex2D;
 
 
 
-public class TestPoint {
-
-	@Test
-	public void testInit() {
-       
+public class TestPoint 
+{
+	Point p;
 	
-		for(double i=0;i<10;i++){
-//		Point p = new Point(i,i);
-			
-		 
-		}
+	@Before
+	public void setUp()
+	{
+		p = new Point(new Vertex2D(2.0,1.0));
 	}
-
+	
+	@Test
+	public void testInitPosition() 
+	{
+		assertTrue("Position is off",p.getCenter().dist(new Vertex2D(2.0,1.0)) <= 0.5d);
+	}
+	
+	@Test
+	public void testMoveBy() 
+	{
+		p.moveBy(3, 3);
+		assertTrue("Position is off",p.getCenter().dist(new Vertex2D(5.0,4.0)) <= 0.5d);
+	}
 }
