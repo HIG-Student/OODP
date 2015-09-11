@@ -21,13 +21,13 @@ public class TestPoint
 	@Test
 	public void testInitPosition() 
 	{
-		assertTrue("Position is off",p.getCenter().dist(new Vertex2D(2.0,1.0)) <= 0.5d);
+		assertTrue("Position is off",p.getCenter().dist(new Vertex2D(2.0,1.0)) <= T.PRECISION);
 	}
 	
 	@Test
 	public void testMoveBy() 
 	{
 		p.moveBy(3, 3);
-		assertTrue("Position is off",p.getCenter().dist(new Vertex2D(5.0,4.0)) <= 0.5d);
+		assertTrue("Position is off",p.getCenter().dist(new Vertex2D(5.0,4.0)) <= T.PRECISION);
 	}
 }

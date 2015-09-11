@@ -11,9 +11,9 @@ public class Rectangle
 
 	public Rectangle(Vertex2D max, Vertex2D min)
 	{
-		pointA = new Vertex2D(min.getX(),max.getY());
+		pointA = new Vertex2D(max.getX(),min.getY());
 		pointB = new Vertex2D(min.getX(),min.getY());
-		pointC = new Vertex2D(max.getX(),min.getY());
+		pointC = new Vertex2D(min.getX(),max.getY());
 		pointD = new Vertex2D(max.getX(),max.getY());
 	}
 	

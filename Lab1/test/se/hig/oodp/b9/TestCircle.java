@@ -2,33 +2,52 @@ package se.hig.oodp.b9;
 
 import static org.junit.Assert.*;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import se.hig.oodp.Vertex2D;
 
 public class TestCircle 
 {
-	@Test
-	public void testMoveTo()
+	Circle c;
+	
+	@Before
+	public void setUp()
 	{
-		Circle c = new Circle(new Vertex2D(5,5),10);
-		c.moveTo(new Vertex2D(3,8));
-		assertTrue("Incorrect position",c.getCenter().equals(new Vertex2D(3,8)));
+		c = new Circle(new Vertex2D(2.0,1.0),1.0);
+	}
+	
+	@Test
+	public void testInit()
+	{
+		assertTrue("Position is off",c.getCenter().dist(new Vertex2D(2.0,1.0)) <= T.PRECISION);
+		assertTrue("Size is off",Math.abs(c.getSize() - 1.0) <= 0.05d);
 	}
 	
 	@Test
 	public void testMoveBy()
 	{
-		Circle c = new Circle(new Vertex2D(5,5),10);
-		c.moveBy(2,4);
-		assertTrue("Incorrect position",c.getCenter().equals(new Vertex2D(7,9)));
+		c.moveBy(3.0, 3.0);
+		
+		assertTrue("Position is off",c.getCenter().dist(new Vertex2D(5.0,4.0)) <= T.PRECISION);
+		assertTrue("Size is off",Math.abs(c.getSize() - 1.0) <= 0.05d);
+	}
+	
+	@Test
+	public void testMoveTo()
+	{
+		c.moveTo(new Vertex2D(5.0, 4.0));
+		
+		assertTrue("Position is off",c.getCenter().dist(new Vertex2D(5.0,4.0)) <= T.PRECISION);
+		assertTrue("Size is off",Math.abs(c.getSize() - 1.0) <= 0.05d);
 	}
 	
 	@Test
 	public void testScale()
 	{
-		Circle c = new Circle(new Vertex2D(5,5),10);
-		c.scale(2);
-		assertTrue("Incorrect size",c.getSize() == 10 * 2);
+		c.scale(1.21);
+
+		assertTrue("Position is off",c.getCenter().dist(new Vertex2D(2.0,1.0)) <= T.PRECISION);
+		assertTrue("Size is off",Math.abs(c.getSize() - 1.21) <= 0.05d);
 	}
 }
