@@ -4,12 +4,41 @@ import se.hig.oodp.Vertex2D;
 
 public class Position extends Vertex2D
 {
+	public Position(Vertex2D vertex)
+	{
+		super(vertex.getX(),vertex.getY());
+	}
 	
 	public Position(double x, double y)
 	{
 		super (x,y);
 	}
 	
+	public Position moveTo(double x, double y)
+	{
+		return new Position(super.moveTo(x,y));
+	}
+	
+	public Position moveBy(double x, double y)
+	{
+		return new Position(super.moveBy(x,y));
+	}
+	
+	public Position scale(Position center,double scale)
+	{
+		return new Position(super.scale(center, scale, scale));
+	}
+	
+	public Position rotate(Position center,double angle)
+	{
+		return new Position(super.rotate(center, angle));
+	}
+	
+	public double dist(Position other)
+	{
+		return super.dist(other);
+	}
+		
 	public Position add(Position pos) 
 	{
 		return new Position(this.getX()+pos.getX(),this.getY()+pos.getY());
