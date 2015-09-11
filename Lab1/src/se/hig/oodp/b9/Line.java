@@ -37,7 +37,7 @@ public class Line
 	public void moveBy(double x,double y)
 	{
 		pointA = pointA.moveBy(x,y);
-		pointA = pointA.moveBy(x,y);
+		pointB = pointB.moveBy(x,y);
 	}
 	
 	public void scale(double scale)
