@@ -15,18 +15,24 @@ public class Polygon extends PolyShape
 		super(positions);
 	}
 	
-	public class Builder
+	public static class Builder
 	{
 		public Vector<Vertex2D> positions = new Vector<Vertex2D>();
 		
-		public void clear()
+		public Builder() { };
+		
+		public Builder clear()
 		{
 			positions.removeAllElements();
+			
+			return this;
 		}
 		
-		public void add(Vertex2D position)
+		public Builder add(Vertex2D position)
 		{
 			positions.add(position);
+			
+			return this;
 		}
 		
 		public Polygon create() throws Exception
@@ -36,7 +42,9 @@ public class Polygon extends PolyShape
 				throw new Exception("You need more than three nodes in a polygon!");
 			}
 			
-			return new Polygon((Vertex2D[])positions.toArray());
+			Vertex2D[] arr = new Vertex2D[positions.size()];
+			positions.toArray(arr);
+			return new Polygon(arr);
 		}
 	}
 }
