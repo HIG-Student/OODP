@@ -26,6 +26,16 @@ public class Ellipse extends Point implements Scalable , Rotatable
 		this.rotation = rotation;
 	}
 	
+	public double getWidth()
+	{
+		return width;
+	}
+	
+	public double getHeight()
+	{
+		return height;
+	}
+	
 	@Override
 	public void rotate(double angle) 
 	{
@@ -36,7 +46,7 @@ public class Ellipse extends Point implements Scalable , Rotatable
 	public void scale(double scale) 
 	{
 		width *= scale;
-		height += scale;
+		height *= scale;
 	}
 	
 	@Override
