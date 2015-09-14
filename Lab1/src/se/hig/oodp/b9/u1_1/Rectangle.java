@@ -11,18 +11,18 @@ public class Rectangle
 
 	public Rectangle(Vertex2D position , double width , double height)
 	{
-		pointA = new Vertex2D(position.getX() + width / 2,position.getY() - height / 2);
-		pointB = new Vertex2D(position.getX() - width / 2,position.getY() - height / 2);
-		pointC = new Vertex2D(position.getX() - width / 2,position.getY() + height / 2);
-		pointD = new Vertex2D(position.getX() + width / 2,position.getY() + height / 2);
+		pointA = new Vertex2D(position.getX() - width / 2,position.getY() - height / 2);
+		pointB = new Vertex2D(position.getX() + width / 2,position.getY() - height / 2);
+		pointC = new Vertex2D(position.getX() + width / 2,position.getY() + height / 2);
+		pointD = new Vertex2D(position.getX() - width / 2,position.getY() + height / 2);
 	}
 	
 	public Rectangle(Vertex2D position , double width , double height, double rotation)
 	{
-		pointA = new Vertex2D(position.getX() + width / 2,position.getY() - height / 2);
-		pointB = new Vertex2D(position.getX() - width / 2,position.getY() - height / 2);
-		pointC = new Vertex2D(position.getX() - width / 2,position.getY() + height / 2);
-		pointD = new Vertex2D(position.getX() + width / 2,position.getY() + height / 2);
+		pointA = new Vertex2D(position.getX() - width / 2,position.getY() - height / 2);
+		pointB = new Vertex2D(position.getX() + width / 2,position.getY() - height / 2);
+		pointC = new Vertex2D(position.getX() + width / 2,position.getY() + height / 2);
+		pointD = new Vertex2D(position.getX() - width / 2,position.getY() + height / 2);
 		
 		rotate(rotation);
 	}

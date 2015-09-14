@@ -16,7 +16,7 @@ public class TestRectangle {
 	@Before
 	public void setUp()
 	{
-		r = new Rectangle(new Vertex2D(-1.0,3.0),new Vertex2D(5.0,-1.0));
+		r = new Rectangle(new Vertex2D(2.0,1.0),6,4);
 	}
 	
 	@Test
