@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import se.hig.oodp.Vertex2D;
 
-public class PolyShape 
+public abstract class PolyShape 
 {
 	Vertex2D[] positions;
 	
@@ -65,12 +65,12 @@ public class PolyShape
 	
 	public void remove()
 	{
-		
+		// To be implemented
 	}
 	
 	public void draw()
 	{
-		
+		// To be implemented
 	}
 	
 	@Override
