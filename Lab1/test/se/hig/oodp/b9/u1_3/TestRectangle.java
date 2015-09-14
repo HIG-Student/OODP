@@ -1,4 +1,4 @@
-package se.hig.oodp.b9.u1_2;
+package se.hig.oodp.b9.u1_3;
 
 import static org.junit.Assert.*;
 

@@ -64,7 +64,7 @@ public class TestTriangle
 	public void testRotate()
 	{
 		t.rotate(30.0);
-		System.out.println(t);
+		
 		assertTrue("The center is off",new Vertex2D(7d/3d, 1.0).dist(t.getCenter()) <= T.PRECISION);
 		assertTrue("PointA is off",new Vertex2D(-0.553, -0.666).dist(t.getPointA()) <= T.PRECISION);
 		assertTrue("PointB is off",new Vertex2D(3.910, -0.398).dist(t.getPointB()) <= T.PRECISION);

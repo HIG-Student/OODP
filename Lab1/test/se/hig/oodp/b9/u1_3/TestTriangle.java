@@ -1,4 +1,4 @@
-package se.hig.oodp.b9.u1_2;
+package se.hig.oodp.b9.u1_3;
 
 import static org.junit.Assert.*;
 
@@ -12,7 +12,7 @@ import se.hig.oodp.b9.T;
 
 public class TestTriangle 
 {
-	Triangle t;
+	protected PolyShape t;
 	
 	@Before
 	public void setUp()
