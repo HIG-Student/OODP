@@ -30,28 +30,32 @@ public class Rectangle
 	/**
 	 * @return the pointA
 	 */
-	public Vertex2D getPointA() {
+	public Vertex2D getPointA() 
+	{
 		return pointA;
 	}
 
 	/**
 	 * @return the pointB
 	 */
-	public Vertex2D getPointB() {
+	public Vertex2D getPointB() 
+	{
 		return pointB;
 	}
 
 	/**
 	 * @return the pointC
 	 */
-	public Vertex2D getPointC() {
+	public Vertex2D getPointC() 
+	{
 		return pointC;
 	}
 
 	/**
 	 * @return the pointD
 	 */
-	public Vertex2D getPointD() {
+	public Vertex2D getPointD() 
+	{
 		return pointD;
 	}
 

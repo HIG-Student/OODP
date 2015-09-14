@@ -16,14 +16,16 @@ public class Line
 	/**
 	 * @return the pointA
 	 */
-	public Vertex2D getPointA() {
+	public Vertex2D getPointA() 
+	{
 		return pointA;
 	}
 
 	/**
 	 * @return the pointB
 	 */
-	public Vertex2D getPointB() {
+	public Vertex2D getPointB() 
+	{
 		return pointB;
 	}
 

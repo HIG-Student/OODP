@@ -16,7 +16,8 @@ public class Circle
 	/**
 	 * @return the size
 	 */
-	public double getSize() {
+	public double getSize() 
+	{
 		return size;
 	}
 
