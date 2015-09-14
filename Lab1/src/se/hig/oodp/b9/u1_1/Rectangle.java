@@ -9,12 +9,22 @@ public class Rectangle
 	Vertex2D pointC;
 	Vertex2D pointD;
 
-	public Rectangle(Vertex2D max, Vertex2D min)
+	public Rectangle(Vertex2D position , double width , double height)
 	{
-		pointA = new Vertex2D(max.getX(),min.getY());
-		pointB = new Vertex2D(min.getX(),min.getY());
-		pointC = new Vertex2D(min.getX(),max.getY());
-		pointD = new Vertex2D(max.getX(),max.getY());
+		pointA = new Vertex2D(position.getX() + width / 2,position.getY() - height / 2);
+		pointB = new Vertex2D(position.getX() - width / 2,position.getY() - height / 2);
+		pointC = new Vertex2D(position.getX() - width / 2,position.getY() + height / 2);
+		pointD = new Vertex2D(position.getX() + width / 2,position.getY() + height / 2);
+	}
+	
+	public Rectangle(Vertex2D position , double width , double height, double rotation)
+	{
+		pointA = new Vertex2D(position.getX() + width / 2,position.getY() - height / 2);
+		pointB = new Vertex2D(position.getX() - width / 2,position.getY() - height / 2);
+		pointC = new Vertex2D(position.getX() - width / 2,position.getY() + height / 2);
+		pointD = new Vertex2D(position.getX() + width / 2,position.getY() + height / 2);
+		
+		rotate(rotation);
 	}
 	
 	/**
