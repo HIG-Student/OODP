@@ -26,6 +26,11 @@ public class Ellipse extends Point implements Scalable , Rotatable
 		this.rotation = rotation;
 	}
 	
+	public double getRotation()
+	{
+		return rotation;
+	}
+	
 	public double getWidth()
 	{
 		return width;

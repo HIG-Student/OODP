@@ -5,9 +5,6 @@ import java.util.Vector;
 import se.hig.oodp.Vertex2D;
 import se.hig.oodp.b9.u1_3.PolyShape;
 
-
-// TODO Tests!
-
 public class Polygon extends PolyShape
 {	
 	Polygon(Vertex2D[] positions) 
@@ -39,7 +36,7 @@ public class Polygon extends PolyShape
 		{
 			if( positions.size() <= 2 )
 			{
-				throw new Exception("You need more than three nodes in a polygon!");
+				throw new Exception("You need more than two nodes in a polygon!");
 			}
 			
 			Vertex2D[] arr = new Vertex2D[positions.size()];
