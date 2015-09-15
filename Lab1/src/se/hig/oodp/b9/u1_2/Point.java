@@ -23,7 +23,7 @@ public class Point
 
 	public void moveBy(double x, double y) 
 	{
-		this.position = position.moveBy(x, y);
+		position = position.moveBy(x, y);
 	}
 
 	public void remove() 
