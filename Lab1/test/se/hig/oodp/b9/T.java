@@ -1,13 +1,5 @@
 package se.hig.oodp.b9;
 
-import static org.junit.Assert.*;
-
-import org.junit.*;
-
-import java.lang.reflect.Method;
-
-import se.hig.oodp.Vertex2D;
-
 public class T 
 {
 	public static final double PRECISION = 0.05;

@@ -1,8 +1,5 @@
 package se.hig.oodp.b9.u1_3;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import se.hig.oodp.Vertex2D;
 
 public class Point implements Shape
