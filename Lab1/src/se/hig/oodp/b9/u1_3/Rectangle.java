@@ -4,11 +4,6 @@ import se.hig.oodp.Vertex2D;
 
 public class Rectangle extends PolyShape
 {
-	Vertex2D pointA;
-	Vertex2D pointB;
-	Vertex2D pointC;
-	Vertex2D pointD;
-
 	public Rectangle(Vertex2D position , double width , double height)
 	{
 		super(new Vertex2D[] 
