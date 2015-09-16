@@ -21,7 +21,7 @@ public class Vertex2D
      * @param y
      *            - y-coordinate
      */
-    public Vertex2D (double x, double y)
+    public Vertex2D(double x, double y)
     {
         this.x = x;
         this.y = y;
@@ -32,7 +32,7 @@ public class Vertex2D
      * 
      * @return x-coordinate
      */
-    public double getX ()
+    public double getX()
     {
         return x;
     }
@@ -42,7 +42,7 @@ public class Vertex2D
      * 
      * @return y-coordinate
      */
-    public double getY ()
+    public double getY()
     {
         return y;
     }
@@ -56,9 +56,9 @@ public class Vertex2D
      *            - y-coordinate
      * @return vertex at position (x, y)
      */
-    public Vertex2D moveTo (double x, double y)
+    public Vertex2D moveTo(double x, double y)
     {
-        return new Vertex2D (x, y);
+        return new Vertex2D(x, y);
     }
 
     /**
@@ -71,63 +71,63 @@ public class Vertex2D
      *            - moving distance in y-direction
      * @return vertex at position (x + d_x, y + d_y)
      */
-    public Vertex2D moveBy (double d_x, double d_y)
+    public Vertex2D moveBy(double d_x, double d_y)
     {
-        return new Vertex2D (x + d_x, y + d_y);
+        return new Vertex2D(x + d_x, y + d_y);
     }
 
-	/**
-	 * Computes a new position by rotating the actual position around the center
-	 * given by Vertex c in mathematically positive direction by angle (given in degree). After
-	 * rotation, the method returns a new instance of Vertex at the new
-	 * position.
-	 * 
-	 * The method does not change the position of this instance.
-	 * 
-	 * @param center
-	 *            Vertex representing the rotation center
-	 * @param angle
-	 *            rotation angle given in degree in CCW
-	 * @return new instance of Vertex with position after rotation
-	 */
-	public Vertex2D rotate (Vertex2D center, double angle)
-	{
-		double arc_angle = Math.toRadians (angle);
+    /**
+     * Computes a new position by rotating the actual position around the center
+     * given by Vertex c in mathematically positive direction by angle (given in
+     * degree). After rotation, the method returns a new instance of Vertex at
+     * the new position.
+     * 
+     * The method does not change the position of this instance.
+     * 
+     * @param center
+     *            Vertex representing the rotation center
+     * @param angle
+     *            rotation angle given in degree in CCW
+     * @return new instance of Vertex with position after rotation
+     */
+    public Vertex2D rotate(Vertex2D center, double angle)
+    {
+        double arc_angle = Math.toRadians(angle);
 
-		Vertex2D trans1_v = moveBy (-center.x, -center.y);
+        Vertex2D trans1_v = moveBy(-center.x, -center.y);
 
-		Vertex2D rot_v = new Vertex2D (
-				trans1_v.x * Math.cos (arc_angle) - trans1_v.y * Math.sin (arc_angle),
-				trans1_v.x * Math.sin (arc_angle) + trans1_v.y * Math.cos (arc_angle));
+        Vertex2D rot_v = new Vertex2D(trans1_v.x * Math.cos(arc_angle)
+                - trans1_v.y * Math.sin(arc_angle), trans1_v.x
+                * Math.sin(arc_angle) + trans1_v.y * Math.cos(arc_angle));
 
-		return rot_v.moveBy (center.x, center.y);
-	}
+        return rot_v.moveBy(center.x, center.y);
+    }
 
-	/**
-	 * Computes a new position by scaling the actual position with reference
-	 * position given by Vertex c. After scaling, the method returns a new
-	 * instance of Vertex at the new position.
-	 * 
-	 * The method does not change the position of this instance.
-	 * 
-	 * @param center
-	 *            Vertex representing the reference position
-	 * @param factor_x
-	 *            scaling factor in x-direction
-	 * @param factor_y
-	 *            scaling factor in y-direction
-	 * @return new instance of Vertex with position after scaling
-	 */
-	public Vertex2D scale (Vertex2D center, double factor_x, double factor_y)
-	{
-		Vertex2D trans1_v = moveBy (-center.x, -center.y);
+    /**
+     * Computes a new position by scaling the actual position with reference
+     * position given by Vertex c. After scaling, the method returns a new
+     * instance of Vertex at the new position.
+     * 
+     * The method does not change the position of this instance.
+     * 
+     * @param center
+     *            Vertex representing the reference position
+     * @param factor_x
+     *            scaling factor in x-direction
+     * @param factor_y
+     *            scaling factor in y-direction
+     * @return new instance of Vertex with position after scaling
+     */
+    public Vertex2D scale(Vertex2D center, double factor_x, double factor_y)
+    {
+        Vertex2D trans1_v = moveBy(-center.x, -center.y);
 
-		Vertex2D scal_v = new Vertex2D (trans1_v.x * factor_x, trans1_v.y
-				* factor_y);
+        Vertex2D scal_v = new Vertex2D(trans1_v.x * factor_x, trans1_v.y
+                * factor_y);
 
-		return scal_v.moveBy (center.x, center.y);
-	}
-	
+        return scal_v.moveBy(center.x, center.y);
+    }
+
     /**
      * Returns the distance of this position to the position given by v.
      * 
@@ -135,9 +135,9 @@ public class Vertex2D
      *            - vertex
      * @return distance from this vertex to v
      */
-    public double dist (Vertex2D v)
+    public double dist(Vertex2D v)
     {
-        return Math.sqrt ((v.x - x) * (v.x - x) + (v.y - y) * (v.y - y));
+        return Math.sqrt((v.x - x) * (v.x - x) + (v.y - y) * (v.y - y));
     }
 
     /**
@@ -146,13 +146,13 @@ public class Vertex2D
      * @return string-representation
      */
     @Override
-    public String toString ()
+    public String toString()
     {
         return "(" + x + ", " + y + ")";
     }
 
     @Override
-    public boolean equals (Object o)
+    public boolean equals(Object o)
     {
         if (!(o instanceof Vertex2D))
             return false;

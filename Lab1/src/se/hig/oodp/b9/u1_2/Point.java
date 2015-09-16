@@ -4,35 +4,35 @@ import se.hig.oodp.Vertex2D;
 
 public class Point
 {
-	Vertex2D position;
-	
-	public Point(Vertex2D position)
-	{
-		this.position = position;
-	}
+    Vertex2D position;
 
-	public Vertex2D getCenter() 
-	{
-		return position;
-	}
+    public Point(Vertex2D position)
+    {
+        this.position = position;
+    }
 
-	public void moveTo(Vertex2D position) 
-	{
-		this.position = position;
-	}
+    public Vertex2D getCenter()
+    {
+        return position;
+    }
 
-	public void moveBy(double x, double y) 
-	{
-		position = position.moveBy(x, y);
-	}
+    public void moveTo(Vertex2D position)
+    {
+        this.position = position;
+    }
 
-	public void remove() 
-	{
-		// TODO To be implemented
-	}
+    public void moveBy(double x, double y)
+    {
+        position = position.moveBy(x, y);
+    }
 
-	public void draw() 
-	{
-		// TODO To be implemented
-	}
+    public void remove()
+    {
+        // TODO To be implemented
+    }
+
+    public void draw()
+    {
+        // TODO To be implemented
+    }
 }
