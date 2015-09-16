@@ -18,12 +18,6 @@ public class Circle extends Ellipse
     }
 
     @Override
-    public void draw()
-    {
-        // TODO To be implemented
-    }
-
-    @Override
     public String toString()
     {
         return "Circle " + getCenter() + " r: " + getSize();

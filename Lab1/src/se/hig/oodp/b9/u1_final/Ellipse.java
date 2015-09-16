@@ -6,10 +6,10 @@ import se.hig.oodp.b9.u1_final.Scalable;
 
 public class Ellipse implements Shape , Scalable , Rotatable
 {
-    Vertex2D position;
-    double width;
     double height;
+    Vertex2D position;
     double rotation;
+    double width;
 
     public Ellipse(Vertex2D position, double width, double height)
     {
@@ -27,6 +27,23 @@ public class Ellipse implements Shape , Scalable , Rotatable
         this.rotation = rotation;
     }
 
+    @Override
+    public void draw()
+    {
+        // TODO To be implemented
+    }
+
+    @Override
+    public Vertex2D getCenter()
+    {
+        return position;
+    }
+
+    public double getHeight()
+    {
+        return height;
+    }
+
     public double getRotation()
     {
         return rotation;
@@ -37,9 +54,22 @@ public class Ellipse implements Shape , Scalable , Rotatable
         return width;
     }
 
-    public double getHeight()
+    @Override
+    public void moveBy(double x, double y)
     {
-        return height;
+        position = position.moveBy(x, y);
+    }
+
+    @Override
+    public void moveTo(Vertex2D position)
+    {
+        this.position = position;
+    }
+
+    @Override
+    public void remove()
+    {
+        // TODO To be implemented
     }
 
     @Override
@@ -56,39 +86,9 @@ public class Ellipse implements Shape , Scalable , Rotatable
     }
 
     @Override
-    public void draw()
-    {
-        // TODO To be implemented
-    }
-
-    @Override
     public String toString()
     {
         return "Ellipse " + getCenter() + " ; width: " + width + " ; height: "
                 + height + " ; rot: " + rotation;
-    }
-
-    @Override
-    public Vertex2D getCenter()
-    {
-        return position;
-    }
-
-    @Override
-    public void moveTo(Vertex2D position)
-    {
-        this.position = position;
-    }
-
-    @Override
-    public void moveBy(double x, double y)
-    {
-        position = position.moveBy(x, y);
-    }
-
-    @Override
-    public void remove()
-    {
-        // TODO To be implemented
     }
 }
