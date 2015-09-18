@@ -6,19 +6,30 @@ import se.hig.oodp.Vertex2D;
 
 public abstract class PolyShape implements Shape , Scalable , Rotatable
 {
+    /**
+     * The nodes the shape is made of
+     */
     Vertex2D[] positions;
 
+    /**
+     * Makes a polyshape
+     * 
+     * @param positions the nodes the shape is made of
+     */
     public PolyShape(Vertex2D[] positions)
     {
         this.positions = positions;
     }
 
+    /**
+     * @return the nodes the shape is made of
+     */
     public Vertex2D[] getPositions()
     {
         return positions.clone();
     }
     
-    //Move the object from point a to point b 
+    @Override
     public void moveTo(Vertex2D position)
     {
         Vertex2D center = getCenter();
@@ -28,14 +39,14 @@ public abstract class PolyShape implements Shape , Scalable , Rotatable
                     .moveBy(position.getX(), position.getY());
     }
     
-    //Move the object by x,y "steps"
+    @Override
     public void moveBy(double x, double y)
     {
         for (int i = 0; i < positions.length; i++)
             positions[i] = positions[i].moveBy(x, y);
     }
     
-    // Change the size of the object
+    @Override
     public void scale(double scale)
     {
         Vertex2D center = getCenter();
@@ -44,7 +55,7 @@ public abstract class PolyShape implements Shape , Scalable , Rotatable
             positions[i] = positions[i].scale(center, scale, scale);
     }
     
-    // Rotate it around it's center 
+    @Override
     public void rotate(double angle)
     {
         Vertex2D center = getCenter();
@@ -53,8 +64,7 @@ public abstract class PolyShape implements Shape , Scalable , Rotatable
             positions[i] = positions[i].rotate(center, angle);
     }
     
-    //get the position from the objects center
-    // TODO Better centroid
+    @Override
     public Vertex2D getCenter()
     {
         double sum_x = 0;
@@ -67,16 +77,6 @@ public abstract class PolyShape implements Shape , Scalable , Rotatable
         }
 
         return new Vertex2D(sum_x / positions.length, sum_y / positions.length);
-    }
-
-    public void remove()
-    {
-        // To be implemented
-    }
-
-    public void draw()
-    {
-        // To be implemented
     }
 
     @Override

@@ -4,8 +4,16 @@ import se.hig.oodp.Vertex2D;
 
 public class Point implements Shape
 {
+    /**
+     * The position of this point
+     */
     Vertex2D position;
 
+    /**
+     * Makes a point
+     * 
+     * @param position the position
+     */
     public Point(Vertex2D position)
     {
         this.position = position;
@@ -16,32 +24,19 @@ public class Point implements Shape
     {
         return position;
     }
-    //move it from point a to a given  point b
+    
     @Override
     public void moveTo(Vertex2D position)
     {
         this.position = position;
     }
 
-    //Move the point  x,y "steps" from it's position by a given x,y
     @Override
     public void moveBy(double x, double y)
     {
         position = position.moveBy(x, y);
     }
-
-    @Override
-    public void remove()
-    {
-        // TODO To be implemented
-    }
-
-    @Override
-    public void draw()
-    {
-        // TODO To be implemented
-    }
-
+    
     @Override
     public String toString()
     {

@@ -7,21 +7,40 @@ import se.hig.oodp.b9.u1_final.PolyShape;
 
 public class Polygon extends PolyShape
 {
+    /**
+     * Makes a polygon
+     * <br>
+     * Extends {@link PolyShape}
+     * 
+     * @param positions the nodes this polygon is built with
+     */
     Polygon(Vertex2D[] positions)
     {
         super(positions);
     }
     
-    //Class that will create the Polygon
+    
+    /**
+     * Builder of polygons
+     */
     public static class Builder
     {
+        /**
+         * The nodes the polygon should be built with
+         */
         public Vector<Vertex2D> positions = new Vector<Vertex2D>();
 
-        public Builder()
-        {
-        };
+        /**
+         * The builder of polygons
+         */
+        public Builder() { };
         
-        //remove all points that you have added to the "holder" 
+        
+        /**
+         * Clears all nodes that the builder currently holds
+         * 
+         * @return the builder itself
+         */
         public Builder clear()
         {
             positions.removeAllElements();
@@ -29,7 +48,13 @@ public class Polygon extends PolyShape
             return this;
         }
         
-        //add a point to a "holder"
+        
+        /**
+         * Add a node to the list
+         * 
+         * @param position the new node
+         * @return the builder itself
+         */
         public Builder add(Vertex2D position)
         {
             positions.add(position);
@@ -37,7 +62,13 @@ public class Polygon extends PolyShape
             return this;
         }
         
-        // Create the polygon from all points that was added to the "holder"
+        
+        /**
+         * Generate a polygon from the nodes this builder holds
+         * 
+         * @return the generated polygon
+         * @throws Exception thrown if there is less than three nodes
+         */
         public Polygon create() throws Exception
         {
         	//control that the "holder" have more then 2 points 
