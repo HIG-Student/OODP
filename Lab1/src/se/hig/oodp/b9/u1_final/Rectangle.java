@@ -16,7 +16,7 @@ public class Rectangle extends PolyShape
                 new Vertex2D(position.getX() - width / 2, position.getY()
                         + height / 2) });
     }
-
+    //Add a rectangle with a angle 
     public Rectangle(Vertex2D position, double width, double height,
             double rotation)
     {

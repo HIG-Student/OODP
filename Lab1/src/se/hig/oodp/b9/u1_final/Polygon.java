@@ -11,7 +11,8 @@ public class Polygon extends PolyShape
     {
         super(positions);
     }
-
+    
+    //Class that will create the Polygon
     public static class Builder
     {
         public Vector<Vertex2D> positions = new Vector<Vertex2D>();
@@ -19,23 +20,27 @@ public class Polygon extends PolyShape
         public Builder()
         {
         };
-
+        
+        //remove all points that you have added to the "holder" 
         public Builder clear()
         {
             positions.removeAllElements();
 
             return this;
         }
-
+        
+        //add a point to a "holder"
         public Builder add(Vertex2D position)
         {
             positions.add(position);
 
             return this;
         }
-
+        
+        // Create the polygon from all points that was added to the "holder"
         public Polygon create() throws Exception
         {
+        	//control that the "holder" have more then 2 points 
             if (positions.size() <= 2)
             {
                 throw new Exception(

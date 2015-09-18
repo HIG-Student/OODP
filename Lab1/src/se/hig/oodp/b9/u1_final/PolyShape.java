@@ -17,7 +17,8 @@ public abstract class PolyShape implements Shape , Scalable , Rotatable
     {
         return positions.clone();
     }
-
+    
+    //Move the object from point a to point b 
     public void moveTo(Vertex2D position)
     {
         Vertex2D center = getCenter();
@@ -26,13 +27,15 @@ public abstract class PolyShape implements Shape , Scalable , Rotatable
             positions[i] = positions[i].moveBy(-center.getX(), -center.getY())
                     .moveBy(position.getX(), position.getY());
     }
-
+    
+    //Move the object by x,y "steps"
     public void moveBy(double x, double y)
     {
         for (int i = 0; i < positions.length; i++)
             positions[i] = positions[i].moveBy(x, y);
     }
-
+    
+    // Change the size of the object
     public void scale(double scale)
     {
         Vertex2D center = getCenter();
@@ -40,7 +43,8 @@ public abstract class PolyShape implements Shape , Scalable , Rotatable
         for (int i = 0; i < positions.length; i++)
             positions[i] = positions[i].scale(center, scale, scale);
     }
-
+    
+    // Rotate it around it's center 
     public void rotate(double angle)
     {
         Vertex2D center = getCenter();
@@ -48,7 +52,8 @@ public abstract class PolyShape implements Shape , Scalable , Rotatable
         for (int i = 0; i < positions.length; i++)
             positions[i] = positions[i].rotate(center, angle);
     }
-
+    
+    //get the position from the objects center
     // TODO Better centroid
     public Vertex2D getCenter()
     {

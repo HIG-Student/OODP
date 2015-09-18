@@ -16,13 +16,14 @@ public class Point implements Shape
     {
         return position;
     }
-
+    //move it from point a to a given  point b
     @Override
     public void moveTo(Vertex2D position)
     {
         this.position = position;
     }
 
+    //Move the point  x,y "steps" from it's position by a given x,y
     @Override
     public void moveBy(double x, double y)
     {
