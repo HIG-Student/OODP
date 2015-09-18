@@ -24,13 +24,7 @@ public class Circle extends Point
     {
         size *= scale;
     }
-
-    @Override
-    public void draw()
-    {
-
-    }
-
+    
     @Override
     public String toString()
     {

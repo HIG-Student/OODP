@@ -41,16 +41,6 @@ public class Circle
         return position;
     }
 
-    public void remove()
-    {
-
-    }
-
-    public void draw()
-    {
-
-    }
-
     @Override
     public String toString()
     {

@@ -56,12 +56,6 @@ public class Ellipse extends Point implements Scalable , Rotatable
     }
 
     @Override
-    public void draw()
-    {
-        // TODO To be implemented
-    }
-
-    @Override
     public String toString()
     {
         return "Ellipse " + getCenter() + " ; width: " + width + " ; height: "

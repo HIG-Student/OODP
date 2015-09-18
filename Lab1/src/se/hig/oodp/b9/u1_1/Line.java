@@ -63,16 +63,6 @@ public class Line
         return pointB.scale(pointA, 0.5, 0.5);
     }
 
-    public void remove()
-    {
-
-    }
-
-    public void draw()
-    {
-
-    }
-
     @Override
     public String toString()
     {

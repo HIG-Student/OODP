@@ -64,16 +64,6 @@ public abstract class PolyShape implements Shape , Scalable , Rotatable
         return new Vertex2D(sum_x / positions.length, sum_y / positions.length);
     }
 
-    public void remove()
-    {
-        // To be implemented
-    }
-
-    public void draw()
-    {
-        // To be implemented
-    }
-
     @Override
     public String toString()
     {

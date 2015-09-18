@@ -80,16 +80,6 @@ public class Triangle
                 (pointA.getY() + pointB.getY() + pointC.getY()) / 3);
     }
 
-    public void remove()
-    {
-
-    }
-
-    public void draw()
-    {
-
-    }
-
     @Override
     public String toString()
     {

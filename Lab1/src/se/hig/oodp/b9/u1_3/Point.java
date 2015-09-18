@@ -30,18 +30,6 @@ public class Point implements Shape
     }
 
     @Override
-    public void remove()
-    {
-        // TODO To be implemented
-    }
-
-    @Override
-    public void draw()
-    {
-        // TODO To be implemented
-    }
-
-    @Override
     public String toString()
     {
         return this.getClass().getSimpleName() + " " + position;

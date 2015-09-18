@@ -25,14 +25,4 @@ public class Point
     {
         position = position.moveBy(x, y);
     }
-
-    public void remove()
-    {
-        // TODO To be implemented
-    }
-
-    public void draw()
-    {
-        // TODO To be implemented
-    }
 }

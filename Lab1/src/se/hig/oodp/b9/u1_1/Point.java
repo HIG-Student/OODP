@@ -26,16 +26,6 @@ public class Point
         return position;
     }
 
-    public void remove()
-    {
-
-    }
-
-    public void draw()
-    {
-
-    }
-
     @Override
     public String toString()
     {

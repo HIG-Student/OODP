@@ -9,8 +9,4 @@ public interface Shape
     public void moveTo(Vertex2D position);
 
     public void moveBy(double x, double y);
-
-    public void remove();
-
-    public void draw();
 }

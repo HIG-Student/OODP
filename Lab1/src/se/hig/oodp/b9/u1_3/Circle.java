@@ -26,12 +26,6 @@ public class Circle extends Point implements Scalable
     }
 
     @Override
-    public void draw()
-    {
-        // TODO To be implemented
-    }
-
-    @Override
     public String toString()
     {
         return "Circle " + getCenter() + " r: " + size;

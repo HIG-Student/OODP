@@ -115,16 +115,6 @@ public class Rectangle
         return pointAB.scale(pointCD, 0.5, 0.5);
     }
 
-    public void remove()
-    {
-
-    }
-
-    public void draw()
-    {
-
-    }
-
     @Override
     public String toString()
     {
