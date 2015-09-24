@@ -160,8 +160,7 @@ public class ShapeControl implements FigureHandler,FigureMover,FigurePrinter,Fig
      *  @param vy2 y-coordinate for point 3
      */
     @Override
-    public void createTriangle(double vx0, double vy0, double vx1, double vy1,
-            double vx2, double vy2)
+    public void createTriangle(double vx0, double vy0, double vx1, double vy1, double vx2, double vy2)
     {
         shapes.add(new Triangle(new Vertex2D(vx0,vy0),new Vertex2D(vx1,vy1),new Vertex2D(vx2,vy2)));
     }
