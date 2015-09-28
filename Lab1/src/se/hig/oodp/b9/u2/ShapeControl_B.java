@@ -1,7 +1,7 @@
 /**
  * 
  */
-package se.hig.oodp.b9.u2.d1;
+package se.hig.oodp.b9.u2;
 
 import java.util.Vector;
 

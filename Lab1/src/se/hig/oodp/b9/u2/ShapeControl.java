@@ -1,26 +1,32 @@
 /**
  * 
  */
-package se.hig.oodp.b9.u2.d1;
+package se.hig.oodp.b9.u2;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import se.hig.oodp.*;
 
 /**
  *  Class for controlling a set of shapes
  */
-public class ShapeControl_A implements FigureHandler,FigureMover,FigurePrinter,FigureRotor,FigureScalor
+public class ShapeControl implements FigureHandler,FigureMover,FigurePrinter,FigureRotor,FigureScalor
 {
     /**
-     *  The shapes that can't rotate and scale
+     *  The shapes this control controls
      */
-    Vector<Shape> unEditableShapes = new Vector<Shape>();
+    List<Shape> shapes = new ArrayList<Shape>();
     
     /**
-     *  The shapes that can rotate and scale
+     *  The rotatable shapes this control controls
      */
-    Vector<Shape> editableShapes = new Vector<Shape>();
+    List<Rotatable> rotatableShapes = new ArrayList<Rotatable>();
+    
+    /**
+     *  The scalable shapes this control controls
+     */
+    List<Scalable> scalableShapes = new ArrayList<Scalable>();
     
     /**
      *  Scales all shapes controlled by this control
@@ -31,8 +37,8 @@ public class ShapeControl_A implements FigureHandler,FigureMover,FigurePrinter,F
     @Override
     public void scaleAll(double factor_x, double factor_y)
     {
-        for(Shape s : editableShapes)
-            ((Scalable)s).scale(factor_x, factor_y);
+        for(Scalable s : scalableShapes)
+            s.scale(factor_x, factor_y);
     }
 
     /**
@@ -43,8 +49,8 @@ public class ShapeControl_A implements FigureHandler,FigureMover,FigurePrinter,F
     @Override
     public void rotateAll(double angle)
     {
-        for(Shape s : editableShapes)
-            ((Rotatable)s).rotate(angle);
+        for(Rotatable s : rotatableShapes)
+            s.rotate(angle);
     }
 
     /**
@@ -53,10 +59,7 @@ public class ShapeControl_A implements FigureHandler,FigureMover,FigurePrinter,F
     @Override
     public void printAll()
     {
-        for(Shape s : editableShapes)
-            System.out.println(s.toString());
-        
-        for(Shape s : unEditableShapes)
+        for(Shape s : shapes)
             System.out.println(s.toString());
     }
 
@@ -69,9 +72,7 @@ public class ShapeControl_A implements FigureHandler,FigureMover,FigurePrinter,F
     @Override
     public void moveAll(double dx, double dy)
     {
-        for(Shape s : editableShapes)
-            s.moveBy(dx, dy);
-        for(Shape s : unEditableShapes)
+        for(Shape s : shapes)
             s.moveBy(dx, dy);
     }
 
@@ -85,7 +86,10 @@ public class ShapeControl_A implements FigureHandler,FigureMover,FigurePrinter,F
     @Override
     public void createCircle(double x, double y, double r)
     {
-        editableShapes.add(new Circle(new Vertex2D(x,y),r));
+        Circle circle = new Circle(new Vertex2D(x,y),r);
+        shapes.add(circle);
+        rotatableShapes.add(circle);
+        scalableShapes.add(circle);
     }
 
     /**
@@ -99,7 +103,10 @@ public class ShapeControl_A implements FigureHandler,FigureMover,FigurePrinter,F
     @Override
     public void createEllipse(double x, double y, double a, double b)
     {
-        editableShapes.add(new Ellipse(new Vertex2D(x,y),a,b));
+        Ellipse ellipse = new Ellipse(new Vertex2D(x,y),a,b);
+        shapes.add(ellipse);
+        rotatableShapes.add(ellipse);
+        scalableShapes.add(ellipse);
     }
 
     /**
@@ -113,7 +120,10 @@ public class ShapeControl_A implements FigureHandler,FigureMover,FigurePrinter,F
     @Override
     public void createLine(double x0, double y0, double x1, double y1)
     {
-        editableShapes.add(new Line(new Vertex2D(x0,y0),new Vertex2D(x1,y1)));
+        Line line = new Line(new Vertex2D(x0,y0),new Vertex2D(x1,y1));
+        shapes.add(line);
+        rotatableShapes.add(line);
+        scalableShapes.add(line);
     }
 
     /**
@@ -125,7 +135,8 @@ public class ShapeControl_A implements FigureHandler,FigureMover,FigurePrinter,F
     @Override
     public void createPoint(double x, double y)
     {
-        unEditableShapes.add(new Point(new Vertex2D(x,y)));
+        Point point = new Point(new Vertex2D(x,y));
+        shapes.add(point);
     }
 
     /**
@@ -139,7 +150,10 @@ public class ShapeControl_A implements FigureHandler,FigureMover,FigurePrinter,F
     @Override
     public void createRectangle(double x, double y, double a, double b)
     {
-        editableShapes.add(new Rectangle(new Vertex2D(x,y),a,b));
+        Rectangle rectangle = new Rectangle(new Vertex2D(x,y),a,b);
+        shapes.add(rectangle);
+        rotatableShapes.add(rectangle);
+        scalableShapes.add(rectangle);
     }
 
     /**
@@ -154,7 +168,10 @@ public class ShapeControl_A implements FigureHandler,FigureMover,FigurePrinter,F
     @Override
     public void createSquare(double x, double y, double a)
     {
-        editableShapes.add(new Square(new Vertex2D(x,y),a));
+        Square square = new Square(new Vertex2D(x,y),a);
+        shapes.add(square);
+        rotatableShapes.add(square);
+        scalableShapes.add(square);
     }
 
     /**
@@ -171,7 +188,10 @@ public class ShapeControl_A implements FigureHandler,FigureMover,FigurePrinter,F
     public void createTriangle(double vx0, double vy0, double vx1, double vy1,
             double vx2, double vy2)
     {
-        editableShapes.add(new Triangle(new Vertex2D(vx0,vy0),new Vertex2D(vx1,vy1),new Vertex2D(vx2,vy2)));
+        Triangle triangle = new Triangle(new Vertex2D(vx0,vy0),new Vertex2D(vx1,vy1),new Vertex2D(vx2,vy2));
+        shapes.add(triangle);
+        rotatableShapes.add(triangle);
+        scalableShapes.add(triangle);
     }
 
     /**
@@ -180,7 +200,8 @@ public class ShapeControl_A implements FigureHandler,FigureMover,FigurePrinter,F
     @Override
     public void removeAll()
     {
-        editableShapes.removeAllElements();
-        unEditableShapes.removeAllElements();
+        shapes.clear();
+        rotatableShapes.clear();
+        scalableShapes.clear();
     }
 }

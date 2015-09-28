@@ -1,8 +1,10 @@
 /**
  * 
  */
-package se.hig.oodp.b9.u2.d1;
+package se.hig.oodp.b9.u2;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Vector;
 
 import se.hig.oodp.*;
@@ -10,12 +12,38 @@ import se.hig.oodp.*;
 /**
  *  Class for controlling a set of shapes
  */
-public class ShapeControl implements FigureHandler,FigureMover,FigurePrinter,FigureRotor,FigureScalor
+public class ShapeControl_C implements FigureHandler,FigureMover,FigurePrinter,FigureRotor,FigureScalor
 {
     /**
      *  The shapes this control controls
      */
     Vector<Shape> shapes = new Vector<Shape>();
+    
+    /**
+     *  The rotatable shapes this control controls
+     */
+    Vector<Shape> rotatableShapes = new Vector<Shape>();
+    
+    /**
+     *  The scalable shapes this control controls
+     */
+    Vector<Shape> scalableShapes = new Vector<Shape>();
+    
+    
+    /**
+     * Adds shapes to correct lists
+     * @param shape the shape to add
+     */
+    private void add(Shape shape)
+    {
+        shapes.add(shape);
+        
+        if(shape instanceof Scalable)
+            scalableShapes.add(shape);
+        
+        if(shape instanceof Rotatable)
+            rotatableShapes.add(shape);
+    }
     
     /**
      *  Scales all shapes controlled by this control
@@ -26,9 +54,8 @@ public class ShapeControl implements FigureHandler,FigureMover,FigurePrinter,Fig
     @Override
     public void scaleAll(double factor_x, double factor_y)
     {
-        for(Shape s : shapes)
-            if(s instanceof Scalable)
-                ((Scalable)s).scale(factor_x, factor_y);
+        for(Shape s : scalableShapes)
+            ((Scalable)s).scale(factor_x, factor_y);
     }
 
     /**
@@ -39,9 +66,8 @@ public class ShapeControl implements FigureHandler,FigureMover,FigurePrinter,Fig
     @Override
     public void rotateAll(double angle)
     {
-        for(Shape s : shapes)
-            if(s instanceof Rotatable)
-                ((Rotatable)s).rotate(angle);
+        for(Shape s : rotatableShapes)
+            ((Rotatable)s).rotate(angle);
     }
 
     /**
@@ -77,7 +103,7 @@ public class ShapeControl implements FigureHandler,FigureMover,FigurePrinter,Fig
     @Override
     public void createCircle(double x, double y, double r)
     {
-        shapes.add(new Circle(new Vertex2D(x,y),r));
+        add(new Circle(new Vertex2D(x,y),r));
     }
 
     /**
@@ -91,7 +117,7 @@ public class ShapeControl implements FigureHandler,FigureMover,FigurePrinter,Fig
     @Override
     public void createEllipse(double x, double y, double a, double b)
     {
-        shapes.add(new Ellipse(new Vertex2D(x,y),a,b));
+        add(new Ellipse(new Vertex2D(x,y),a,b));
     }
 
     /**
@@ -105,7 +131,7 @@ public class ShapeControl implements FigureHandler,FigureMover,FigurePrinter,Fig
     @Override
     public void createLine(double x0, double y0, double x1, double y1)
     {
-        shapes.add(new Line(new Vertex2D(x0,y0),new Vertex2D(x1,y1)));
+        add(new Line(new Vertex2D(x0,y0),new Vertex2D(x1,y1)));
     }
 
     /**
@@ -117,7 +143,7 @@ public class ShapeControl implements FigureHandler,FigureMover,FigurePrinter,Fig
     @Override
     public void createPoint(double x, double y)
     {
-        shapes.add(new Point(new Vertex2D(x,y)));
+        add(new Point(new Vertex2D(x,y)));
     }
 
     /**
@@ -131,7 +157,7 @@ public class ShapeControl implements FigureHandler,FigureMover,FigurePrinter,Fig
     @Override
     public void createRectangle(double x, double y, double a, double b)
     {
-        shapes.add(new Rectangle(new Vertex2D(x,y),a,b));
+        add(new Rectangle(new Vertex2D(x,y),a,b));
     }
 
     /**
@@ -146,7 +172,7 @@ public class ShapeControl implements FigureHandler,FigureMover,FigurePrinter,Fig
     @Override
     public void createSquare(double x, double y, double a)
     {
-        shapes.add(new Square(new Vertex2D(x,y),a));
+        add(new Square(new Vertex2D(x,y),a));
     }
 
     /**
@@ -160,9 +186,10 @@ public class ShapeControl implements FigureHandler,FigureMover,FigurePrinter,Fig
      *  @param vy2 y-coordinate for point 3
      */
     @Override
-    public void createTriangle(double vx0, double vy0, double vx1, double vy1, double vx2, double vy2)
+    public void createTriangle(double vx0, double vy0, double vx1, double vy1,
+            double vx2, double vy2)
     {
-        shapes.add(new Triangle(new Vertex2D(vx0,vy0),new Vertex2D(vx1,vy1),new Vertex2D(vx2,vy2)));
+        add(new Triangle(new Vertex2D(vx0,vy0),new Vertex2D(vx1,vy1),new Vertex2D(vx2,vy2)));
     }
 
     /**
@@ -172,5 +199,7 @@ public class ShapeControl implements FigureHandler,FigureMover,FigurePrinter,Fig
     public void removeAll()
     {
         shapes.removeAllElements();
+        rotatableShapes.removeAllElements();
+        scalableShapes.removeAllElements();
     }
 }
