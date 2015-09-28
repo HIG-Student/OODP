@@ -1,6 +1,3 @@
-/**
- * 
- */
 package se.hig.oodp.b9.u2;
 
 import java.util.ArrayList;
@@ -27,6 +24,16 @@ public class ShapeControl implements FigureHandler,FigureMover,FigurePrinter,Fig
      *  The scalable shapes this control controls
      */
     List<Scalable> scalableShapes = new ArrayList<Scalable>();
+    
+    /**
+     * Gets the shapes controlled by this control
+     * 
+     * @return the shapes
+     */
+    public Shape[] getShapes()
+    {
+        return shapes.toArray(new Shape[0]);
+    }
     
     /**
      *  Scales all shapes controlled by this control
