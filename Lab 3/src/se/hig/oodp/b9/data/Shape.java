@@ -7,7 +7,7 @@ import se.hig.oodp.Vertex2D;
 /**
  * Generic class for shapes
  */
-public abstract class Shape
+public abstract class Shape implements Drawable
 {
     /**
      * The nodes that the shape is built with

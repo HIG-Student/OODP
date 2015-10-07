@@ -58,6 +58,7 @@ public class ShapeControl implements FigureHandler , FigureMover , FigurePrinter
     {
         for (Scalable s : scalableShapes)
             s.scale(factor_x, factor_y);
+        onChange();
     }
 
     /**
@@ -71,6 +72,7 @@ public class ShapeControl implements FigureHandler , FigureMover , FigurePrinter
     {
         for (Rotatable s : rotatableShapes)
             s.rotate(angle);
+        onChange();
     }
 
     /**
@@ -96,6 +98,7 @@ public class ShapeControl implements FigureHandler , FigureMover , FigurePrinter
     {
         for (Shape s : shapes)
             s.moveBy(dx, dy);
+        onChange();
     }
 
     /**
@@ -115,6 +118,7 @@ public class ShapeControl implements FigureHandler , FigureMover , FigurePrinter
         shapes.add(circle);
         rotatableShapes.add(circle);
         scalableShapes.add(circle);
+        onChange();
     }
 
     /**
@@ -136,6 +140,7 @@ public class ShapeControl implements FigureHandler , FigureMover , FigurePrinter
         shapes.add(ellipse);
         rotatableShapes.add(ellipse);
         scalableShapes.add(ellipse);
+        onChange();
     }
 
     /**
@@ -157,6 +162,7 @@ public class ShapeControl implements FigureHandler , FigureMover , FigurePrinter
         shapes.add(line);
         rotatableShapes.add(line);
         scalableShapes.add(line);
+        onChange();
     }
 
     /**
@@ -172,6 +178,7 @@ public class ShapeControl implements FigureHandler , FigureMover , FigurePrinter
     {
         Point point = new Point(new Vertex2D(x, y));
         shapes.add(point);
+        onChange();
     }
 
     /**
@@ -193,6 +200,7 @@ public class ShapeControl implements FigureHandler , FigureMover , FigurePrinter
         shapes.add(rectangle);
         rotatableShapes.add(rectangle);
         scalableShapes.add(rectangle);
+        onChange();
     }
 
     /**
@@ -216,6 +224,7 @@ public class ShapeControl implements FigureHandler , FigureMover , FigurePrinter
         shapes.add(square);
         rotatableShapes.add(square);
         scalableShapes.add(square);
+        onChange();
     }
 
     /**
@@ -241,6 +250,7 @@ public class ShapeControl implements FigureHandler , FigureMover , FigurePrinter
         shapes.add(triangle);
         rotatableShapes.add(triangle);
         scalableShapes.add(triangle);
+        onChange();
     }
 
     /**
@@ -252,5 +262,8 @@ public class ShapeControl implements FigureHandler , FigureMover , FigurePrinter
         shapes.clear();
         rotatableShapes.clear();
         scalableShapes.clear();
+        onChange();
     }
+    
+    public void onChange() { } ;
 }

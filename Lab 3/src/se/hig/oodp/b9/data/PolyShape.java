@@ -1,6 +1,7 @@
 package se.hig.oodp.b9.data;
 
 import se.hig.oodp.Vertex2D;
+import se.hig.oodp.b9.model.PrimitivesPainter;
 
 /**
  * Generic class for shapes built with polygons
@@ -34,5 +35,11 @@ public abstract class PolyShape extends Shape implements Rotatable , Scalable
 
         for (int i = 0; i < nodes.length; i++)
             nodes[i] = nodes[i].rotate(center, angle);
+    }
+    
+    @Override
+    public void draw(PrimitivesPainter pp)
+    {
+        pp.paintPolygon(nodes);
     }
 }
