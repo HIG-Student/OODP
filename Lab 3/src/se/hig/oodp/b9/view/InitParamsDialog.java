@@ -4,6 +4,7 @@
 package se.hig.oodp.b9.view;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -41,10 +42,10 @@ public class InitParamsDialog extends JDialog
         {
             ArrayList<Pair<?>> arr = new ArrayList<>();
 
-            Pair<?> center = new Pair<Vertex2D>("Center", Vertex2D.class);
+            Pair<Vertex2D> center = new Pair<Vertex2D>("Center", Pair.PairDataTypes.VERTEX2D);
             arr.add(center);
 
-            Pair<?> size = new Pair<Integer>("Size", Integer.class);
+            Pair<Integer> size = new Pair<Integer>("Size", Pair.PairDataTypes.INTEGER, Pair.PairConstraintTypes.POSITIVE);
             arr.add(size);
 
             InitParamsDialog dialog = new InitParamsDialog("Create circle", arr);
@@ -57,27 +58,77 @@ public class InitParamsDialog extends JDialog
         }
     }
 
-    private SpinnerNumberModel GET_SPINNER_POSITIVE_INTEGER()
+    private SpinnerNumberModel getSpinnerNumberModel(Pair<?> pair)
     {
-        return new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1);
+        Number value = 0;
+        Number min = 0;
+        Number max = 0;
+        Number step = 0;
+
+        switch (pair.pairDataType)
+        {
+
+        case VERTEX2D:
+        case INTEGER:
+            max = Integer.MAX_VALUE;
+            min = Integer.MIN_VALUE;
+            step = 1;
+            break;
+
+        case DOUBLE:
+            max = Double.MAX_VALUE;
+            min = Double.MIN_VALUE;
+            step = 0.1d;
+            break;
+
+        default:
+            System.out.println("Wrong type!");
+            return null;
+        }
+
+        switch (pair.pairConstraintType)
+        {
+
+        case POSITIVE_NOT_ZERO:
+            min = 0;
+            value = 0;
+            break;
+        case POSITIVE:
+            min = 1;
+            value = 1;
+            break;
+
+        }
+
+        switch (pair.pairDataType)
+        {
+
+        case VERTEX2D:
+        case INTEGER:
+            return new SpinnerNumberModel(value.intValue(),  min.intValue(), max.intValue(), step.intValue());
+
+        case DOUBLE:
+            return new SpinnerNumberModel(value.doubleValue(), min.doubleValue(), max.doubleValue(), step.doubleValue());
+
+        default:
+            System.out.println("Wrong type!");
+            return null;
+        }
     };
 
-    private SpinnerNumberModel GET_SPINNER_INTEGER()
-    {
-        return new SpinnerNumberModel(0, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
-    };
-
-    private SpinnerNumberModel GET_SPINNER_POSITIVE_DOUBLE()
-    {
-        return new SpinnerNumberModel(1d, 0.001d, 1000d, 0.1d);
-    };
-
-    private JSpinner createSpinner(double width, SpinnerNumberModel model)
+    private JSpinner createSpinner(String title, JPanel parent, double width, SpinnerNumberModel model)
     {
         JSpinner spinner = new JSpinner(model);
 
-        JComponent field = ((JSpinner.DefaultEditor) spinner.getEditor());
+        // http://stackoverflow.com/a/7587253
+        JComponent comp = spinner.getEditor();
+        JFormattedTextField field = (JFormattedTextField) comp.getComponent(0);
         field.setPreferredSize(new Dimension(100, field.getPreferredSize().height));
+        DefaultFormatter formatter = (DefaultFormatter) field.getFormatter();
+        formatter.setCommitsOnValidEdit(true);
+
+        parent.add(new JLabel(title));
+        parent.add(spinner);
 
         return spinner;
     }
@@ -89,48 +140,24 @@ public class InitParamsDialog extends JDialog
         JPanel input = new JPanel();
         {
             input.add(new JLabel(pair.name + ":   "));
-            input.add(new JLabel("x"));
+
+            createSpinner("x", input, 100, getSpinnerNumberModel(pair)).addChangeListener(new ChangeListener()
             {
-                JSpinner xSpinner = createSpinner(100, GET_SPINNER_INTEGER());
-
-                // http://stackoverflow.com/a/7587253
-                JComponent comp = xSpinner.getEditor();
-                JFormattedTextField field = (JFormattedTextField) comp.getComponent(0);
-                field.setPreferredSize(new Dimension(100, field.getPreferredSize().height));
-                DefaultFormatter formatter = (DefaultFormatter) field.getFormatter();
-                formatter.setCommitsOnValidEdit(true);
-                xSpinner.addChangeListener(new ChangeListener()
+                @Override
+                public void stateChanged(ChangeEvent e)
                 {
-                    @Override
-                    public void stateChanged(ChangeEvent e)
-                    {
-                        pair.value = new Vertex2D((int) xSpinner.getValue(), pair.value.getY());
-                    }
-                });
+                    pair.value = new Vertex2D((int) ((JSpinner) e.getSource()).getValue(), ((Vertex2D) pair.value).getY());
+                }
+            });
 
-                input.add(xSpinner);
-            }
-            input.add(new JLabel("y"));
+            createSpinner("y", input, 100, getSpinnerNumberModel(pair)).addChangeListener(new ChangeListener()
             {
-                JSpinner ySpinner = createSpinner(100, GET_SPINNER_INTEGER());
-
-                // http://stackoverflow.com/a/7587253
-                JComponent comp = ySpinner.getEditor();
-                JFormattedTextField field = (JFormattedTextField) comp.getComponent(0);
-                field.setPreferredSize(new Dimension(100, field.getPreferredSize().height));
-                DefaultFormatter formatter = (DefaultFormatter) field.getFormatter();
-                formatter.setCommitsOnValidEdit(true);
-                ySpinner.addChangeListener(new ChangeListener()
+                @Override
+                public void stateChanged(ChangeEvent e)
                 {
-                    @Override
-                    public void stateChanged(ChangeEvent e)
-                    {
-                        pair.value = new Vertex2D(pair.value.getX(), (int) ySpinner.getValue());
-                    }
-                });
-
-                input.add(ySpinner);
-            }
+                    pair.value = new Vertex2D(((Vertex2D) pair.value).getX(), (int) ((JSpinner) e.getSource()).getValue());
+                }
+            });
         }
         return input;
     }
@@ -141,27 +168,14 @@ public class InitParamsDialog extends JDialog
 
         JPanel input = new JPanel();
         {
-            input.add(new JLabel(pair.name + ":   "));
+            createSpinner(pair.name + ":   ", input, 100, getSpinnerNumberModel(pair)).addChangeListener(new ChangeListener()
             {
-                JSpinner spinner = createSpinner(100, GET_SPINNER_POSITIVE_INTEGER());
-
-                // http://stackoverflow.com/a/7587253
-                JComponent comp = spinner.getEditor();
-                JFormattedTextField field = (JFormattedTextField) comp.getComponent(0);
-                field.setPreferredSize(new Dimension(100, field.getPreferredSize().height));
-                DefaultFormatter formatter = (DefaultFormatter) field.getFormatter();
-                formatter.setCommitsOnValidEdit(true);
-                spinner.addChangeListener(new ChangeListener()
+                @Override
+                public void stateChanged(ChangeEvent e)
                 {
-                    @Override
-                    public void stateChanged(ChangeEvent e)
-                    {
-                        pair.value = (int) spinner.getValue();
-                    }
-                });
-
-                input.add(spinner);
-            }
+                    pair.value = (Integer)((JSpinner) e.getSource()).getValue();
+                }
+            });
         }
         return input;
     }
@@ -172,28 +186,16 @@ public class InitParamsDialog extends JDialog
 
         JPanel input = new JPanel();
         {
-            input.add(new JLabel(pair.name + ":   "));
+            createSpinner(pair.name + ":   ", input, 100, getSpinnerNumberModel(pair)).addChangeListener(new ChangeListener()
             {
-                JSpinner spinner = createSpinner(100, GET_SPINNER_POSITIVE_DOUBLE());
-
-                // http://stackoverflow.com/a/7587253
-                JComponent comp = spinner.getEditor();
-                JFormattedTextField field = (JFormattedTextField) comp.getComponent(0);
-                field.setPreferredSize(new Dimension(100, field.getPreferredSize().height));
-                DefaultFormatter formatter = (DefaultFormatter) field.getFormatter();
-                formatter.setCommitsOnValidEdit(true);
-                spinner.addChangeListener(new ChangeListener()
+                @Override
+                public void stateChanged(ChangeEvent e)
                 {
-                    @Override
-                    public void stateChanged(ChangeEvent e)
-                    {
-                        pair.value = (double) spinner.getValue();
-                    }
-                });
-
-                input.add(spinner);
-            }
+                    pair.value = (Double) ((JSpinner) e.getSource()).getValue();
+                }
+            });
         }
+
         return input;
     }
 
@@ -206,7 +208,8 @@ public class InitParamsDialog extends JDialog
 
         setTitle(title);
 
-        setBounds(100, 100, 450, 150);
+        setBounds(100, 100, 500, 75 + inputTypes.size() * 40);
+        setLocationRelativeTo(null);
         getContentPane().setLayout(new BorderLayout());
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
@@ -246,26 +249,26 @@ public class InitParamsDialog extends JDialog
             }
         }
 
-        for (Pair<?> pair : inputTypes)
+        for (Pair pair : inputTypes)
         {
-            if (pair.valueClass == Vertex2D.class)
+            switch (pair.pairDataType)
             {
-                contentPanel.add(createVertex2DInput((Pair<Vertex2D>) pair));
+            case INTEGER:
+                contentPanel.add(createIntegerInput(pair));
+                break;
+
+            case DOUBLE:
+                contentPanel.add(createDoubleInput(pair));
+                break;
+
+            case VERTEX2D:
+                contentPanel.add(createVertex2DInput(pair));
+                break;
+
+            default:
+                System.out.println("Error: Wrong type!!");
+                break;
             }
-            else
-                if (pair.valueClass == Double.class)
-                {
-                    contentPanel.add(createDoubleInput((Pair<Double>) pair));
-                }
-                else
-                    if (pair.valueClass == Integer.class)
-                    {
-                        contentPanel.add(createIntegerInput((Pair<Integer>) pair));
-                    }
-                    else
-                    {
-                        System.out.println("Error: Wrong type!!");
-                    }
         }
 
         me.setModal(true);
