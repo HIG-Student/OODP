@@ -136,9 +136,6 @@ public class GUI
             @Override
             public void paint(Graphics g)
             {                
-                g.setColor(Color.BLACK);
-                g.fillOval(10, 10, 100, 100);
-                
                 for (Shape shape : shapeControl.getShapes())
                 {
                     System.out.println("Paint: " + shape);
