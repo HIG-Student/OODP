@@ -1,5 +1,6 @@
 package se.hig.oodp.b9.data;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 import se.hig.oodp.Vertex2D;
@@ -7,7 +8,7 @@ import se.hig.oodp.Vertex2D;
 /**
  * Generic class for shapes
  */
-public abstract class Shape implements Drawable
+public abstract class Shape implements Drawable, Serializable
 {
     /**
      * The nodes that the shape is built with

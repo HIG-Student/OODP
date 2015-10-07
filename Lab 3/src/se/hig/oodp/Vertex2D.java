@@ -1,5 +1,7 @@
 package se.hig.oodp;
 
+import java.io.Serializable;
+
 /**
  * Class for modeling vertices. A vertex represents a position in the cartesian
  * 2D-space. It is an abstract concept and cannot be visualized.
@@ -7,7 +9,7 @@ package se.hig.oodp;
  * @author Peter Jenke, Peter.Jenke@hig.se
  * @version 2015-04-15
  */
-public class Vertex2D
+public class Vertex2D implements Serializable // ndi14vhp: made serializable
 {
     private double x;
     private double y;
