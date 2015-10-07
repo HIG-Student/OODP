@@ -142,6 +142,29 @@ public class ShapeControl implements FigureHandler , FigureMover , FigurePrinter
         scalableShapes.add(ellipse);
         onChange();
     }
+    
+    /**
+     * Creates a ellipse
+     * 
+     * @param x
+     *            x-coordinate
+     * @param y
+     *            y-coordinate
+     * @param width
+     *            width
+     * @param height
+     *            height
+     * @param rotation
+     *            rotation
+     */
+    public void createEllipse(double x, double y, double width, double height, double rotation)
+    {
+        Ellipse ellipse = new Ellipse(new Vertex2D(x, y), width, height, rotation);
+        shapes.add(ellipse);
+        rotatableShapes.add(ellipse);
+        scalableShapes.add(ellipse);
+        onChange();
+    }
 
     /**
      * Creates a line
@@ -202,6 +225,29 @@ public class ShapeControl implements FigureHandler , FigureMover , FigurePrinter
         scalableShapes.add(rectangle);
         onChange();
     }
+    
+    /**
+     * Creates a rectangle
+     * 
+     * @param x
+     *            x-coordinate
+     * @param y
+     *            y-coordinate
+     * @param width
+     *            width
+     * @param height
+     *            height
+     * @param rotation
+     *            rotation
+     */
+    public void createRectangle(double x, double y, double width, double height,double rotation)
+    {
+        Rectangle rectangle = new Rectangle(new Vertex2D(x, y), width, height, rotation);
+        shapes.add(rectangle);
+        rotatableShapes.add(rectangle);
+        scalableShapes.add(rectangle);
+        onChange();
+    }
 
     /**
      * Creates a square
@@ -221,6 +267,31 @@ public class ShapeControl implements FigureHandler , FigureMover , FigurePrinter
     public void createSquare(double x, double y, double a)
     {
         Square square = new Square(new Vertex2D(x, y), a);
+        shapes.add(square);
+        rotatableShapes.add(square);
+        scalableShapes.add(square);
+        onChange();
+    }
+    
+    /**
+     * Creates a square
+     * 
+     * @param x
+     *            x-coordinate
+     * @param y
+     *            y-coordinate
+     * @param a
+     *            width
+     * @param size
+     *            size
+     * @param rotation
+     *            rotation
+     * @throws Exception
+     *             thrown if not a square
+     */
+    public void createSquare(double x, double y, double size, double rotation)
+    {
+        Square square = new Square(new Vertex2D(x, y), size,rotation);
         shapes.add(square);
         rotatableShapes.add(square);
         scalableShapes.add(square);
@@ -265,5 +336,5 @@ public class ShapeControl implements FigureHandler , FigureMover , FigurePrinter
         onChange();
     }
     
-    public void onChange() { } ;
+    public void onChange() { }
 }
