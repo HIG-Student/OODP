@@ -1,5 +1,6 @@
 package se.hig.oodp.b9.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +19,7 @@ import se.hig.oodp.b9.data.Triangle;
 /**
  * Class for controlling a set of shapes
  */
-public class ShapeControl implements FigureHandler , FigureMover , FigurePrinter , FigureRotor , FigureScalor
+public class ShapeControl implements FigureHandler , FigureMover , FigurePrinter , FigureRotor , FigureScalor , Serializable
 {
     /**
      * The shapes this control controls
@@ -43,6 +44,49 @@ public class ShapeControl implements FigureHandler , FigureMover , FigurePrinter
     public Shape[] getShapes()
     {
         return shapes.toArray(new Shape[0]);
+    }
+    
+    /**
+     * Gets the rotatable shapes controlled by this control
+     * 
+     * @return the rotatable shapes
+     */
+    public Shape[] getRotatableShapes()
+    {
+        return rotatableShapes.toArray(new Shape[0]);
+    }
+    
+    /**
+     * Gets the scalable shapes controlled by this control
+     * 
+     * @return the scalable shapes
+     */
+    public Shape[] getScalableShapes()
+    {
+        return scalableShapes.toArray(new Shape[0]);
+    }
+    
+    /**
+     * Loads the shapes into this control
+     * 
+     * @param shapes
+     *            the shapes to add
+     */
+    public void loadShapes(Shape[] shapes)
+    {
+        for(Shape s : shapes)
+        {
+            if(!this.shapes.contains(s))
+            {
+                this.shapes.add(s);
+                
+                if(s instanceof Scalable)
+                    this.scalableShapes.add((Scalable)s);
+                
+                if(s instanceof Rotatable)
+                    this.rotatableShapes.add((Rotatable)s);
+            }
+        }
     }
 
     /**
