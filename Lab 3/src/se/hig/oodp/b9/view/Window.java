@@ -70,78 +70,13 @@ public class Window extends JFrame
         });
     }
 
-    public void showLoadShapesDialog()
-    {
-        try
-        {
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setDialogTitle("Load shapes");
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("Shapes list", "shp");
-            fileChooser.setFileFilter(filter);
-            fileChooser.addChoosableFileFilter(filter);
-            fileChooser.setFileHidingEnabled(false);
-
-            if (fileChooser.showOpenDialog(contentPane.getParent()) == JFileChooser.APPROVE_OPTION)
-            {
-                File fileToLoad = fileChooser.getSelectedFile();
-                if (!fileToLoad.exists() && !fileToLoad.getName().endsWith(".shp"))
-                {
-                    JOptionPane.showMessageDialog(contentPane.getParent(), "You have to load an .shp file!", "Wrong file type!", JOptionPane.WARNING_MESSAGE);
-                }
-                else
-                {
-                    loadShapes(fileToLoad);
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            JOptionPane.showMessageDialog(contentPane.getParent(), "Error while loading file!\n\n" + e.getMessage(), "Error on loading!", JOptionPane.WARNING_MESSAGE);
-        }
-    }
-
-    public void loadShapes(File fileToLoad) throws Exception
-    {
-        FileInputStream fileIn = new FileInputStream(fileToLoad);
-        ObjectInputStream in = new ObjectInputStream(fileIn);
-        Shape[] newShapes = (Shape[]) in.readObject();
-        in.close();
-        fileIn.close();
-        shapeControl.loadShapes(newShapes);
-    }
-
-    public void showSaveShapesDialog()
-    {
-        try
-        {
-            File file = saveFileDialog("Save shapes", "shp");
-            saveShapes(file);
-        }
-        catch (Exception e)
-        {
-            JOptionPane.showMessageDialog(contentPane.getParent(), "Error on saving!\n\n" + e.getMessage(), "Error!", JOptionPane.WARNING_MESSAGE);
-        }
-    }
-
-    public void saveShapes(File file) throws Exception
-    {
-        // http://www.tutorialspoint.com/java/java_serialization.htm
-
-        if (file == null)
-            throw new Exception("No file chosen");
-        file.createNewFile();
-        FileOutputStream fileOut = new FileOutputStream(file);
-        ObjectOutputStream out = new ObjectOutputStream(fileOut);
-        out.writeObject(shapeControl.getShapes());
-        out.close();
-        fileOut.close();
-    }
-
     /**
      * Create the frame.
      */
     public Window()
     {
+        Window me = this;
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 800, 800);
         setLocationRelativeTo(null);
@@ -221,7 +156,7 @@ public class Window extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                showLoadShapesDialog();
+                ShapeIO.showLoadShapesDialog(me, shapeControl);
             }
         });
         mnFile.add(mntmLoad);
@@ -231,7 +166,7 @@ public class Window extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                showSaveShapesDialog();
+                ShapeIO.showSaveShapesDialog(me, shapeControl);
             }
         });
         mnFile.add(mntmSave);
@@ -251,7 +186,7 @@ public class Window extends JFrame
 
                 try
                 {
-                    File file = saveFileDialog("Export to image", "png");
+                    File file = ShapeIO.saveFileDialog(me, "Export to image", "png");
                     ImageIO.write(bi, "png", file);
                 }
                 catch (Exception exception)
@@ -435,11 +370,11 @@ public class Window extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-            	StringJoiner joiner = new StringJoiner("\n");
-            	for(Shape s : shapeControl.getShapes())
-            		joiner.add(s.toString());
-            	new TextPopUp("Printout",joiner.toString());
-            
+                StringJoiner joiner = new StringJoiner("\n");
+                for (Shape s : shapeControl.getShapes())
+                    joiner.add(s.toString());
+                new TextPopUp("Printout", joiner.toString());
+
             }
         });
         mnAction.add(mntmPrintAll);
@@ -521,7 +456,7 @@ public class Window extends JFrame
 
             try
             {
-                saveShapes(new File("H:/test.shp"));
+                ShapeIO.saveShapes(new File("H:/test.shp"), shapeControl);
             }
             catch (Exception e1)
             {
@@ -534,7 +469,7 @@ public class Window extends JFrame
         {
             try
             {
-                loadShapes(new File("H:/test.shp"));
+                ShapeIO.loadShapes(new File("H:/test.shp"), shapeControl);
             }
             catch (Exception e1)
             {
@@ -542,36 +477,5 @@ public class Window extends JFrame
                 e1.printStackTrace();
             }
         }
-    }
-
-    private File saveFileDialog(String title, String fileEnding) throws Exception
-    {
-        // http://www.codejava.net/java-se/swing/show-save-file-dialog-using-jfilechooser
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle(title);
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(fileEnding, fileEnding);
-        fileChooser.setFileFilter(filter);
-        fileChooser.addChoosableFileFilter(filter);
-
-        if (fileChooser.showSaveDialog(contentPane.getParent()) == JFileChooser.APPROVE_OPTION)
-        {
-            File fileToSave = fileChooser.getSelectedFile();
-            if (fileToSave.exists() && !fileToSave.getName().endsWith("." + fileEnding))
-            {
-                throw new Exception("You have to save as ." + fileEnding + " !");
-            }
-            else
-            {
-                String fileName = fileToSave.getAbsolutePath();
-                if (!fileName.endsWith("." + fileEnding))
-                    fileName = fileName + "." + fileEnding;
-
-                fileToSave = new File(fileName);
-                fileToSave.createNewFile();
-                return fileToSave;
-            }
-        }
-        else
-            return null;
     }
 }
