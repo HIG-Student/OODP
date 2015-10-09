@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.print.attribute.standard.NumberUpSupported;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -40,81 +41,30 @@ public class InitParamsDialog extends JDialog
     {
         try
         {
-            ArrayList<Pair<?>> arr = new ArrayList<>();
+            ArrayList<PairField<? extends Number>> arr = new ArrayList<>();
 
-            Pair<Vertex2D> center = new Pair<Vertex2D>("Center", Pair.PairDataTypes.VERTEX2D);
+            PairField<Integer> center = new PairField<Integer>("Center", new Pair<Integer>("x"), new Pair<Integer>("y"));
             arr.add(center);
 
-            Pair<Integer> size = new Pair<Integer>("Size", Pair.PairDataTypes.INTEGER, Pair.PairConstraintTypes.POSITIVE);
+            PairField<Integer> size = new PairField<Integer>("Size", new Pair<Integer>(null, 1, Integer.MAX_VALUE, 1, 1));
             arr.add(size);
 
-            InitParamsDialog dialog = new InitParamsDialog("Create circle", arr);
+            PairField<Integer> rotation = new PairField<Integer>("Rotation", new Pair<Integer>());
+            arr.add(rotation);
 
-            System.out.println("The size is: " + size.value);
+            PairField<Double> dbl = new PairField<Double>("Scale", new Pair<Double>(null, 1d, (double) Integer.MAX_VALUE, 0.001, 0.1));
+            arr.add(dbl);
+
+            InitParamsDialog dialog = new InitParamsDialog("Create mojs", arr);
+
+            System.out.println("The size is: " + center.pairs[0].value);
+
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
     }
-
-    private SpinnerNumberModel getSpinnerNumberModel(Pair<?> pair)
-    {
-        Number value = 0;
-        Number min = 0;
-        Number max = 0;
-        Number step = 0;
-
-        switch (pair.pairDataType)
-        {
-
-        case VERTEX2D:
-        case INTEGER:
-            max = Integer.MAX_VALUE;
-            min = Integer.MIN_VALUE;
-            step = 1;
-            break;
-
-        case DOUBLE:
-            max = Double.MAX_VALUE;
-            min = Double.MIN_VALUE;
-            step = 0.1d;
-            break;
-
-        default:
-            System.out.println("Wrong type!");
-            return null;
-        }
-
-        switch (pair.pairConstraintType)
-        {
-
-        case POSITIVE_NOT_ZERO:
-            min = 0;
-            value = 0;
-            break;
-        case POSITIVE:
-            min = 1;
-            value = 1;
-            break;
-
-        }
-
-        switch (pair.pairDataType)
-        {
-
-        case VERTEX2D:
-        case INTEGER:
-            return new SpinnerNumberModel(value.intValue(),  min.intValue(), max.intValue(), step.intValue());
-
-        case DOUBLE:
-            return new SpinnerNumberModel(value.doubleValue(), min.doubleValue(), max.doubleValue(), step.doubleValue());
-
-        default:
-            System.out.println("Wrong type!");
-            return null;
-        }
-    };
 
     private JSpinner createSpinner(String title, JPanel parent, double width, SpinnerNumberModel model)
     {
@@ -127,73 +77,32 @@ public class InitParamsDialog extends JDialog
         DefaultFormatter formatter = (DefaultFormatter) field.getFormatter();
         formatter.setCommitsOnValidEdit(true);
 
-        parent.add(new JLabel(title));
+        if (title != null && title != "")
+            parent.add(new JLabel(title + ": "));
         parent.add(spinner);
 
         return spinner;
     }
 
-    private JPanel createVertex2DInput(Pair<Vertex2D> pair)
+    private <T extends Number> JPanel createNumberInput(PairField<T> pairs)
     {
-        pair.value = new Vertex2D(0, 0);
-
         JPanel input = new JPanel();
         {
-            input.add(new JLabel(pair.name + ":   "));
+            input.add(new JLabel(pairs.name + ":   "));
 
-            createSpinner("x", input, 100, getSpinnerNumberModel(pair)).addChangeListener(new ChangeListener()
+            for (Pair<T> pair : pairs.pairs)
             {
-                @Override
-                public void stateChanged(ChangeEvent e)
+                JSpinner spinner = createSpinner(pair.name, input, 100, new SpinnerNumberModel((Number) pair.start, (Comparable<T>) pair.min, (Comparable<T>) pair.max, (Number) pair.step));
+                spinner.addChangeListener(new ChangeListener()
                 {
-                    pair.value = new Vertex2D((int) ((JSpinner) e.getSource()).getValue(), ((Vertex2D) pair.value).getY());
-                }
-            });
-
-            createSpinner("y", input, 100, getSpinnerNumberModel(pair)).addChangeListener(new ChangeListener()
-            {
-                @Override
-                public void stateChanged(ChangeEvent e)
-                {
-                    pair.value = new Vertex2D(((Vertex2D) pair.value).getX(), (int) ((JSpinner) e.getSource()).getValue());
-                }
-            });
-        }
-        return input;
-    }
-
-    private JPanel createIntegerInput(Pair<Integer> pair)
-    {
-        pair.value = 0;
-
-        JPanel input = new JPanel();
-        {
-            createSpinner(pair.name + ":   ", input, 100, getSpinnerNumberModel(pair)).addChangeListener(new ChangeListener()
-            {
-                @Override
-                public void stateChanged(ChangeEvent e)
-                {
-                    pair.value = (Integer)((JSpinner) e.getSource()).getValue();
-                }
-            });
-        }
-        return input;
-    }
-
-    private JPanel createDoubleInput(Pair<Double> pair)
-    {
-        pair.value = 0d;
-
-        JPanel input = new JPanel();
-        {
-            createSpinner(pair.name + ":   ", input, 100, getSpinnerNumberModel(pair)).addChangeListener(new ChangeListener()
-            {
-                @Override
-                public void stateChanged(ChangeEvent e)
-                {
-                    pair.value = (Double) ((JSpinner) e.getSource()).getValue();
-                }
-            });
+                    @Override
+                    public void stateChanged(ChangeEvent e)
+                    {
+                        pair.value = (T) ((JSpinner) e.getSource()).getValue();
+                    }
+                });
+                pair.value = (T) spinner.getValue();
+            }
         }
 
         return input;
@@ -202,7 +111,7 @@ public class InitParamsDialog extends JDialog
     /**
      * Create the dialog.
      */
-    public InitParamsDialog(String title, ArrayList<Pair<?>> inputTypes)
+    public InitParamsDialog(String title, ArrayList<PairField<? extends Number>> inputTypes)
     {
         InitParamsDialog me = this;
 
@@ -249,33 +158,18 @@ public class InitParamsDialog extends JDialog
             }
         }
 
-        for (Pair pair : inputTypes)
+        for (PairField<? extends Number> pairField : inputTypes)
         {
-            switch (pair.pairDataType)
-            {
-            case INTEGER:
-                contentPanel.add(createIntegerInput(pair));
-                break;
-
-            case DOUBLE:
-                contentPanel.add(createDoubleInput(pair));
-                break;
-
-            case VERTEX2D:
-                contentPanel.add(createVertex2DInput(pair));
-                break;
-
-            default:
-                System.out.println("Error: Wrong type!!");
-                break;
-            }
+            contentPanel.add(createNumberInput(pairField));
         }
+
+        me.pack();
 
         me.setModal(true);
         me.setVisible(true);
     }
 
-    public static boolean showDialog(String title, ArrayList<Pair<?>> input)
+    public static boolean showDialog(String title, ArrayList<PairField<? extends Number>> input)
     {
         InitParamsDialog dialog = new InitParamsDialog(title, input);
         return dialog.wasOk;

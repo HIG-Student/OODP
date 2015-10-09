@@ -3,33 +3,40 @@
  */
 package se.hig.oodp.b9.view;
 
-public class Pair<T>
+public class Pair<T extends Number>
 {
-    public enum PairDataTypes
+    public Pair()
     {
-        INTEGER, DOUBLE, VERTEX2D
+        this.name = "";
+        this.start = 0;
+        this.min = Integer.MIN_VALUE;
+        this.max = Integer.MAX_VALUE;
+        this.step = 1;
     }
-
-    public enum PairConstraintTypes
-    {
-        NONE, POSITIVE, POSITIVE_NOT_ZERO
-    }
-
-    public Pair(String name, PairDataTypes pairDataType)
+    
+    public Pair(String name)
     {
         this.name = name;
-        this.pairDataType = pairDataType;
+        this.start = 0;
+        this.min = Integer.MIN_VALUE;
+        this.max = Integer.MAX_VALUE;
+        this.step = 1;
     }
-
-    public Pair(String name, PairDataTypes pairDataType, PairConstraintTypes pairConstraintType)
+    
+    public Pair(String name, T start, T max, T min, T step)
     {
         this.name = name;
-        this.pairDataType = pairDataType;
-        this.pairConstraintType = pairConstraintType;
+        this.start = start;
+        this.min = min;
+        this.max = max;
+        this.step = step;
     }
 
     public String name;
-    public PairDataTypes pairDataType;
-    public PairConstraintTypes pairConstraintType = PairConstraintTypes.NONE;
     public T value;
+
+    public Number start;
+    public Number max;
+    public Number min;
+    public Number step;
 }
