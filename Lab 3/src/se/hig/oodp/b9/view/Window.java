@@ -16,9 +16,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -35,11 +33,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import se.hig.oodp.Vertex2D;
-import se.hig.oodp.b9.data.PolyShape;
 import se.hig.oodp.b9.data.Shape;
 import se.hig.oodp.b9.model.PrimitivesPainter;
 import se.hig.oodp.b9.model.ShapeControl;
-import se.hig.oodp.b9.view.Pair.PairConstraintTypes;
 
 public class Window extends JFrame
 {
@@ -274,14 +270,14 @@ public class Window extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                ArrayList<Pair<?>> arr = new ArrayList<>();
+                ArrayList<PairField<? extends Number>> arr = new ArrayList<>();
 
-                Pair<Vertex2D> center = new Pair<Vertex2D>("Center", Pair.PairDataTypes.VERTEX2D);
+                PairField<Integer> center = new PairField<Integer>("Center", new Pair<Integer>("x"), new Pair<Integer>("y"));
                 arr.add(center);
 
                 if (InitParamsDialog.showDialog("Create point", arr))
                 {
-                    shapeControl.createPoint(center.value.getX(), center.value.getY());
+                    shapeControl.createPoint(center.get(), center.get());
                 }
             }
         });
@@ -292,17 +288,17 @@ public class Window extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                ArrayList<Pair<?>> arr = new ArrayList<>();
+                ArrayList<PairField<? extends Number>> arr = new ArrayList<>();
 
-                Pair<Vertex2D> nodeA = new Pair<Vertex2D>("Node A", Pair.PairDataTypes.VERTEX2D);
+                PairField<Integer> nodeA = new PairField<Integer>("Node A", new Pair<Integer>("x"), new Pair<Integer>("y"));
                 arr.add(nodeA);
 
-                Pair<Vertex2D> nodeB = new Pair<Vertex2D>("Node B", Pair.PairDataTypes.VERTEX2D);
+                PairField<Integer> nodeB = new PairField<Integer>("Node B", new Pair<Integer>("x"), new Pair<Integer>("y"));
                 arr.add(nodeB);
 
                 if (InitParamsDialog.showDialog("Create line", arr))
                 {
-                    shapeControl.createLine(nodeA.value.getX(), nodeA.value.getY(), nodeB.value.getX(), nodeB.value.getY());
+                    shapeControl.createLine(nodeA.get(), nodeA.get(), nodeB.get(), nodeB.get());
                 }
             }
         });
@@ -313,20 +309,20 @@ public class Window extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                ArrayList<Pair<?>> arr = new ArrayList<>();
+                ArrayList<PairField<? extends Number>> arr = new ArrayList<>();
 
-                Pair<Vertex2D> nodeA = new Pair<Vertex2D>("Node A", Pair.PairDataTypes.VERTEX2D);
+                PairField<Integer> nodeA = new PairField<Integer>("Node A", new Pair<Integer>("x"), new Pair<Integer>("y"));
                 arr.add(nodeA);
 
-                Pair<Vertex2D> nodeB = new Pair<Vertex2D>("Node B", Pair.PairDataTypes.VERTEX2D);
+                PairField<Integer> nodeB = new PairField<Integer>("Node B", new Pair<Integer>("x"), new Pair<Integer>("y"));
                 arr.add(nodeB);
 
-                Pair<Vertex2D> nodeC = new Pair<Vertex2D>("Node C", Pair.PairDataTypes.VERTEX2D);
+                PairField<Integer> nodeC = new PairField<Integer>("Node C", new Pair<Integer>("x"), new Pair<Integer>("y"));
                 arr.add(nodeC);
 
                 if (InitParamsDialog.showDialog("Create triangle", arr))
                 {
-                    shapeControl.createTriangle(nodeA.value.getX(), nodeA.value.getY(), nodeB.value.getX(), nodeB.value.getY(), nodeC.value.getX(), nodeC.value.getY());
+                    shapeControl.createTriangle(nodeA.get(), nodeA.get(), nodeB.get(), nodeB.get(), nodeC.get(), nodeC.get());
                 }
             }
         });
@@ -337,23 +333,23 @@ public class Window extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                ArrayList<Pair<?>> arr = new ArrayList<>();
+                ArrayList<PairField<? extends Number>> arr = new ArrayList<>();
 
-                Pair<Vertex2D> center = new Pair<Vertex2D>("Center", Pair.PairDataTypes.VERTEX2D);
+                PairField<Integer> center = new PairField<Integer>("Center", new Pair<Integer>("x"), new Pair<Integer>("y"));
                 arr.add(center);
 
-                Pair<Integer> width = new Pair<Integer>("Width", Pair.PairDataTypes.INTEGER, PairConstraintTypes.POSITIVE_NOT_ZERO);
+                PairField<Integer> width = new PairField<Integer>("Width", new Pair<Integer>(null, 1, Integer.MAX_VALUE, 1, 1));
                 arr.add(width);
 
-                Pair<Integer> height = new Pair<Integer>("Height", Pair.PairDataTypes.INTEGER, PairConstraintTypes.POSITIVE_NOT_ZERO);
+                PairField<Integer> height = new PairField<Integer>("Height", new Pair<Integer>(null, 1, Integer.MAX_VALUE, 1, 1));
                 arr.add(height);
 
-                Pair<Integer> rotation = new Pair<Integer>("Rotation", Pair.PairDataTypes.INTEGER, PairConstraintTypes.POSITIVE_NOT_ZERO);
+                PairField<Integer> rotation = new PairField<Integer>("Rotation", new Pair<Integer>(null, 0, Integer.MAX_VALUE, Integer.MIN_VALUE, 1));
                 arr.add(rotation);
 
                 if (InitParamsDialog.showDialog("Create rectangle", arr))
                 {
-                    shapeControl.createRectangle(center.value.getX(), center.value.getY(), width.value, height.value, rotation.value);
+                    shapeControl.createRectangle(center.get(), center.get(), width.get(), height.get(), rotation.get());
                 }
             }
         });
@@ -364,20 +360,20 @@ public class Window extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                ArrayList<Pair<?>> arr = new ArrayList<>();
+                ArrayList<PairField<? extends Number>> arr = new ArrayList<>();
 
-                Pair<Vertex2D> center = new Pair<Vertex2D>("Center", Pair.PairDataTypes.VERTEX2D);
+                PairField<Integer> center = new PairField<Integer>("Center", new Pair<Integer>("x"), new Pair<Integer>("y"));
                 arr.add(center);
 
-                Pair<Integer> size = new Pair<Integer>("Size", Pair.PairDataTypes.INTEGER, PairConstraintTypes.POSITIVE_NOT_ZERO);
+                PairField<Integer> size = new PairField<Integer>("Size", new Pair<Integer>(null, 1, Integer.MAX_VALUE, 1, 1));
                 arr.add(size);
 
-                Pair<Integer> rotation = new Pair<Integer>("Rotation", Pair.PairDataTypes.INTEGER, PairConstraintTypes.POSITIVE_NOT_ZERO);
+                PairField<Integer> rotation = new PairField<Integer>("Rotation", new Pair<Integer>(null, 0, Integer.MAX_VALUE, Integer.MIN_VALUE, 1));
                 arr.add(rotation);
 
                 if (InitParamsDialog.showDialog("Create square", arr))
                 {
-                    shapeControl.createSquare(center.value.getX(), center.value.getY(), size.value, rotation.value);
+                    shapeControl.createSquare(center.get(), center.get(), size.get(), rotation.get());
                 }
             }
         });
@@ -388,23 +384,23 @@ public class Window extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                ArrayList<Pair<?>> arr = new ArrayList<>();
+                ArrayList<PairField<? extends Number>> arr = new ArrayList<>();
 
-                Pair<Vertex2D> center = new Pair<Vertex2D>("Center", Pair.PairDataTypes.VERTEX2D);
+                PairField<Integer> center = new PairField<Integer>("Center", new Pair<Integer>("x"), new Pair<Integer>("y"));
                 arr.add(center);
 
-                Pair<Integer> width = new Pair<Integer>("Width", Pair.PairDataTypes.INTEGER, PairConstraintTypes.POSITIVE_NOT_ZERO);
+                PairField<Integer> width = new PairField<Integer>("Width", new Pair<Integer>(null, 1, Integer.MAX_VALUE, 1, 1));
                 arr.add(width);
 
-                Pair<Integer> height = new Pair<Integer>("Height", Pair.PairDataTypes.INTEGER, PairConstraintTypes.POSITIVE_NOT_ZERO);
+                PairField<Integer> height = new PairField<Integer>("Height", new Pair<Integer>(null, 1, Integer.MAX_VALUE, 1, 1));
                 arr.add(height);
 
-                Pair<Integer> rotation = new Pair<Integer>("Rotation", Pair.PairDataTypes.INTEGER, PairConstraintTypes.POSITIVE_NOT_ZERO);
+                PairField<Integer> rotation = new PairField<Integer>("Rotation", new Pair<Integer>(null, 0, Integer.MAX_VALUE, Integer.MIN_VALUE, 1));
                 arr.add(rotation);
 
                 if (InitParamsDialog.showDialog("Create ellipse", arr))
                 {
-                    shapeControl.createEllipse(center.value.getX(), center.value.getY(), width.value, height.value, rotation.value);
+                    shapeControl.createEllipse(center.get(), center.get(), width.get(), height.get(), rotation.get());
                 }
             }
         });
@@ -415,17 +411,17 @@ public class Window extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                ArrayList<Pair<?>> arr = new ArrayList<>();
+                ArrayList<PairField<? extends Number>> arr = new ArrayList<>();
 
-                Pair<Vertex2D> center = new Pair<Vertex2D>("Center", Pair.PairDataTypes.VERTEX2D);
+                PairField<Integer> center = new PairField<Integer>("Center", new Pair<Integer>("x"), new Pair<Integer>("y"));
                 arr.add(center);
 
-                Pair<Integer> size = new Pair<Integer>("Size", Pair.PairDataTypes.INTEGER, Pair.PairConstraintTypes.POSITIVE_NOT_ZERO);
+                PairField<Integer> size = new PairField<Integer>("Size", new Pair<Integer>(null, 1, Integer.MAX_VALUE, 1, 1));
                 arr.add(size);
 
                 if (InitParamsDialog.showDialog("Create circle", arr))
                 {
-                    shapeControl.createCircle(center.value.getX(), center.value.getY(), size.value);
+                    shapeControl.createCircle(center.get(), center.get(), size.get());
                 }
             }
         });
@@ -442,14 +438,14 @@ public class Window extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                ArrayList<Pair<?>> arr = new ArrayList<>();
+                ArrayList<PairField<? extends Number>> arr = new ArrayList<>();
 
-                Pair<Vertex2D> center = new Pair<Vertex2D>("Offset", Pair.PairDataTypes.VERTEX2D);
+                PairField<Integer> center = new PairField<Integer>("Offset", new Pair<Integer>("x"), new Pair<Integer>("y"));
                 arr.add(center);
 
                 if (InitParamsDialog.showDialog("Move all", arr))
                 {
-                    shapeControl.moveAll(center.value.getX(), center.value.getY());
+                    shapeControl.moveAll(center.get(), center.get());
                 }
             }
         });
@@ -460,17 +456,15 @@ public class Window extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                ArrayList<Pair<?>> arr = new ArrayList<>();
+                ArrayList<PairField<? extends Number>> arr = new ArrayList<>();
 
-                Pair<Double> scaleX = new Pair<Double>("Offset x", Pair.PairDataTypes.DOUBLE, PairConstraintTypes.POSITIVE_NOT_ZERO);
-                arr.add(scaleX);
-
-                Pair<Double> scaleY = new Pair<Double>("Offset y", Pair.PairDataTypes.DOUBLE, PairConstraintTypes.POSITIVE_NOT_ZERO);
-                arr.add(scaleY);
+                PairField<Double> scale = new PairField<Double>("Scale", new Pair<Double>(null, 1d, (double) Integer.MAX_VALUE, 0.001, 0.1));
+                arr.add(scale);
 
                 if (InitParamsDialog.showDialog("Scale all", arr))
                 {
-                    shapeControl.scaleAll(scaleX.value, scaleY.value);
+                    double factor = scale.get();
+                    shapeControl.scaleAll(factor, factor);
                 }
             }
         });
@@ -481,14 +475,14 @@ public class Window extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                ArrayList<Pair<?>> arr = new ArrayList<>();
+                ArrayList<PairField<? extends Number>> arr = new ArrayList<>();
 
-                Pair<Integer> angle = new Pair<Integer>("Angle", Pair.PairDataTypes.INTEGER);
+                PairField<Integer> angle = new PairField<Integer>("Angle", new Pair<Integer>());
                 arr.add(angle);
 
                 if (InitParamsDialog.showDialog("Rotate all", arr))
                 {
-                    shapeControl.rotateAll(angle.value);
+                    shapeControl.rotateAll(angle.get());
                 }
             }
         });
