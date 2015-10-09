@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.StringJoiner;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
@@ -431,6 +432,17 @@ public class Window extends JFrame
         menuBar.add(mnAction);
 
         JMenuItem mntmPrintAll = new JMenuItem("Print All");
+        mntmPrintAll.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+            	StringJoiner joiner = new StringJoiner("\n");
+            	for(Shape s : shapeControl.getShapes())
+            		joiner.add(s.toString());
+            	new TextPopUp("Printout",joiner.toString());
+            
+            }
+        });
         mnAction.add(mntmPrintAll);
 
         JMenuItem mntmMoveAll = new JMenuItem("Move All");
