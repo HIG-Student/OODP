@@ -3,6 +3,7 @@ package se.hig.oodp.b9.data;
 import se.hig.oodp.PrimitivesPainter;
 import se.hig.oodp.Vertex2D;
 
+@SuppressWarnings("serial")
 public class Point extends Shape
 {
     /**
@@ -16,7 +17,7 @@ public class Point extends Shape
     {
         super(new Vertex2D[] { position });
     }
-    
+
     @Override
     public void draw(PrimitivesPainter pp)
     {

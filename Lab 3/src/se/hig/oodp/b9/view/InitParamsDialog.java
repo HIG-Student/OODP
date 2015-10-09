@@ -52,6 +52,7 @@ public class InitParamsDialog extends JDialog
             PairField<Double> dbl = new PairField<Double>("Scale", new Pair<Double>(null, 1d, (double) Integer.MAX_VALUE, 0.001, 0.1));
             arr.add(dbl);
 
+            @SuppressWarnings("unused")
             InitParamsDialog dialog = new InitParamsDialog("Create mojs", arr);
 
             System.out.println("The size is: " + center.pairs[0].value);
@@ -81,6 +82,7 @@ public class InitParamsDialog extends JDialog
         return spinner;
     }
 
+    @SuppressWarnings("unchecked")
     private <T extends Number> JPanel createNumberInput(PairField<T> pairs)
     {
         JPanel input = new JPanel();

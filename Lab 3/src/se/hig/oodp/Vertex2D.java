@@ -9,6 +9,7 @@ import java.io.Serializable;
  * @author Peter Jenke, Peter.Jenke@hig.se
  * @version 2015-04-15
  */
+@SuppressWarnings("serial")
 public class Vertex2D implements Serializable // ndi14vhp: made serializable
 {
     private double x;
@@ -98,9 +99,7 @@ public class Vertex2D implements Serializable // ndi14vhp: made serializable
 
         Vertex2D trans1_v = moveBy(-center.x, -center.y);
 
-        Vertex2D rot_v = new Vertex2D(trans1_v.x * Math.cos(arc_angle)
-                - trans1_v.y * Math.sin(arc_angle), trans1_v.x
-                * Math.sin(arc_angle) + trans1_v.y * Math.cos(arc_angle));
+        Vertex2D rot_v = new Vertex2D(trans1_v.x * Math.cos(arc_angle) - trans1_v.y * Math.sin(arc_angle), trans1_v.x * Math.sin(arc_angle) + trans1_v.y * Math.cos(arc_angle));
 
         return rot_v.moveBy(center.x, center.y);
     }
@@ -124,8 +123,7 @@ public class Vertex2D implements Serializable // ndi14vhp: made serializable
     {
         Vertex2D trans1_v = moveBy(-center.x, -center.y);
 
-        Vertex2D scal_v = new Vertex2D(trans1_v.x * factor_x, trans1_v.y
-                * factor_y);
+        Vertex2D scal_v = new Vertex2D(trans1_v.x * factor_x, trans1_v.y * factor_y);
 
         return scal_v.moveBy(center.x, center.y);
     }

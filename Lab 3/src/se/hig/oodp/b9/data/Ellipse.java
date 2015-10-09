@@ -1,10 +1,9 @@
 package se.hig.oodp.b9.data;
 
-import java.awt.Graphics2D;
-
 import se.hig.oodp.PrimitivesPainter;
 import se.hig.oodp.Vertex2D;
 
+@SuppressWarnings("serial")
 public class Ellipse extends Shape implements Scalable , Rotatable
 {
     /**
@@ -107,13 +106,13 @@ public class Ellipse extends Shape implements Scalable , Rotatable
     {
         return "Ellipse " + getCenter() + " ; width: " + width + " ; height: " + height + " ; rot: " + rotation;
     }
-    
+
     @Override
     public String asString()
     {
         return "Ellipse " + getCenter() + " ; width: " + width + " ; height: " + height + " ; rot: " + rotation;
     }
-    
+
     @Override
     public void draw(PrimitivesPainter pp)
     {

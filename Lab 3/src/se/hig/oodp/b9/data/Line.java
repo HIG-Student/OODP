@@ -3,6 +3,7 @@ package se.hig.oodp.b9.data;
 import se.hig.oodp.PrimitivesPainter;
 import se.hig.oodp.Vertex2D;
 
+@SuppressWarnings("serial")
 public class Line extends PolyShape
 {
     /**
@@ -18,7 +19,7 @@ public class Line extends PolyShape
     {
         super(new Vertex2D[] { pointA, pointB });
     }
-    
+
     @Override
     public void draw(PrimitivesPainter pp)
     {

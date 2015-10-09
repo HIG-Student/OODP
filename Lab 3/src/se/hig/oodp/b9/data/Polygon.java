@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import se.hig.oodp.Vertex2D;
 
+@SuppressWarnings("serial")
 public class Polygon extends PolyShape
 {
     /**

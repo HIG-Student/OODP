@@ -8,7 +8,8 @@ import se.hig.oodp.Vertex2D;
 /**
  * Generic class for shapes
  */
-public abstract class Shape implements Drawable, Serializable
+@SuppressWarnings("serial")
+public abstract class Shape implements Drawable , Serializable
 {
     /**
      * The nodes that the shape is built with
@@ -89,7 +90,7 @@ public abstract class Shape implements Drawable, Serializable
     {
         return this.getClass().getSimpleName() + " " + Arrays.toString(nodes);
     }
-    
+
     public String asString()
     {
         return this.getClass().getSimpleName() + " " + Arrays.toString(nodes);

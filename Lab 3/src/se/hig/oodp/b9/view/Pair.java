@@ -13,7 +13,7 @@ public class Pair<T extends Number>
         this.max = Integer.MAX_VALUE;
         this.step = 1;
     }
-    
+
     public Pair(String name)
     {
         this.name = name;
@@ -22,7 +22,7 @@ public class Pair<T extends Number>
         this.max = Integer.MAX_VALUE;
         this.step = 1;
     }
-    
+
     public Pair(String name, T start, T max, T min, T step)
     {
         this.name = name;

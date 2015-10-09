@@ -3,7 +3,6 @@
  */
 package se.hig.oodp;
 
-
 public interface PrimitivesPainter
 {
     public void paintPoint(Vertex2D v);

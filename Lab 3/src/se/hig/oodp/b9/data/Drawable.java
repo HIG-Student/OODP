@@ -7,5 +7,5 @@ import se.hig.oodp.PrimitivesPainter;
 
 public interface Drawable
 {
-    public void draw (PrimitivesPainter pp);
+    public void draw(PrimitivesPainter pp);
 }

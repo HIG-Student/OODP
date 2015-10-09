@@ -6,6 +6,7 @@ import se.hig.oodp.Vertex2D;
 /**
  * Generic class for shapes built with polygons
  */
+@SuppressWarnings("serial")
 public abstract class PolyShape extends Shape implements Rotatable , Scalable
 {
     /**
@@ -36,11 +37,11 @@ public abstract class PolyShape extends Shape implements Rotatable , Scalable
         for (int i = 0; i < nodes.length; i++)
             nodes[i] = nodes[i].rotate(center, angle);
     }
-    
+
     @Override
     public void draw(PrimitivesPainter pp)
     {
-        for(int i = 0; i < nodes.length;i++)
+        for (int i = 0; i < nodes.length; i++)
             pp.paintLine(nodes[i], nodes[(i + 1) % nodes.length]);
     }
 }

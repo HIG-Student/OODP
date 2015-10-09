@@ -89,7 +89,7 @@ public class Window extends JFrame
                 this.g = (Graphics2D) g;
 
                 System.out.println("DRAW!");
-                
+
                 paintAll();
             }
 
@@ -136,7 +136,7 @@ public class Window extends JFrame
             {
                 contentPane.repaint();
             }
-            
+
             @Override
             public void printAll()
             {
