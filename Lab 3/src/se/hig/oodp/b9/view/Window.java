@@ -5,11 +5,9 @@ package se.hig.oodp.b9.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dialog;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
@@ -38,6 +36,7 @@ import se.hig.oodp.b9.data.Shape;
 import se.hig.oodp.b9.model.PrimitivesPainter;
 import se.hig.oodp.b9.model.ShapeControl;
 
+@SuppressWarnings("serial")
 public class Window extends JFrame
 {
     private ShapeControl shapeControl;

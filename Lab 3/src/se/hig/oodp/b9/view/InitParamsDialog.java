@@ -4,14 +4,12 @@
 package se.hig.oodp.b9.view;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import javax.print.attribute.standard.NumberUpSupported;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -26,8 +24,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.DefaultFormatter;
 
-import se.hig.oodp.Vertex2D;
-
+@SuppressWarnings("serial")
 public class InitParamsDialog extends JDialog
 {
     private final JPanel contentPanel = new JPanel();
