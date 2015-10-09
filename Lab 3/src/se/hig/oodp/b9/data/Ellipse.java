@@ -2,8 +2,8 @@ package se.hig.oodp.b9.data;
 
 import java.awt.Graphics2D;
 
+import se.hig.oodp.PrimitivesPainter;
 import se.hig.oodp.Vertex2D;
-import se.hig.oodp.b9.model.PrimitivesPainter;
 
 public class Ellipse extends Shape implements Scalable , Rotatable
 {

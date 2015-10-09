@@ -1,7 +1,7 @@
 /**
  * 
  */
-package se.hig.oodp.b9.view;
+package se.hig.oodp;
 
 public interface FigurePainter
 {

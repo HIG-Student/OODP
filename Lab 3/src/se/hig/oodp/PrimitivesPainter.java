@@ -1,9 +1,8 @@
 /**
  * 
  */
-package se.hig.oodp.b9.model;
+package se.hig.oodp;
 
-import se.hig.oodp.Vertex2D;
 
 public interface PrimitivesPainter
 {

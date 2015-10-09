@@ -25,10 +25,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import se.hig.oodp.FigurePainter;
+import se.hig.oodp.PrimitivesPainter;
 import se.hig.oodp.Vertex2D;
 import se.hig.oodp.b9.data.Ellipse;
 import se.hig.oodp.b9.data.Shape;
-import se.hig.oodp.b9.model.PrimitivesPainter;
 import se.hig.oodp.b9.model.ShapeControl;
 
 @SuppressWarnings("serial")
