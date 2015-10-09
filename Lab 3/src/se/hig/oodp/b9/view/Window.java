@@ -13,15 +13,10 @@ import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.StringJoiner;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -29,9 +24,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import se.hig.oodp.Vertex2D;
+import se.hig.oodp.b9.data.Ellipse;
 import se.hig.oodp.b9.data.Shape;
 import se.hig.oodp.b9.model.PrimitivesPainter;
 import se.hig.oodp.b9.model.ShapeControl;
@@ -41,7 +36,7 @@ public class Window extends JFrame
 {
     private ShapeControl shapeControl;
 
-    private abstract class Canvas extends JPanel implements PrimitivesPainter
+    private abstract class Canvas extends JPanel implements PrimitivesPainter , FigurePainter
     {
 
     }
@@ -84,6 +79,7 @@ public class Window extends JFrame
         contentPane = new Canvas()
         {
             private Graphics2D g;
+            private Shape toDraw;
 
             @Override
             public void paint(Graphics g)
@@ -92,44 +88,40 @@ public class Window extends JFrame
                 this.g = (Graphics2D) g;
 
                 System.out.println("DRAW!");
-
-                for (Shape s : shapeControl.getShapes())
-                {
-                    g.setColor(Color.RED);
-                    AffineTransform transform = this.g.getTransform();
-                    s.draw(this);
-                    this.g.setTransform(transform);
-                }
+                
+                paintAll();
             }
 
             @Override
-            public void paintPolygon(Vertex2D[] nodes)
+            public void paintPoint(Vertex2D node)
             {
-                System.out.println("DRAW poly");
-
-                int[] xPoints = new int[nodes.length];
-                int[] yPoints = new int[nodes.length];
-
-                for (int i = 0; i < nodes.length; i++)
-                {
-                    xPoints[i] = (int) nodes[i].getX();
-                    yPoints[i] = (int) nodes[i].getY();
-                }
-
-                g.fillPolygon(xPoints, yPoints, nodes.length);
+                g.fillOval((int) node.getX(), (int) node.getY(), 5, 5);
             }
 
             @Override
-            public void paintEllipse(Vertex2D center, double width, double height, double rotation)
+            public void paintEllipse(Vertex2D center, double width, double height)
             {
-                g.rotate(Math.toRadians(rotation), center.getX(), center.getY());
-                g.fillOval((int) center.getX() - (int) width / 2, (int) center.getY() - (int) height / 2, (int) width, (int) height);
+                g.rotate(Math.toRadians(((Ellipse) toDraw).getRotation()), toDraw.getNodes()[0].getX(), toDraw.getNodes()[0].getY());
+                g.drawOval((int) center.getX() - (int) width / 2, (int) center.getY() - (int) height / 2, (int) width, (int) height);
             }
 
             @Override
             public void paintLine(Vertex2D a, Vertex2D b)
             {
                 g.drawLine((int) a.getX(), (int) a.getY(), (int) b.getX(), (int) b.getY());
+            }
+
+            @Override
+            public void paintAll()
+            {
+                for (Shape s : shapeControl.getShapes())
+                {
+                    toDraw = s;
+                    g.setColor(Color.RED);
+                    AffineTransform transform = this.g.getTransform();
+                    s.draw(this);
+                    this.g.setTransform(transform);
+                }
             }
         };
 
@@ -142,6 +134,15 @@ public class Window extends JFrame
             public void onChange()
             {
                 contentPane.repaint();
+            }
+            
+            @Override
+            public void printAll()
+            {
+                StringJoiner joiner = new StringJoiner("\n");
+                for (Shape s : shapeControl.getShapes())
+                    joiner.add(s.asString());
+                new TextPopUp("Printout", joiner.toString());
             }
         };
 
@@ -370,10 +371,7 @@ public class Window extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                StringJoiner joiner = new StringJoiner("\n");
-                for (Shape s : shapeControl.getShapes())
-                    joiner.add(s.toString());
-                new TextPopUp("Printout", joiner.toString());
+                shapeControl.printAll();
 
             }
         });

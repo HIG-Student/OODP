@@ -109,8 +109,14 @@ public class Ellipse extends Shape implements Scalable , Rotatable
     }
     
     @Override
+    public String asString()
+    {
+        return "Ellipse " + getCenter() + " ; width: " + width + " ; height: " + height + " ; rot: " + rotation;
+    }
+    
+    @Override
     public void draw(PrimitivesPainter pp)
     {
-        pp.paintEllipse(nodes[0], width, height, rotation);
+        pp.paintEllipse(nodes[0], width, height);
     }
 }

@@ -20,6 +20,6 @@ public class Point extends Shape
     @Override
     public void draw(PrimitivesPainter pp)
     {
-        pp.paintEllipse(nodes[0], 5, 5, 0);
+        pp.paintPoint(nodes[0]);
     }
 }

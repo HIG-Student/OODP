@@ -89,4 +89,9 @@ public abstract class Shape implements Drawable, Serializable
     {
         return this.getClass().getSimpleName() + " " + Arrays.toString(nodes);
     }
+    
+    public String asString()
+    {
+        return this.getClass().getSimpleName() + " " + Arrays.toString(nodes);
+    }
 }

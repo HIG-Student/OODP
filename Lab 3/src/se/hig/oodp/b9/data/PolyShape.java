@@ -40,6 +40,7 @@ public abstract class PolyShape extends Shape implements Rotatable , Scalable
     @Override
     public void draw(PrimitivesPainter pp)
     {
-        pp.paintPolygon(nodes);
+        for(int i = 0; i < nodes.length;i++)
+            pp.paintLine(nodes[i], nodes[(i + 1) % nodes.length]);
     }
 }
