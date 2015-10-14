@@ -51,12 +51,14 @@ public class ShapeIO
 
     public static void loadShapes(File fileToLoad, ShapeControl shapeControl) throws Exception
     {
-        FileInputStream fileIn = new FileInputStream(fileToLoad);
-        ObjectInputStream in = new ObjectInputStream(fileIn);
-        Shape[] newShapes = (Shape[]) in.readObject();
-        in.close();
-        fileIn.close();
-        shapeControl.loadShapes(newShapes);
+        try (FileInputStream fileIn = new FileInputStream(fileToLoad))
+        {
+            try (ObjectInputStream in = new ObjectInputStream(fileIn))
+            {
+                Shape[] newShapes = (Shape[]) in.readObject();
+                shapeControl.loadShapes(newShapes);
+            }
+        }
     }
 
     public static void showSaveShapesDialog(Component owner, ShapeControl shapeControl)
@@ -78,12 +80,15 @@ public class ShapeIO
 
         if (file == null)
             throw new Exception("No file chosen");
+
         file.createNewFile();
-        FileOutputStream fileOut = new FileOutputStream(file);
-        ObjectOutputStream out = new ObjectOutputStream(fileOut);
-        out.writeObject(shapeControl.getShapes());
-        out.close();
-        fileOut.close();
+        try (FileOutputStream fileOut = new FileOutputStream(file))
+        {
+            try (ObjectOutputStream out = new ObjectOutputStream(fileOut))
+            {
+                out.writeObject(shapeControl.getShapes());
+            }
+        }
     }
 
     public static File saveFileDialog(Component owner, String title, String fileEnding) throws Exception
