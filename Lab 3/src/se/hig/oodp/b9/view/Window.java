@@ -444,37 +444,5 @@ public class Window extends JFrame
         mnAction.add(mntmRemoveAll);
 
         setContentPane(contentPane);
-
-        if (false)
-        {
-            shapeControl.createLine(0, 0, 200, 200);
-            shapeControl.createLine(200, 0, 0, 200);
-            shapeControl.createEllipse(100, 100, 100, 20);
-
-            shapeControl.rotateAll(45);
-
-            try
-            {
-                ShapeIO.saveShapes(new File("H:/test.shp"), shapeControl);
-            }
-            catch (Exception e1)
-            {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
-
-        }
-        else
-        {
-            try
-            {
-                ShapeIO.loadShapes(new File("H:/test.shp"), shapeControl);
-            }
-            catch (Exception e1)
-            {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
-        }
     }
 }
