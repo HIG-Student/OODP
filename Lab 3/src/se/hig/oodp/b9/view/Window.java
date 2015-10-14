@@ -3,11 +3,13 @@
  */
 package se.hig.oodp.b9.view;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Paint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
@@ -39,7 +41,7 @@ public class Window extends JFrame
 
     private abstract class Canvas extends JPanel implements PrimitivesPainter , FigurePainter
     {
-
+   
     }
 
     private JPanel contentPane;
@@ -118,7 +120,8 @@ public class Window extends JFrame
                 for (Shape s : shapeControl.getShapes())
                 {
                     toDraw = s;
-                    g.setColor(Color.RED);
+                    g.setColor(Color.black);
+                    g.setStroke(new BasicStroke(3));;
                     AffineTransform transform = this.g.getTransform();
                     s.draw(this);
                     this.g.setTransform(transform);
