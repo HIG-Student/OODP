@@ -3,20 +3,21 @@
  */
 package se.hig.oodp.b9.client;
 
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 
 import javax.swing.JFrame;
 
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import com.jgoodies.forms.factories.FormFactory;
-
-import java.awt.Panel;
-
-import javax.swing.JPanel;
-
 import org.apache.batik.swing.JSVGCanvas;
+import org.apache.batik.swing.svg.GVTTreeBuilderAdapter;
+import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
+
+import se.hig.oodp.b9.Card;
+
+import java.net.URISyntaxException;
 
 /**
  * The window that will show the game board
@@ -28,10 +29,59 @@ public class GameWindow
      */
     private JFrame frame;
 
+    public static JSVGCanvas svgCanvas;
+
     /**
      * Launch the application.
+     * 
+     * @throws URISyntaxException
      */
-    public static void main(String[] args)
+    public static void main(String[] args) throws URISyntaxException
+    {
+        {
+
+        }
+
+        svgCanvas = new JSVGCanvas()
+        {
+            @Override
+            public void paint(Graphics g)
+            {
+                Graphics2D g2d = (Graphics2D) g;
+
+                Card card = new Card(Card.Type.Klöver, Card.Value.values()[(int) (System.currentTimeMillis() / 1000) % 12]);
+
+                int x = (int) (card.value.ordinal() * this.getSVGDocumentSize().getWidth() / 13);
+                int y = (int) (card.type.ordinal() * this.getSVGDocumentSize().getHeight() / 5);
+
+                System.out.println(this.getSVGDocumentSize().getWidth());
+
+                g.translate(-x, -y);
+                g.clipRect(x, y, (int) (this.getSVGDocumentSize().getWidth() / 13 + 0.5), (int) (this.getSVGDocumentSize().getHeight() / 5));
+
+                super.paint(g);
+
+                super.invalidate();
+            }
+        };
+        svgCanvas.setDoubleBufferedRendering(true);
+        svgCanvas.setDisableInteractions(true);
+
+        svgCanvas.setURI(GameWindow.class.getResource("/anglo.svg").toString());
+        svgCanvas.setSize(new Dimension(100, 100));
+
+        svgCanvas.addGVTTreeBuilderListener(new GVTTreeBuilderAdapter()
+        {
+            public void gvtBuildCompleted(GVTTreeBuilderEvent e)
+            {
+                System.out.println("Build Done.");
+                // done!
+                runGUI();
+            }
+        });
+    }
+
+    static void runGUI()
     {
         EventQueue.invokeLater(new Runnable()
         {
@@ -64,34 +114,11 @@ public class GameWindow
     private void initialize()
     {
         frame = new JFrame();
-        frame.setBounds(100, 100, 844, 559);
+        frame.setBounds(0, 0, 1000, 1000);
+        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().setLayout(new FormLayout(new ColumnSpec[] { ColumnSpec.decode("120px"), FormFactory.GLUE_COLSPEC, ColumnSpec.decode("120px"), }, new RowSpec[] { RowSpec.decode("fill:120px"), FormFactory.GLUE_ROWSPEC, RowSpec.decode("fill:120px"), }));
+        frame.getContentPane().setLayout(null);
 
-        Panel panelNorth = new Panel();
-        frame.getContentPane().add(panelNorth, "2, 1");
-
-        Panel panelWest = new Panel();
-        frame.getContentPane().add(panelWest, "1, 2");
-
-        Panel panelCenter = new Panel();
-        frame.getContentPane().add(panelCenter, "2, 2");
-        panelCenter.setLayout(null);
-
-        Panel panelEast = new Panel();
-        frame.getContentPane().add(panelEast, "3, 2");
-
-        Panel panelSouth = new Panel();
-        frame.getContentPane().add(panelSouth, "2, 3");
-
-        try
-        {
-            JSVGCanvas svgCanvas = new JSVGCanvas();
-            svgCanvas.setURI(GraphicalCard.class.getResource("/anglo.svg").toURI().toString());
-            panelSouth.add(svgCanvas);
-        }
-        catch (Exception e)
-        {
-        }
+        frame.setContentPane(svgCanvas);
     }
 }

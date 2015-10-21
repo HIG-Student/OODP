@@ -11,13 +11,13 @@ public class Card
      * A random and unique id to represent this card
      */
     public UUID id = UUID.randomUUID();
-    
+
     /**
      * The type of the card
      */
     public enum Type
     {
-        Hjärter, Klöver, Spader, Ruter
+        Klöver, Ruter, Hjärter, Spader
     }
 
     /**
@@ -51,7 +51,7 @@ public class Card
         this.type = type;
         this.value = value;
     }
-    
+
     @Override
     public String toString()
     {

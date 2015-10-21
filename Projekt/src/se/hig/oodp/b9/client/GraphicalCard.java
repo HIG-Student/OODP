@@ -1,14 +1,10 @@
 package se.hig.oodp.b9.client;
 
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URISyntaxException;
 
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-
-import org.apache.batik.swing.JSVGCanvas;
+import javax.swing.JPanel;
 
 import se.hig.oodp.b9.Card;
 
@@ -16,7 +12,7 @@ import se.hig.oodp.b9.Card;
  * A graphic representation of a card
  */
 @SuppressWarnings("serial")
-public class GraphicalCard extends JFrame
+public class GraphicalCard extends JPanel
 {
     /**
      * The card this graphical component represents
@@ -30,34 +26,25 @@ public class GraphicalCard extends JFrame
     public GraphicalCard(Card card)
     {
         this.card = card;
+        System.out.println("Creae");
+    }
+    
+    public GraphicalCard()
+    {
+        System.out.println("Creae null");
     }
     
     @Override
     public void paint(Graphics g)
     {
+        super.paint(g);
         
+        // g.drawRect(0, 0, 100, 100);
+        g.drawImage(cards, 0, 0, null);
+        //g.drawImage(GraphicalCard.cards, 0, 0, null);
+        System.out.println("draw");
     }
     
     // http://stackoverflow.com/questions/6845231/how-to-correctly-get-image-from-resources-folder-in-netbeans
-    public static BufferedImage getCardGraphic(Card card)
-    {
-        if(card == null)
-            try
-            {
-                return  ImageIO.read(GraphicalCard.class.getResource("/kortlek/hjarter_atta.png"));
-            }
-            catch (IOException e)
-            {
-                return null;
-            }
-        
-        try
-        {
-            return  ImageIO.read(GraphicalCard.class.getResource("/kortlek/hjarter_atta.png"));
-        }
-        catch (IOException e)
-        {
-            return null;
-        }
-    }
+    public static BufferedImage cards;
 }
