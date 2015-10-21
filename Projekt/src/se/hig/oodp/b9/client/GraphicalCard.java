@@ -60,13 +60,4 @@ public class GraphicalCard extends JFrame
             return null;
         }
     }
-    
-    public static void main(String[] args) throws URISyntaxException
-    {
-        System.out.println(GraphicalCard.class.getResource("/kortlek/hjarter_atta.png"));
-        JSVGCanvas svgCanvas = new JSVGCanvas();
-        svgCanvas.setURI(GraphicalCard.class.getResource("/kortlek/hjarter_atta.png").toURI().toString());
-        
-//        BufferedImage img = getCardGraphic(null);
-    }
 }
