@@ -11,6 +11,7 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 import com.jgoodies.forms.factories.FormFactory;
 import java.awt.Panel;
+import javax.swing.JPanel;
 
 /**
  * The window that will show the game board
@@ -71,6 +72,10 @@ public class GameWindow
         
         Panel panelNorth = new Panel();
         frame.getContentPane().add(panelNorth, "2, 1");
+        
+        JPanel panel = new JPanel();
+        panelNorth.add(panel);
+        panel.setLayout(null);
         
         Panel panelWest = new Panel();
         frame.getContentPane().add(panelWest, "1, 2");
