@@ -1,7 +1,12 @@
-package se.hig.oodp.b9;
+package se.hig.oodp.b9.server;
 
 import java.util.Collections;
 import java.util.Stack;
+
+import se.hig.oodp.b9.Card;
+import se.hig.oodp.b9.CardInfo;
+import se.hig.oodp.b9.CardInfo.Type;
+import se.hig.oodp.b9.CardInfo.Value;
 
 /**
  * A collection of cards
@@ -18,9 +23,9 @@ public class CardDeck
      */
     public CardDeck()
     {
-        for (Card.Type type : Card.Type.values())
-            for (Card.Value value : Card.Value.values())
-                cards.push(new Card(type, value));
+        for (CardInfo.Type type : CardInfo.Type.values())
+            for (CardInfo.Value value : CardInfo.Value.values())
+                cards.push(new Card(new CardInfo(type, value)));
     }
 
     /**

@@ -7,36 +7,32 @@ import java.util.UUID;
  */
 public class Card
 {
+    CardInfo cardInfo;
+    
+    public CardInfo getCardInfo()
+    {
+        return cardInfo;
+    }
+    
+    public void setCardInfo(CardInfo info)
+    {
+        this.cardInfo = info;
+    }
+    
     /**
      * A random and unique id to represent this card
      */
-    public UUID id = UUID.randomUUID();
-
-    /**
-     * The type of the card
-     */
-    public enum Type
+    UUID id;
+    
+    public UUID getId()
     {
-        Klöver, Ruter, Hjärter, Spader
+        return id;
     }
 
-    /**
-     * The value of the card
-     */
-    public enum Value
+    public Card(UUID id)
     {
-        Ess, Två, Tre, Fyra, Fem, Sex, Sju, Åtta, Nio, Tio, Knekt, Dam, Kung
+        this.id = id;
     }
-
-    /**
-     * The type of the card
-     */
-    public Type type;
-
-    /**
-     * The value of the card
-     */
-    public Value value;
 
     /**
      * Construct a card
@@ -46,15 +42,16 @@ public class Card
      * @param value
      *            the value of the card
      */
-    public Card(Type type, Value value)
+    public Card(CardInfo info)
     {
-        this.type = type;
-        this.value = value;
+        this.id = UUID.randomUUID();
+
+        setCardInfo(info);
     }
 
     @Override
     public String toString()
     {
-        return "Card: " + type + " " + value;
+        return "Card: " + ((cardInfo == null) ? "Unknown" : cardInfo);
     }
 }

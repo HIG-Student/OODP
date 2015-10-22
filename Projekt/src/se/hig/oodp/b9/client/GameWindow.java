@@ -3,20 +3,16 @@
  */
 package se.hig.oodp.b9.client;
 
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 
 import javax.swing.JFrame;
-
-import org.apache.batik.swing.JSVGCanvas;
-import org.apache.batik.swing.svg.GVTTreeBuilderAdapter;
-import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
+import javax.swing.JPanel;
 
 import se.hig.oodp.b9.Card;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 
 /**
@@ -29,59 +25,15 @@ public class GameWindow
      */
     private JFrame frame;
 
-    public static JSVGCanvas svgCanvas;
+    ICardPainter cardDrawer;
 
     /**
      * Launch the application.
      * 
      * @throws URISyntaxException
+     * @throws IOException
      */
-    public static void main(String[] args) throws URISyntaxException
-    {
-        {
-
-        }
-
-        svgCanvas = new JSVGCanvas()
-        {
-            @Override
-            public void paint(Graphics g)
-            {
-                Graphics2D g2d = (Graphics2D) g;
-
-                Card card = new Card(Card.Type.Klöver, Card.Value.values()[(int) (System.currentTimeMillis() / 1000) % 12]);
-
-                int x = (int) (card.value.ordinal() * this.getSVGDocumentSize().getWidth() / 13);
-                int y = (int) (card.type.ordinal() * this.getSVGDocumentSize().getHeight() / 5);
-
-                System.out.println(this.getSVGDocumentSize().getWidth());
-
-                g.translate(-x, -y);
-                g.clipRect(x, y, (int) (this.getSVGDocumentSize().getWidth() / 13 + 0.5), (int) (this.getSVGDocumentSize().getHeight() / 5));
-
-                super.paint(g);
-
-                super.invalidate();
-            }
-        };
-        svgCanvas.setDoubleBufferedRendering(true);
-        svgCanvas.setDisableInteractions(true);
-
-        svgCanvas.setURI(GameWindow.class.getResource("/anglo.svg").toString());
-        svgCanvas.setSize(new Dimension(100, 100));
-
-        svgCanvas.addGVTTreeBuilderListener(new GVTTreeBuilderAdapter()
-        {
-            public void gvtBuildCompleted(GVTTreeBuilderEvent e)
-            {
-                System.out.println("Build Done.");
-                // done!
-                runGUI();
-            }
-        });
-    }
-
-    static void runGUI()
+    public static void main(String[] args)
     {
         EventQueue.invokeLater(new Runnable()
         {
@@ -119,6 +71,23 @@ public class GameWindow
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 
-        frame.setContentPane(svgCanvas);
+        try
+        {
+            cardDrawer = new CardPainter("/cards/playingCards.png", "/cards/playingCards.xml");
+
+            frame.setContentPane(new JPanel()
+            {
+                @Override
+                public void paint(Graphics g)
+                {
+                    g.fillRect(0, 0, 100, 100);
+                    cardDrawer.drawImage((Graphics2D)g, new Card());
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            System.out.println("Can't make card drawer!");
+        }
     }
 }
