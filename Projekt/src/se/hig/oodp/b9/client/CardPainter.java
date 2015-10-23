@@ -1,5 +1,6 @@
 package se.hig.oodp.b9.client;
 
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -18,12 +19,16 @@ import se.hig.oodp.b9.Card;
 
 public class CardPainter implements ICardPainter
 {
+    Dimension size;
     Image cardSheet;
+    Image cardBack;
     HashMap<String, Rectangle> clipList = new HashMap<String, Rectangle>();
 
-    public CardPainter(String pathToCardsSheet, String pathToXML) throws Exception
+    public CardPainter(String pathToCardsSheet, String pathToXML, String pathToCardBack, Dimension size) throws Exception
     {
-        cardSheet = ImageIO.read(CardPainter.class.getResource(pathToCardsSheet)); // "/cards/playingCards.png"
+        cardSheet = ImageIO.read(CardPainter.class.getResource(pathToCardsSheet));
+
+        cardBack = ImageIO.read(CardPainter.class.getResource(pathToCardBack));
 
         // http://www.mkyong.com/java/how-to-read-xml-file-in-java-dom-parser/
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -36,8 +41,11 @@ public class CardPainter implements ICardPainter
             Node node = nList.item(i);
             clipList.put(node.getAttributes().getNamedItem("name").getNodeValue(), new Rectangle(Integer.parseInt(node.getAttributes().getNamedItem("x").getNodeValue()), Integer.parseInt(node.getAttributes().getNamedItem("y").getNodeValue()), Integer.parseInt(node.getAttributes().getNamedItem("width").getNodeValue()), Integer.parseInt(node.getAttributes().getNamedItem("height").getNodeValue())));
         }
+
+        this.size = size;
     }
 
+    @Override
     public void drawImage(Graphics2D g, Card card)
     {
         String type = "";
@@ -45,11 +53,7 @@ public class CardPainter implements ICardPainter
 
         if (card.getCardInfo() == null)
         {
-            // draw back
-            Rectangle clip = clipList.get("cardJoker.png");
-            g.translate(-clip.x, -clip.y);
-            g.clipRect(clip.x, clip.y, clip.width, clip.height);
-            g.drawImage(cardSheet, 0, 0, null);
+            g.drawImage(cardBack, -cardBack.getWidth(null) / 2, -cardBack.getHeight(null) / 2, null);
         }
         else
         {
@@ -92,5 +96,11 @@ public class CardPainter implements ICardPainter
             g.clipRect(clip.x, clip.y, clip.width, clip.height);
             g.drawImage(cardSheet, 0, 0, null);
         }
+    }
+
+    @Override
+    public Dimension getSize()
+    {
+        return size;
     }
 }

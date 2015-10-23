@@ -22,6 +22,4 @@ public class Game
         players.add(player);
         return player;
     }
-    
-    
 }
