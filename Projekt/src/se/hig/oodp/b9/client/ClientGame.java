@@ -6,7 +6,6 @@ import java.util.List;
 import se.hig.oodp.b9.Player;
 import se.hig.oodp.b9.Table;
 import se.hig.oodp.b9.Trigger;
-import se.hig.oodp.b9.CardInfo;
 
 public class ClientGame
 {

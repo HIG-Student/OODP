@@ -71,22 +71,46 @@ public class ServerNetworkerSocket extends ServerNetworker
 
                             ServerNetworkerClient client = new ServerNetworkerClient()
                             {
+                                ObjectOutputStream objectOutStream = new ObjectOutputStream(socket.getOutputStream());
+
                                 {
                                     this.player = socketPlayer;
                                 }
 
-                                public boolean sendObject(Object obj)
+                                // Just in case
+                                @Override
+                                public void finalize() throws Throwable
                                 {
-                                    try (ByteArrayOutputStream outStream = new ByteArrayOutputStream())
+                                    close();
+                                    super.finalize();
+                                }
+
+                                public boolean isClosed = false;
+
+                                public void close()
+                                {
+                                    if (isClosed)
+                                        return;
+
+                                    try
                                     {
-                                        try (ObjectOutputStream objectOutStream = new ObjectOutputStream(socket.getOutputStream()))
-                                        {
-                                            objectOutStream.writeObject(obj);
-                                        }
+                                        socket.close();
                                     }
                                     catch (IOException e)
                                     {
-                                        // TODO: better response
+                                    }
+
+                                    isClosed = true;
+                                }
+
+                                public boolean sendObject(Object obj)
+                                {
+                                    try
+                                    {
+                                        objectOutStream.writeObject(obj);
+                                    }
+                                    catch (IOException e)
+                                    {
                                         System.out.println("Can't send object!");
                                         System.exit(1);
 
@@ -146,43 +170,39 @@ public class ServerNetworkerSocket extends ServerNetworker
                                 @Override
                                 public void closeConnection(String reason)
                                 {
-                                    sendObject(new Package<Boolean>(true, Package.Type.Close));
+                                    sendObject(new Package<String>(reason, Package.Type.Close));
 
-                                    try
-                                    {
-                                        socket.close();
-                                    }
-                                    catch (IOException e)
-                                    {
-
-                                    }
+                                    close();
                                 }
                             };
 
-                            try (ObjectInputStream objectOutStream = new ObjectInputStream(socket.getInputStream()))
+                            // addClient(client);
+
+                            System.out.println("a");
+
+                            while (true)
                             {
-                                while (true)
+                                System.out.println("b");
+                                Package pkg = (Package) objectInStream.readObject();
+                                switch (pkg.type)
                                 {
-                                    Package pkg = (Package) objectOutStream.readObject();
-                                    switch (pkg.type)
-                                    {
-                                    case Close:
-                                        socket.close();
-                                        break;
-                                    case Message:
-                                        PMessage msg = ((Package<PMessage>) pkg).value;
-                                        onNewMessage.invoke(new Two<Player, String>(socketPlayer, msg.getMessage()));
-                                        break;
-                                    case Move:
-                                        PCardMovement move = ((Package<PCardMovement>) pkg).value;
-                                        onNewMove.invoke(move);
-                                    }
+                                case Close:
+                                    socket.close();
+                                    break;
+                                case Message:
+                                    PMessage msg = ((Package<PMessage>) pkg).value;
+                                    onNewMessage.invoke(new Two<Player, String>(socketPlayer, msg.getMessage()));
+                                    break;
+                                case Move:
+                                    PCardMovement move = ((Package<PCardMovement>) pkg).value;
+                                    onNewMove.invoke(move);
                                 }
                             }
                         }
                         catch (Exception e)
                         {
-                            System.out.println("Error for client" + (playerName != null ? ("[" + playerName + "]") : "") + "!\n\n" + e.getMessage());
+                            System.out.println(e.toString());
+                            System.out.println("Error for client" + (playerName != null ? ("[" + playerName + "]") : "") + "!\n\t" + e.getMessage());
                         }
                     }).start();
                 }

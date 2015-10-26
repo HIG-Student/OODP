@@ -21,18 +21,24 @@ public class ClientNetworkerSocket extends ClientNetworker
 {
     public Socket socket;
 
+    // Just in case
+    @Override
+    public void finalize() throws Throwable
+    {
+        close(false);
+        super.finalize();
+    }
+
+    ObjectOutputStream objectOutStream;
+
     public boolean sendObject(Object obj)
     {
-        try (ByteArrayOutputStream outStream = new ByteArrayOutputStream())
+        try
         {
-            try (ObjectOutputStream objectOutStream = new ObjectOutputStream(socket.getOutputStream()))
-            {
-                objectOutStream.writeObject(obj);
-            }
+            objectOutStream.writeObject(obj);
         }
         catch (IOException e)
         {
-            // TODO: better response
             System.out.println("Can't send object!");
             System.exit(1);
 
@@ -41,8 +47,22 @@ public class ClientNetworkerSocket extends ClientNetworker
         return true;
     }
 
+    boolean isClosed = false;
+
     public void close(boolean clientIssued)
     {
+        if (isClosed)
+            return;
+
+        if (objectOutStream != null)
+            try
+            {
+                objectOutStream.close();
+            }
+            catch (IOException e)
+            {
+            }
+
         if (socket != null)
         {
             if (clientIssued)
@@ -56,25 +76,38 @@ public class ClientNetworkerSocket extends ClientNetworker
             {
             }
         }
+        isClosed = true;
     }
 
     public ClientNetworkerSocket(String host, int port) throws UnknownHostException, IOException
     {
         socket = new Socket(host, port);
 
+        System.out.println("Creating output stream");
+        objectOutStream = new ObjectOutputStream(socket.getOutputStream());
+        System.out.println("Output stream created!");
+
+        System.out.println("1");
+
         new Thread(() ->
         {
+            System.out.println("2");
+
             try (ObjectInputStream objectOutStream = new ObjectInputStream(socket.getInputStream()))
             {
+                System.out.println("3");
                 while (true)
                 {
+                    System.out.println("4");
                     try
                     {
+                        System.out.println("Waiting for package");
                         Package pkg = (Package) objectOutStream.readObject();
+                        System.out.println("Got package: " + pkg.type);
                         switch (pkg.type)
                         {
                         case Close:
-                            onClose.invoke();
+                            onClose.invoke(((Package<String>) pkg).value);
                             close(false);
                             return;
                         case Message:
@@ -86,7 +119,7 @@ public class ClientNetworkerSocket extends ClientNetworker
                             onTable.invoke(((Package<Table>) pkg).value);
                             break;
                         case CardInfo:
-                            onCardInfo.invoke(((Package<Two<UUID,CardInfo>>) pkg).value);
+                            onCardInfo.invoke(((Package<Two<UUID, CardInfo>>) pkg).value);
                             break;
                         case Cards:
                             onCards.invoke(((Package<UUID[]>) pkg).value);

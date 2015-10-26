@@ -32,7 +32,7 @@ public abstract class ClientNetworker
 
     public Trigger onMoveRequest = new Trigger();
 
-    public Trigger onClose = new Trigger();
+    public Event<String> onClose = new Event<String>();
 
     public Event<PMessage> onMessage = new Event<PMessage>();
 
