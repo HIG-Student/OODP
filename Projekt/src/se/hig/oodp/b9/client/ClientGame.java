@@ -42,9 +42,19 @@ public class ClientGame
 
         networker.onCards.add(cards ->
         {
-            table.addDeck(cards);
+            table.changeDeck(cards);
         });
         
         networker.sendGreeting(me);
+    }
+    
+    public void end(String reason)
+    {
+        networker.close(reason);
+    }
+    
+    public void end()
+    {
+        networker.close();
     }
 }

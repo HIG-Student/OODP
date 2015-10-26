@@ -77,7 +77,7 @@ public class ServerGame
                 networker.sendMoveCard(card, collection);
             }
         };
-        table.addDeck(cardDeck.getDeckUUIDs());
+        table.changeDeck(cardDeck.getDeckUUIDs());
 
         networker.sendTable(table);
         networker.sendNewCards(cardDeck.getDeckUUIDs());

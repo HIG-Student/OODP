@@ -187,6 +187,7 @@ public class ServerNetworkerSocket extends ServerNetworker
                                 switch (pkg.type)
                                 {
                                 case Close:
+                                    // String reason = ((Package<String>) pkg).value;
                                     socket.close();
                                     break;
                                 case Message:

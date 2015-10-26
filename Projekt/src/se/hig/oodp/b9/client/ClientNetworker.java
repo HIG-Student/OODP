@@ -2,7 +2,6 @@ package se.hig.oodp.b9.client;
 
 import java.util.UUID;
 
-import se.hig.oodp.b9.Card;
 import se.hig.oodp.b9.CardInfo;
 import se.hig.oodp.b9.PCardMovement;
 import se.hig.oodp.b9.Event;
@@ -14,6 +13,13 @@ import se.hig.oodp.b9.Two;
 
 public abstract class ClientNetworker
 {
+    public abstract void close(String reason);
+    
+    public void close()
+    {
+        close(null);
+    }
+    
     // Send
     public abstract void sendMove(PCardMovement move);
 

@@ -32,7 +32,7 @@ public class TestTable
             players.add(new Player("TestPlayer" + i));
 
         table = new Table(players, UUID.randomUUID(), UUID.randomUUID());
-        table.addDeck(new CardDeck().getDeckUUIDs());
+        table.changeDeck(new CardDeck().getDeckUUIDs());
     }
 
     @Test

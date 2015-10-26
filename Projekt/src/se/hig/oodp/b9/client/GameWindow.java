@@ -35,7 +35,7 @@ public class GameWindow
     ICardPainter cardDrawer;
 
     ClientGame game;
-    
+
     /**
      * Launch the application.
      * 
@@ -47,7 +47,7 @@ public class GameWindow
         int port = 59440;
 
         // Server setup
-        
+
         ServerNetworkerSocket server = null;
 
         try
@@ -63,11 +63,11 @@ public class GameWindow
         ServerGame serverGame = new ServerGame(server);
 
         // Client setup
-        
+
         Player player = new Player("MrGNU");
 
         ClientNetworkerSocket clientNetworker = null;
-        
+
         try
         {
             clientNetworker = new ClientNetworkerSocket("127.0.0.1", port);
@@ -80,7 +80,7 @@ public class GameWindow
 
         start(new ClientGame(player, clientNetworker));
     }
-    
+
     public static void start(ClientGame game)
     {
         EventQueue.invokeLater(new Runnable()
@@ -107,6 +107,8 @@ public class GameWindow
     {
         initialize();
 
+        this.game = game;
+
         try
         {
             cardDrawer = new CardPainter("/cards/playingCards.png", "/cards/playingCards.xml", "/cards/Singles/cardBack_blue2.png", new Dimension(140, 190));
@@ -130,7 +132,7 @@ public class GameWindow
                 super.paint(g);
 
                 System.out.println(game.table != null ? game.table.deck.size() : "-");
-                
+
                 if (game.table == null)
                     return;
 
@@ -220,5 +222,17 @@ public class GameWindow
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
+
+        // http://stackoverflow.com/a/9093526
+        frame.addWindowListener(new java.awt.event.WindowAdapter()
+        {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent)
+            {
+                super.windowClosing(windowEvent);
+                
+                game.end("Closed window");
+            }
+        });
     }
 }

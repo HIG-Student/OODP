@@ -162,4 +162,28 @@ public class ClientNetworkerSocket extends ClientNetworker
     {
         sendObject(target);
     }
+
+    @Override
+    public void close(String reason)
+    {
+        try
+        {
+            sendObject(new Package<String>(reason, Package.Type.Close));
+        }
+        catch (Exception e)
+        {
+
+        }
+        finally
+        {
+            try
+            {
+                socket.close();
+            }
+            catch (IOException e)
+            {
+                
+            }
+        }
+    }
 }
