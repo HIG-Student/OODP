@@ -1,25 +1,15 @@
 package se.hig.oodp.b9;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
  * The representation of a player
  */
-public class Player
+public class Player extends UUIDInstance implements Serializable
 {
-    public List<Card> hand = new ArrayList<Card>();
-
-    /**
-     * A random and unique id to represent this player
-     */
-    UUID id;
-
-    public UUID getId()
-    {
-        return id;
-    }
+    public final UUID handUUID = UUID.randomUUID();
+    public final UUID pointsUUID = UUID.randomUUID();
 
     /**
      * Name of the player
@@ -31,19 +21,21 @@ public class Player
         return name;
     }
 
-    /**
-     * Counts this player's cards
-     * 
-     * @return the amount of cards this player have
-     */
-    public int getCardCount()
-    {
-        return hand.size();
-    }
-    
     public Player(String name)
     {
-        id = UUID.randomUUID();
         this.name = name;
+        id = UUID.randomUUID();
+    }
+
+    public Player(String name, UUID id)
+    {
+        this.name = name;
+        this.id = id;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return getName() + " [" + id.toString() + "]";
     }
 }

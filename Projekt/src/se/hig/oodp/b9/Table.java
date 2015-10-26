@@ -48,7 +48,7 @@ public class Table implements Serializable
         collection.add(card);
     }
 
-    public void addDeck(List<UUID> UUIDs)
+    public void addDeck(UUID[] UUIDs)
     {
         clear();
 

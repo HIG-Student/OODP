@@ -5,48 +5,31 @@ import java.util.UUID;
 /**
  * The class representing a game card
  */
-public class Card
+public class Card extends UUIDInstance
 {
-    CardInfo cardInfo;
-    
+    // https://en.wikibooks.org/wiki/Java_Programming/Keywords/transient
+    transient CardInfo cardInfo = CardInfo.UNKNOWN;
+
     public CardInfo getCardInfo()
     {
         return cardInfo;
     }
-    
+
     public void setCardInfo(CardInfo info)
     {
         this.cardInfo = info;
     }
-    
-    /**
-     * A random and unique id to represent this card
-     */
-    UUID id;
-    
-    public UUID getId()
-    {
-        return id;
-    }
 
-    public Card(UUID id)
-    {
-        this.id = id;
-    }
-
-    /**
-     * Construct a card
-     * 
-     * @param type
-     *            the type of the card
-     * @param value
-     *            the value of the card
-     */
     public Card(CardInfo info)
     {
         this.id = UUID.randomUUID();
 
         setCardInfo(info);
+    }
+    
+    public Card(UUID id)
+    {
+        this.id = id;
     }
 
     @Override

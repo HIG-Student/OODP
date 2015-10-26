@@ -1,31 +1,42 @@
 package se.hig.oodp.b9.server;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Stack;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 import se.hig.oodp.b9.Card;
 import se.hig.oodp.b9.CardInfo;
-import se.hig.oodp.b9.CardInfo.Type;
-import se.hig.oodp.b9.CardInfo.Value;
 
 /**
  * A collection of cards
  */
 public class CardDeck
 {
-    /**
-     * The stack with cards
-     */
-    Stack<Card> cards = new Stack<Card>();
+    HashMap<UUID, Card> idToCard;
+    @SuppressWarnings("serial")
+    final List<Card> cards = new ArrayList<Card>()
+    {
+        {
+            idToCard = new HashMap<UUID, Card>();
+            Card card;
+
+            for (CardInfo.Type type : CardInfo.Type.values())
+                for (CardInfo.Value value : CardInfo.Value.values())
+                {
+                    add(card = new Card(new CardInfo(type, value)));
+                    idToCard.put(card.getId(), card);
+                }
+        }
+    };
 
     /**
      * Construct a deck
      */
     public CardDeck()
     {
-        for (CardInfo.Type type : CardInfo.Type.values())
-            for (CardInfo.Value value : CardInfo.Value.values())
-                cards.push(new Card(new CardInfo(type, value)));
+        shuffle();
     }
 
     /**
@@ -36,23 +47,21 @@ public class CardDeck
         Collections.shuffle(cards);
     }
 
-    /**
-     * Checks if you can draw a card
-     * 
-     * @return whether the collection have cards or not
-     */
-    public boolean canDraw()
+    public List<Card> getCards()
     {
-        return !cards.isEmpty();
+        return cards;
     }
 
-    /**
-     * Draw the top-most card from the collection
-     * 
-     * @return the top-most card, or null
-     */
-    public Card draw()
+    public UUID[] getDeckUUIDs()
     {
-        return canDraw() ? cards.pop() : null;
+        List<UUID> result = new ArrayList<UUID>();
+        for (Card card : cards)
+            result.add(card.getId());
+        return result.toArray(new UUID[0]);
+    }
+
+    public Card getCard(UUID id)
+    {
+        return idToCard.containsKey(id) ? idToCard.get(id) : null;
     }
 }

@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.io.File;
 import java.util.HashMap;
 
@@ -91,10 +92,16 @@ public class CardPainter implements ICardPainter
                 value = "" + (card.getCardInfo().getValue().ordinal() + 1);
             }
 
+            Shape oldClip = g.getClip();
+            g.setClip(null);
+
             Rectangle clip = clipList.get("card" + type + value + ".png");
+            g.translate(-clip.width / 2, -clip.height / 2);
             g.translate(-clip.x, -clip.y);
             g.clipRect(clip.x, clip.y, clip.width, clip.height);
             g.drawImage(cardSheet, 0, 0, null);
+
+            g.setClip(oldClip);
         }
     }
 

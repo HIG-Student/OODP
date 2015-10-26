@@ -1,29 +1,51 @@
 package se.hig.oodp.b9.client;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
-import se.hig.oodp.b9.Card;
-import se.hig.oodp.b9.CardInfo;
 import se.hig.oodp.b9.Player;
+import se.hig.oodp.b9.Table;
+import se.hig.oodp.b9.Trigger;
+import se.hig.oodp.b9.CardInfo;
 
 public class ClientGame
 {
+    public Player me;
     public List<Player> players = new ArrayList<Player>();
-    public HashMap<UUID, Card> cardList = new HashMap<UUID, Card>();
-    public HashMap<UUID, Player> cardHolderList = new HashMap<UUID, Player>();
+    public Table table;
 
-    public void attachCardInfo(UUID id, CardInfo info)
-    {
-        cardList.get(id).setCardInfo(info);
-        // update drawing
-    }
+    public ClientNetworker networker;
 
-    public void updateCardHolder(UUID id, Player player)
+    public Trigger onChange = new Trigger();
+
+    public ClientGame(Player me, ClientNetworker networker)
     {
-        cardHolderList.put(id, player);
-        // update drawing
+        this.me = me;
+        this.networker = networker;
+
+        networker.onMove.add(move ->
+        {
+            table.moveCard(table.cards.get(move.getCardId()), table.collections.get(move.getCardCollcetionId()));
+            onChange.invoke();
+        });
+
+        networker.onCardInfo.add(two ->
+        {
+            table.cards.get(two.one).setCardInfo(two.two);
+            onChange.invoke();
+        });
+
+        networker.onTable.add(table ->
+        {
+            this.table = table;
+            onChange.invoke();
+        });
+
+        networker.onCards.add(cards ->
+        {
+            table.addDeck(cards);
+        });
+        
+        networker.sendGreeting(me);
     }
 }

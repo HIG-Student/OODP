@@ -1,6 +1,8 @@
 package se.hig.oodp.b9;
 
-public class CardInfo
+import java.io.Serializable;
+
+public class CardInfo implements Serializable
 {
     public static final CardInfo UNKNOWN = null;
 
@@ -40,9 +42,29 @@ public class CardInfo
         this.value = value;
     }
 
+    public static CardInfo getRandom()
+    {
+        return new CardInfo(Type.values()[(int) (Math.random() * Type.values().length)], Value.values()[(int) (Math.random() * Value.values().length)]);
+    }
+
     @Override
     public String toString()
     {
         return type + " " + value;
+    }
+
+    @Override
+    public boolean equals(Object other)
+    {
+        if (other == null || !(other instanceof CardInfo))
+            return false;
+
+        return (type == ((CardInfo) other).type) && (value == ((CardInfo) other).value);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return type.hashCode() + 23 * value.hashCode();
     }
 }
