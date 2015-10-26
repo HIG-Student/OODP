@@ -15,6 +15,8 @@ import javax.swing.JPanel;
 
 import se.hig.oodp.b9.CardCollection;
 import se.hig.oodp.b9.Player;
+import se.hig.oodp.b9.server.ServerGame;
+import se.hig.oodp.b9.server.ServerNetworkerSocket;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -33,7 +35,7 @@ public class GameWindow
     ICardPainter cardDrawer;
 
     ClientGame game;
-
+    
     /**
      * Launch the application.
      * 
@@ -42,13 +44,52 @@ public class GameWindow
      */
     public static void main(String[] args)
     {
+        int port = 59440;
+
+        // Server setup
+        
+        ServerNetworkerSocket server = null;
+
+        try
+        {
+            server = new ServerNetworkerSocket(port);
+        }
+        catch (IOException e)
+        {
+            System.out.println("Can't create server!\n\t" + e.getMessage());
+            System.exit(1);
+        }
+
+        ServerGame serverGame = new ServerGame(server);
+
+        // Client setup
+        
+        Player player = new Player("MrGNU");
+
+        ClientNetworkerSocket clientNetworker = null;
+        
+        try
+        {
+            clientNetworker = new ClientNetworkerSocket("127.0.0.1", port);
+        }
+        catch (IOException e)
+        {
+            System.out.println("Can't listen to server!\n\t" + e.getMessage());
+            System.exit(1);
+        }
+
+        start(new ClientGame(player, clientNetworker));
+    }
+    
+    public static void start(ClientGame game)
+    {
         EventQueue.invokeLater(new Runnable()
         {
             public void run()
             {
                 try
                 {
-                    GameWindow window = new GameWindow();
+                    GameWindow window = new GameWindow(game);
                     window.frame.setVisible(true);
                 }
                 catch (Exception e)
@@ -62,7 +103,7 @@ public class GameWindow
     /**
      * Create the application.
      */
-    public GameWindow()
+    public GameWindow(ClientGame game)
     {
         initialize();
 
@@ -75,21 +116,6 @@ public class GameWindow
             JOptionPane.showMessageDialog(frame, "Can't make card painter", "Error!", JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         }
-
-        // Pick server \\
-
-        // Start own server \\
-
-        Player player = new Player("MrGNU");
-        game = new ClientGame(player,null);
-        
-        // LocalNetworkingUnit lnu = new LocalNetworkingUnit();
-        
-        // new server
-        
-        // new game (<- server)
-
-        // game = lnu.cg;
 
         runGame();
     }
