@@ -1,11 +1,14 @@
 package se.hig.oodp.b9;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Event<T>
 {
-    public List<Action<T>> actions = new ArrayList<Action<T>>();
+    private HashMap<Object, T> waitForList = new HashMap<Object, T>();
+
+    private List<Action<T>> actions = new ArrayList<Action<T>>();
 
     public void add(Action<T> action)
     {
@@ -21,6 +24,38 @@ public class Event<T>
     {
         for (Action<T> action : actions)
             action.doAction(arg);
+
+        synchronized (waitForList)
+        {
+            for (Object obj : waitForList.keySet())
+            {
+                waitForList.put(obj, arg);
+
+                synchronized (obj)
+                {
+                    obj.notifyAll();
+                }
+            }
+        }
+    }
+
+    public T waitFor() throws InterruptedException
+    {
+        Object key = new Object();
+        synchronized (waitForList)
+        {
+            waitForList.put(key, null);
+        }
+        synchronized (key)
+        {
+            key.wait();
+        }
+        synchronized (waitForList)
+        {
+            T result = waitForList.get(key);
+            waitForList.remove(key);
+            return result;
+        }
     }
 
     public interface Action<T>

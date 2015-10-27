@@ -6,7 +6,10 @@ import java.util.UUID;
 
 import se.hig.oodp.b9.Card;
 import se.hig.oodp.b9.CardCollection;
+import se.hig.oodp.b9.PServerInfo;
 import se.hig.oodp.b9.Player;
+import se.hig.oodp.b9.Rules;
+import se.hig.oodp.b9.Rules.Move;
 import se.hig.oodp.b9.Table;
 
 public class ServerGame
@@ -17,6 +20,7 @@ public class ServerGame
 
     public CardDeck cardDeck;
     public Table table;
+    public Rules rules;
 
     public boolean running = false;
 
@@ -56,31 +60,43 @@ public class ServerGame
             for (Player player : players)
                 if (player != newPlayer)
                     networker.sendMessageTo(newPlayer, "\t" + player.getName());
+            
+            networker.sendGreeting(newPlayer, new PServerInfo());
         });
 
         networker.onNewMessage.add(message ->
         {
-            System.out.println("Player [" + message.one + "] says: " + message.two);
+            System.out.println("Server: Player [" + message.one + "] says: " + message.two);
             networker.sendMessageToAll(message.one, message.two);
+        });
+
+        networker.onNewMove.add(move ->
+        {
+            System.out.println("Server: GOT NEW MOVE TO PLAY!");
+            // TODO: Everything
         });
     }
 
     public void newGame()
     {
         cardDeck = new CardDeck();
-        table = new Table(players, UUID.randomUUID(), UUID.randomUUID())
-        {
-            @Override
-            public void moveCard(Card card, CardCollection collection)
-            {
-                super.moveCard(card, collection);
-                networker.sendMoveCard(card, collection);
-            }
-        };
-        table.changeDeck(cardDeck.getDeckUUIDs());
 
+        if (table == null)
+        {
+            table = new Table(players, UUID.randomUUID(), UUID.randomUUID());
+        }
+        table.changeDeck(cardDeck.getDeckUUIDs());
+        rules.setUp(table);
         networker.sendTable(table);
-        networker.sendNewCards(cardDeck.getDeckUUIDs());
+    }
+
+    public void moveCard(Card card, CardCollection collection)
+    {
+        table.moveCard(card, collection);
+        networker.sendMoveCard(card, collection);
+
+        if (collection.owner != null)
+            networker.sendCardInfo(collection.owner, card);
     }
 
     public void startGame()

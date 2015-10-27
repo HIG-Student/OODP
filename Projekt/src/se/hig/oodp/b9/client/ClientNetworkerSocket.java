@@ -12,8 +12,10 @@ import se.hig.oodp.b9.Card;
 import se.hig.oodp.b9.CardInfo;
 import se.hig.oodp.b9.PCardMovement;
 import se.hig.oodp.b9.PMessage;
+import se.hig.oodp.b9.PServerInfo;
 import se.hig.oodp.b9.Player;
 import se.hig.oodp.b9.Package;
+import se.hig.oodp.b9.Rules.Move;
 import se.hig.oodp.b9.Table;
 import se.hig.oodp.b9.Two;
 
@@ -39,7 +41,7 @@ public class ClientNetworkerSocket extends ClientNetworker
         }
         catch (IOException e)
         {
-            System.out.println("Can't send object!");
+            System.out.println("Client: Can't send object!");
             System.exit(1);
 
             return false;
@@ -83,27 +85,21 @@ public class ClientNetworkerSocket extends ClientNetworker
     {
         socket = new Socket(host, port);
 
-        System.out.println("Creating output stream");
+        System.out.println("Client: Creating output stream");
         objectOutStream = new ObjectOutputStream(socket.getOutputStream());
-        System.out.println("Output stream created!");
-
-        System.out.println("1");
+        System.out.println("Client: Output stream created!");
 
         new Thread(() ->
         {
-            System.out.println("2");
-
             try (ObjectInputStream objectOutStream = new ObjectInputStream(socket.getInputStream()))
             {
-                System.out.println("3");
                 while (true)
                 {
-                    System.out.println("4");
                     try
                     {
-                        System.out.println("Waiting for package");
+                        System.out.println("Client: Waiting for package");
                         Package pkg = (Package) objectOutStream.readObject();
-                        System.out.println("Got package: " + pkg.type);
+                        System.out.println("Client: Got package: " + pkg.type);
                         switch (pkg.type)
                         {
                         case Close:
@@ -125,30 +121,34 @@ public class ClientNetworkerSocket extends ClientNetworker
                             onCards.invoke(((Package<UUID[]>) pkg).value);
                             break;
                         case PlayerAdded:
-                            onPlayer.invoke(((Package<Player>) pkg).value);
+                            onPlayerAdded.invoke(((Package<Player>) pkg).value);
                             break;
                         case RequestMove:
                             onMoveRequest.invoke();
+                            break;
+                        case ServerInfo:
+                            onServerGreeting.invoke(((Package<PServerInfo>) pkg).value);
                             break;
                         }
                     }
                     catch (Exception e)
                     {
-                        System.out.println("Error on getting package data\n\t" + e.getMessage());
+                        System.out.println("Client: Error on getting package data\n\t" + e.getMessage());
+                        System.exit(1);
                     }
                 }
             }
             catch (Exception e)
             {
-                System.out.println("Error on getting socket data\n\t" + e.getMessage());
+                System.out.println("Client: Error on getting socket data\n\t" + e.getMessage());
             }
         }).start();
     }
 
     @Override
-    public void sendMove(PCardMovement move)
+    public void sendMove(Move move)
     {
-        sendObject(new Package<PCardMovement>(move, Package.Type.Move));
+        sendObject(new Package<Move>(move, Package.Type.Move));
     }
 
     @Override

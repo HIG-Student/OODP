@@ -67,7 +67,7 @@ public class ServerWindow extends JFrame
             if (sns == null)
                 if (JOptionPane.showConfirmDialog(this, "Do you want to try another port?", "Retry?", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION)
                 {
-                    System.out.println("Aborted by user");
+                    System.out.println("ServerWindow: Aborted by user");
                     System.exit(1);
                 }
         }

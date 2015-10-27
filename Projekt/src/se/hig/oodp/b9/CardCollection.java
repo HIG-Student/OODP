@@ -6,16 +6,26 @@ import java.util.UUID;
 
 public class CardCollection extends UUIDInstance
 {
+    public final Player owner;
+    
     List<Card> cards = new ArrayList<Card>();
 
     public CardCollection()
     {
         id = UUID.randomUUID();
+        this.owner = null;
+    }
+    
+    public CardCollection(Player owner)
+    {
+        id = UUID.randomUUID();
+        this.owner = owner;
     }
 
-    public CardCollection(UUID id)
+    public CardCollection(UUID id,Player owner)
     {
         this.id = id;
+        this.owner = owner;
     }
 
     public void add(Card card)

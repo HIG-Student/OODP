@@ -6,7 +6,9 @@ import se.hig.oodp.b9.CardInfo;
 import se.hig.oodp.b9.PCardMovement;
 import se.hig.oodp.b9.Event;
 import se.hig.oodp.b9.PMessage;
+import se.hig.oodp.b9.PServerInfo;
 import se.hig.oodp.b9.Player;
+import se.hig.oodp.b9.Rules.Move;
 import se.hig.oodp.b9.Table;
 import se.hig.oodp.b9.Trigger;
 import se.hig.oodp.b9.Two;
@@ -21,7 +23,7 @@ public abstract class ClientNetworker
     }
     
     // Send
-    public abstract void sendMove(PCardMovement move);
+    public abstract void sendMove(Move move);
 
     public void sendMessage(String message)
     {
@@ -48,5 +50,7 @@ public abstract class ClientNetworker
 
     public Event<Two<UUID,CardInfo>> onCardInfo = new Event<Two<UUID,CardInfo>>();
 
-    public Event<Player> onPlayer = new Event<Player>();
+    public Event<Player> onPlayerAdded = new Event<Player>();
+    
+    public Event<PServerInfo> onServerGreeting = new Event<PServerInfo>();
 }

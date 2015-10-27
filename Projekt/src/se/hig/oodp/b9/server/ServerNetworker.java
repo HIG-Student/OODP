@@ -8,7 +8,9 @@ import se.hig.oodp.b9.Card;
 import se.hig.oodp.b9.CardCollection;
 import se.hig.oodp.b9.Event;
 import se.hig.oodp.b9.PCardMovement;
+import se.hig.oodp.b9.PServerInfo;
 import se.hig.oodp.b9.Player;
+import se.hig.oodp.b9.Rules.Move;
 import se.hig.oodp.b9.Table;
 import se.hig.oodp.b9.Two;
 
@@ -79,7 +81,7 @@ public abstract class ServerNetworker
     {
         ServerNetworkerClient client = getClient(target);
         if (client != null)
-            client.sendMessage(target, message);
+            client.sendMessage(source, message);
     }
 
     public void sendCardInfo(Player target, Card card)
@@ -108,6 +110,13 @@ public abstract class ServerNetworker
             client.sendGetMove();
     }
 
+    public void sendGreeting(Player player, PServerInfo info)
+    {
+        ServerNetworkerClient client = getClient(player);
+        if (client != null)
+            client.sendGreeting(info);
+    }
+
     public void closeConnection(Player player, String reason)
     {
         ServerNetworkerClient client = getClient(player);
@@ -130,5 +139,5 @@ public abstract class ServerNetworker
 
     public Event<Two<Player, String>> onNewMessage = new Event<Two<Player, String>>();
 
-    public Event<PCardMovement> onNewMove = new Event<PCardMovement>();
+    public Event<Two<Player, Move>> onNewMove = new Event<Two<Player, Move>>();
 }

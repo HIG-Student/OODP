@@ -6,7 +6,7 @@ public class Package<T extends Serializable> implements Serializable
 {
     public enum Type
     {
-        Table, Cards, CardInfo, Move, PlayerAdded, Message, RequestMove, Close
+        Table, Cards, CardInfo, Move, PlayerAdded, Message, RequestMove, Close , ServerInfo
     }
 
     public Type type;

@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 
 import se.hig.oodp.b9.CardCollection;
 import se.hig.oodp.b9.Player;
+import se.hig.oodp.b9.Rules;
 import se.hig.oodp.b9.server.ServerGame;
 import se.hig.oodp.b9.server.ServerNetworkerSocket;
 
@@ -64,13 +65,17 @@ public class GameWindow
 
         // Client setup
 
-        Player player = new Player("MrGNU");
+        Player me = new Player("MrGNU");
 
         ClientNetworkerSocket clientNetworker = null;
 
         try
         {
             clientNetworker = new ClientNetworkerSocket("127.0.0.1", port);
+            clientNetworker.onMessage.add(msg ->
+            {
+                System.out.println("Client: " + msg.getMessage() + (msg.getSource() != null ? (" (from: " + msg.getSource() + ")") : ""));
+            });
         }
         catch (IOException e)
         {
@@ -78,7 +83,10 @@ public class GameWindow
             System.exit(1);
         }
 
-        start(new ClientGame(player, clientNetworker));
+        start(new ClientGame(me, clientNetworker));
+
+        serverGame.rules = new Rules();
+        serverGame.newGame();
     }
 
     public static void start(ClientGame game)
@@ -108,6 +116,10 @@ public class GameWindow
         initialize();
 
         this.game = game;
+        game.onChange.add(() ->
+        {
+            frame.repaint();
+        });
 
         try
         {
@@ -130,8 +142,6 @@ public class GameWindow
             public void paint(Graphics g)
             {
                 super.paint(g);
-
-                System.out.println(game.table != null ? game.table.deck.size() : "-");
 
                 if (game.table == null)
                     return;
@@ -209,6 +219,8 @@ public class GameWindow
                 g2d.setTransform(transformStack.pop());
             }
         });
+        
+        frame.repaint();
     }
 
     /**
@@ -230,7 +242,7 @@ public class GameWindow
             public void windowClosing(java.awt.event.WindowEvent windowEvent)
             {
                 super.windowClosing(windowEvent);
-                
+
                 game.end("Closed window");
             }
         });

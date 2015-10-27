@@ -8,6 +8,8 @@ import java.util.UUID;
 public class Table implements Serializable
 {
     public List<Player> players;
+    
+    public Player nextPlayer;
 
     public HashMap<Player, CardCollection> playerHands = new HashMap<Player, CardCollection>();
     public HashMap<Player, CardCollection> playerPoints = new HashMap<Player, CardCollection>();
@@ -27,21 +29,35 @@ public class Table implements Serializable
         this.players = arrayList;
         for (Player player : arrayList)
         {
-            CardCollection playerHand = new CardCollection(player.handUUID);
+            CardCollection playerHand = new CardCollection(player.handUUID, player);
             playerHands.put(player, playerHand);
             collections.put(player.handUUID, playerHand);
-            
-            CardCollection playerPoint = new CardCollection(player.pointsUUID);
+
+            CardCollection playerPoint = new CardCollection(player.pointsUUID, player);
             playerPoints.put(player, playerPoint);
             collections.put(player.pointsUUID, playerPoint);
         }
 
-        collections.put(this.poolUUID = poolUUID, pool = new CardCollection(poolUUID));
-        collections.put(this.deckUUID = deckUUID, deck = new CardCollection(deckUUID));
+        collections.put(this.poolUUID = poolUUID, pool = new CardCollection(poolUUID, null));
+        collections.put(this.deckUUID = deckUUID, deck = new CardCollection(deckUUID, null));
+    }
+    
+    public Card getCardFromDeck()
+    {
+        if (deck.size() == 0)
+            return null;
+
+        return deck.get(0);
     }
 
     public void moveCard(Card card, CardCollection collection)
     {
+        if(card == null || collection == null)
+        {
+            System.out.println("Trying to move null!");
+            return;
+        }
+        
         if (cardLocation.containsKey(card))
             cardLocation.get(card).remove(card);
         cardLocation.put(card, collection);

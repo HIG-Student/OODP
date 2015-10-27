@@ -12,7 +12,9 @@ import java.util.UUID;
 
 import se.hig.oodp.b9.Card;
 import se.hig.oodp.b9.CardCollection;
+import se.hig.oodp.b9.PServerInfo;
 import se.hig.oodp.b9.Player;
+import se.hig.oodp.b9.Rules.Move;
 import se.hig.oodp.b9.Table;
 import se.hig.oodp.b9.Package;
 import se.hig.oodp.b9.PCardMovement;
@@ -53,13 +55,13 @@ public class ServerNetworkerSocket extends ServerNetworker
                 {
                     Socket socket = server.accept();
 
-                    System.out.println("Found client!");
+                    System.out.println("Server: Found client!");
 
                     new Thread(() ->
                     {
                         String playerName = null;
 
-                        System.out.println("Listening for client greeting!");
+                        System.out.println("Server: Listening for client greeting!");
 
                         try (ObjectInputStream objectInStream = new ObjectInputStream(socket.getInputStream()))
                         {
@@ -67,7 +69,7 @@ public class ServerNetworkerSocket extends ServerNetworker
 
                             playerName = socketPlayer.getName();
 
-                            System.out.println("New client is: [" + socketPlayer + "]");
+                            System.out.println("Server: New client is: [" + socketPlayer + "]");
 
                             ServerNetworkerClient client = new ServerNetworkerClient()
                             {
@@ -111,7 +113,7 @@ public class ServerNetworkerSocket extends ServerNetworker
                                     }
                                     catch (IOException e)
                                     {
-                                        System.out.println("Can't send object!");
+                                        System.out.println("Server: Can't send object!");
                                         System.exit(1);
 
                                         return false;
@@ -146,7 +148,7 @@ public class ServerNetworkerSocket extends ServerNetworker
                                 @Override
                                 public void sendMessage(Player source, String message)
                                 {
-                                    sendObject(new Package<PMessage>(new PMessage(source == null ? null : source, message), Package.Type.Message));
+                                    sendObject(new Package<PMessage>(new PMessage(source, message), Package.Type.Message));
                                 }
 
                                 @Override
@@ -166,6 +168,12 @@ public class ServerNetworkerSocket extends ServerNetworker
                                 {
                                     sendObject(new Package<Two<UUID, CardInfo>>(new Two<UUID, CardInfo>(card.getId(), card.getCardInfo()), Package.Type.CardInfo));
                                 }
+                                
+                                @Override
+                                public void sendGreeting(PServerInfo info)
+                                {
+                                    sendObject(new Package<PServerInfo>(info, Package.Type.ServerInfo));
+                                }
 
                                 @Override
                                 public void closeConnection(String reason)
@@ -176,18 +184,16 @@ public class ServerNetworkerSocket extends ServerNetworker
                                 }
                             };
 
-                            // addClient(client);
-
-                            System.out.println("a");
+                            addClient(client);
 
                             while (true)
                             {
-                                System.out.println("b");
                                 Package pkg = (Package) objectInStream.readObject();
                                 switch (pkg.type)
                                 {
                                 case Close:
-                                    // String reason = ((Package<String>) pkg).value;
+                                    // String reason = ((Package<String>)
+                                    // pkg).value;
                                     socket.close();
                                     break;
                                 case Message:
@@ -195,21 +201,20 @@ public class ServerNetworkerSocket extends ServerNetworker
                                     onNewMessage.invoke(new Two<Player, String>(socketPlayer, msg.getMessage()));
                                     break;
                                 case Move:
-                                    PCardMovement move = ((Package<PCardMovement>) pkg).value;
-                                    onNewMove.invoke(move);
+                                    onNewMove.invoke(new Two<Player, Move>(socketPlayer, ((Package<Move>) pkg).value));
+                                    break;
                                 }
                             }
                         }
                         catch (Exception e)
                         {
-                            System.out.println(e.toString());
-                            System.out.println("Error for client" + (playerName != null ? ("[" + playerName + "]") : "") + "!\n\t" + e.getMessage());
+                            System.out.println("Server: Error for client" + (playerName != null ? ("[" + playerName + "]") : "") + "!\n\t" + e.getMessage());
                         }
                     }).start();
                 }
                 catch (Exception e)
                 {
-                    System.out.println("Can't accept client!\n\n" + e.getMessage());
+                    System.out.println("Server: Can't accept client!\n\n" + e.getMessage());
                 }
             }
         }).start();
