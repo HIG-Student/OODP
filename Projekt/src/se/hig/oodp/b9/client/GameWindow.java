@@ -3,6 +3,7 @@
  */
 package se.hig.oodp.b9.client;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
@@ -85,6 +86,26 @@ public class GameWindow
 
         start(new ClientGame(me, clientNetworker));
 
+        try
+        {
+            Thread.sleep(500);
+        }
+        catch (InterruptedException e1)
+        {
+        }
+
+        for (int i = 0; i < 3; i++)
+            try
+            {
+                ClientNetworkerSocket psuedoClientNetworker = new ClientNetworkerSocket("127.0.0.1", port);
+                psuedoClientNetworker.sendGreeting(new Player("Pseudo" + i));
+            }
+            catch (IOException e)
+            {
+                System.out.println("Can't listen to server!\n\t" + e.getMessage());
+                System.exit(1);
+            }
+
         serverGame.rules = new Rules();
         serverGame.newGame();
     }
@@ -136,12 +157,14 @@ public class GameWindow
 
     public void runGame()
     {
-        frame.setContentPane(new JPanel()
+        frame.add(new JPanel()
         {
             @Override
             public void paint(Graphics g)
             {
                 super.paint(g);
+
+                System.out.println(getSize());
 
                 if (game.table == null)
                     return;
@@ -164,7 +187,7 @@ public class GameWindow
 
                             transformStack.push(g2d.getTransform());
                             {
-                                double rot = (Math.PI / 2) * i;
+                                double rot = (Math.PI / 2) * (i+1);
 
                                 g2d.rotate(rot);
 
@@ -174,14 +197,16 @@ public class GameWindow
                                 {
                                     Player player = game.table.players.get(i);
                                     CardCollection collection = game.table.playerHands.get(player);
-                                    if (index == game.table.playerHands.get(game.table.players.get(i)).size())
+                                    if (index == collection.size())
                                         return;
 
                                     transformStack.push(g2d.getTransform());
                                     {
-                                        g2d.translate((cardDrawer.getSize().getWidth() / 2 + 20) + x * (cardDrawer.getSize().getWidth() + 10), getHeight() / 2 - cardDrawer.getSize().getHeight() / 3);
-
-                                        cardDrawer.drawImage(g2d, game.table.playerHands.get(game.table.players.get(i)).get(index++));
+                                        g2d.translate((cardDrawer.getSize().getWidth() / 2 + 20) + x * (cardDrawer.getSize().getWidth() + 10), getHeight() / 2);
+                                        
+                                        System.out.println(player + ": " + collection.get(index).getCardInfo());
+                                        
+                                        cardDrawer.drawImage(g2d, collection.get(index++));
                                     }
                                     g2d.setTransform(transformStack.pop());
                                 }
@@ -192,7 +217,7 @@ public class GameWindow
                     }
                     g2d.setTransform(transformStack.pop());
 
-                    g2d.translate(getWidth() / 2, cardDrawer.getSize().getHeight() / 3 + cardDrawer.getSize().getHeight() + 20);
+                    g2d.translate(getWidth() / 2, cardDrawer.getSize().getHeight() / 3 + cardDrawer.getSize().getHeight());
 
                     // Pool draw
                     int index = 0;
@@ -209,7 +234,7 @@ public class GameWindow
                             transformStack.push(g2d.getTransform());
                             {
                                 g2d.translate(cardDrawer.getSize().getWidth() / 3 + x * cardDrawer.getSize().getWidth() / 3, y * 100);
-
+                                
                                 cardDrawer.drawImage(g2d, game.table.pool.get(index++));
                             }
                             g2d.setTransform(transformStack.pop());
@@ -218,8 +243,9 @@ public class GameWindow
                 }
                 g2d.setTransform(transformStack.pop());
             }
-        });
-        
+        }, BorderLayout.CENTER);
+        frame.pack();
+
         frame.repaint();
     }
 
@@ -229,11 +255,17 @@ public class GameWindow
     private void initialize()
     {
         frame = new JFrame();
-        frame.setResizable(false);
-        frame.setBounds(0, 0, 1000, 1000);
-        frame.setLocationRelativeTo(null);
+        // frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().setLayout(null);
+
+        Dimension size = new Dimension(1006, 1029 + 20);
+
+        frame.setSize(size);
+        frame.setPreferredSize(size);
+
+        frame.setLocationRelativeTo(null);
+
+        frame.setLayout(new BorderLayout());
 
         // http://stackoverflow.com/a/9093526
         frame.addWindowListener(new java.awt.event.WindowAdapter()

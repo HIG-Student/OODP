@@ -118,7 +118,7 @@ public class ClientNetworkerSocket extends ClientNetworker
                             onCardInfo.invoke(((Package<Two<UUID, CardInfo>>) pkg).value);
                             break;
                         case Cards:
-                            onCards.invoke(((Package<UUID[]>) pkg).value);
+                            onCards.invoke(((Package<Card[]>) pkg).value);
                             break;
                         case PlayerAdded:
                             onPlayerAdded.invoke(((Package<Player>) pkg).value);

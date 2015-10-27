@@ -8,9 +8,9 @@ import se.hig.oodp.b9.Event.Action;
 
 public class Trigger
 {
-    Object waitHandle = new Object();
+    private Object waitHandle = new Object();
 
-    public List<Action> actions = new ArrayList<Action>();
+    private List<Action> actions = new ArrayList<Action>();
 
     public void add(Action action)
     {
@@ -27,12 +27,18 @@ public class Trigger
         for (Action action : actions)
             action.doAction();
 
-        waitHandle.notifyAll();
+        synchronized (waitHandle)
+        {
+            waitHandle.notifyAll();
+        }
     }
 
     public void waitFor() throws InterruptedException
     {
-        waitHandle.wait();
+        synchronized (waitHandle)
+        {
+            waitHandle.wait();
+        }
     }
 
     public interface Action

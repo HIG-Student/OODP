@@ -7,7 +7,7 @@ import java.util.UUID;
 public class CardCollection extends UUIDInstance
 {
     public final Player owner;
-    
+
     List<Card> cards = new ArrayList<Card>();
 
     public CardCollection()
@@ -15,14 +15,14 @@ public class CardCollection extends UUIDInstance
         id = UUID.randomUUID();
         this.owner = null;
     }
-    
+
     public CardCollection(Player owner)
     {
         id = UUID.randomUUID();
         this.owner = owner;
     }
 
-    public CardCollection(UUID id,Player owner)
+    public CardCollection(UUID id, Player owner)
     {
         this.id = id;
         this.owner = owner;
@@ -32,10 +32,15 @@ public class CardCollection extends UUIDInstance
     {
         cards.add(card);
     }
-    
+
     public Card get(int index)
     {
         return cards.get(index);
+    }
+
+    public Card[] getAll()
+    {
+        return cards.toArray(new Card[0]);
     }
 
     public void remove(Card card)

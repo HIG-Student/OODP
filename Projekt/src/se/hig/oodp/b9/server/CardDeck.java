@@ -47,19 +47,11 @@ public class CardDeck
         Collections.shuffle(cards);
     }
 
-    public List<Card> getCards()
+    public Card[] getCards()
     {
-        return cards;
+        return cards.toArray(new Card[0]);
     }
-
-    public UUID[] getDeckUUIDs()
-    {
-        List<UUID> result = new ArrayList<UUID>();
-        for (Card card : cards)
-            result.add(card.getId());
-        return result.toArray(new UUID[0]);
-    }
-
+    
     public Card getCard(UUID id)
     {
         return idToCard.containsKey(id) ? idToCard.get(id) : null;

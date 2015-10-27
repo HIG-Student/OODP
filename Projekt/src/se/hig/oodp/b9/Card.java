@@ -8,6 +8,7 @@ import java.util.UUID;
 public class Card extends UUIDInstance
 {
     // https://en.wikibooks.org/wiki/Java_Programming/Keywords/transient
+    // this is to not send this info to the clients (then they could cheat)
     transient CardInfo cardInfo = CardInfo.UNKNOWN;
 
     public CardInfo getCardInfo()

@@ -64,14 +64,13 @@ public class Table implements Serializable
         collection.add(card);
     }
 
-    public void changeDeck(UUID[] UUIDs)
+    public void changeDeck(Card[] newCards)
     {
         clear();
 
-        for (UUID uuid : UUIDs)
+        for (Card card : newCards)
         {
-            Card card = new Card(uuid);
-            cards.put(uuid, card);
+            cards.put(card.getId(), card);
             cardLocation.put(card, deck);
             deck.add(card);
         }

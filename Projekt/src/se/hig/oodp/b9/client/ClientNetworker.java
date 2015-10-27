@@ -2,6 +2,7 @@ package se.hig.oodp.b9.client;
 
 import java.util.UUID;
 
+import se.hig.oodp.b9.Card;
 import se.hig.oodp.b9.CardInfo;
 import se.hig.oodp.b9.PCardMovement;
 import se.hig.oodp.b9.Event;
@@ -46,7 +47,7 @@ public abstract class ClientNetworker
 
     public Event<Table> onTable = new Event<Table>();
 
-    public Event<UUID[]> onCards = new Event<UUID[]>();
+    public Event<Card[]> onCards = new Event<Card[]>();
 
     public Event<Two<UUID,CardInfo>> onCardInfo = new Event<Two<UUID,CardInfo>>();
 

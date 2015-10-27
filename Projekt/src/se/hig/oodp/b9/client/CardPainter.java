@@ -55,6 +55,7 @@ public class CardPainter implements ICardPainter
         if (card.getCardInfo() == null)
         {
             g.drawImage(cardBack, -cardBack.getWidth(null) / 2, -cardBack.getHeight(null) / 2, null);
+            System.out.println("BACK");
         }
         else
         {

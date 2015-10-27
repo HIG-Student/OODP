@@ -53,14 +53,16 @@ public class ServerGame
 
             for (Player player : players)
                 if (player != newPlayer)
-                    networker.sendMessageTo(player, "Player [" + player.getName() + "] have joined the game!");
+                    networker.sendMessageTo(player, "Player [" + newPlayer.getName() + "] have joined the game!");
 
             networker.sendMessageTo(newPlayer, "You have joined a game!");
-            networker.sendMessageTo(newPlayer, "Players in the game:");
+            String playersInTheGameStr = "Players in the game:";
             for (Player player : players)
                 if (player != newPlayer)
-                    networker.sendMessageTo(newPlayer, "\t" + player.getName());
-            
+                    playersInTheGameStr += "\n\t" + player.getName();
+            playersInTheGameStr += "\n\t" + newPlayer + " (you)";
+            networker.sendMessageTo(newPlayer, playersInTheGameStr);
+
             networker.sendGreeting(newPlayer, new PServerInfo());
         });
 
@@ -85,9 +87,15 @@ public class ServerGame
         {
             table = new Table(players, UUID.randomUUID(), UUID.randomUUID());
         }
-        table.changeDeck(cardDeck.getDeckUUIDs());
+
+        table.changeDeck(cardDeck.getCards());
         rules.setUp(table);
+
         networker.sendTable(table);
+
+        for (Player player : players)
+            for (Card card : table.playerHands.get(player).getAll())
+                networker.sendCardInfo(player, card);
     }
 
     public void moveCard(Card card, CardCollection collection)
