@@ -9,19 +9,20 @@ public class Rules implements Serializable
         for (Player player : table.players)
             for (int i = 0; i < 4; i++)
                 table.moveCard(table.getCardFromDeck(), table.playerHands.get(player));
+        for (int i = 0; i < 4; i++)
+            table.moveCard(table.getCardFromDeck(), table.pool);
     }
 
-    public boolean tryPlayMove(Player player, Table table, Move move)
+    public boolean canPlayMove(Player player, Table table, Move move)
     {
-        if (player != table.nextPlayer)
+        if (player != table.getNextPlayer())
             return false;
 
         if (!table.playerHands.get(player).contains(move.activeCard))
             return false;
 
-        if (move.takeCards == null)
+        if (move.takeCards.isEmpty())
         {
-            table.moveCard(move.activeCard, table.pool);
             return true;
         }
         else
@@ -29,22 +30,10 @@ public class Rules implements Serializable
             for (Card card : move.takeCards)
                 if (!table.pool.contains(card))
                     return false;
-            
-            //TODO: count
-            
+
+            // TODO: count
+
             return false;
-        }
-    }
-
-    public class Move implements Serializable
-    {
-        public Card activeCard;
-        public Card[] takeCards;
-
-        public Move(Card activeCard, Card[] takeCards)
-        {
-            this.activeCard = activeCard;
-            this.takeCards = takeCards;
         }
     }
 }

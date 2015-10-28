@@ -6,10 +6,10 @@ import java.util.UUID;
 
 import se.hig.oodp.b9.Card;
 import se.hig.oodp.b9.CardCollection;
+import se.hig.oodp.b9.Event;
 import se.hig.oodp.b9.PServerInfo;
 import se.hig.oodp.b9.Player;
 import se.hig.oodp.b9.Rules;
-import se.hig.oodp.b9.Rules.Move;
 import se.hig.oodp.b9.Table;
 
 public class ServerGame
@@ -23,6 +23,8 @@ public class ServerGame
     public Rules rules;
 
     public boolean running = false;
+    
+    public Event<Player> playerAdded = new Event<Player>();
 
     public ServerGame(ServerNetworker networker) // rules?
     {
@@ -64,6 +66,8 @@ public class ServerGame
             networker.sendMessageTo(newPlayer, playersInTheGameStr);
 
             networker.sendGreeting(newPlayer, new PServerInfo());
+            
+            playerAdded.invoke(newPlayer);
         });
 
         networker.onNewMessage.add(message ->
@@ -72,11 +76,33 @@ public class ServerGame
             networker.sendMessageToAll(message.one, message.two);
         });
 
-        networker.onNewMove.add(move ->
+        networker.onNewMove.add(two ->
         {
-            System.out.println("Server: GOT NEW MOVE TO PLAY!");
-            // TODO: Everything
+            two.two.makeLocal(table);
+            
+            if (rules.canPlayMove(two.one, table, two.two))
+            {
+                if (two.two.takeCards.size() == 0)
+                    moveCard(toLocal(two.two.activeCard), table.pool);
+                else
+                    for (Card card : two.two.takeCards)
+                        moveCard(toLocal(card), table.playerPoints.get(two.one));
+
+                networker.sendMoveResult(two.one, true);
+                
+                table.nextTurn();
+                networker.sendGetMove(table.getNextPlayer());
+            }
+            else
+            {
+                networker.sendMoveResult(two.one, false);
+            }
         });
+    }
+
+    public Card toLocal(Card card)
+    {
+        return table.cards.get(card.getId());
     }
 
     public void newGame()
@@ -96,6 +122,12 @@ public class ServerGame
         for (Player player : players)
             for (Card card : table.playerHands.get(player).getAll())
                 networker.sendCardInfo(player, card);
+
+        for (Player player : players)
+            for (Card card : table.pool.getAll())
+                networker.sendCardInfo(player, card);
+
+        networker.sendGetMove(table.getNextPlayer());
     }
 
     public void moveCard(Card card, CardCollection collection)
@@ -105,6 +137,10 @@ public class ServerGame
 
         if (collection.owner != null)
             networker.sendCardInfo(collection.owner, card);
+
+        if (collection == table.pool)
+            for (Player player : players)
+                networker.sendCardInfo(player, card);
     }
 
     public void startGame()

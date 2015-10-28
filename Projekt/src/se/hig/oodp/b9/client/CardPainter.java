@@ -1,14 +1,17 @@
 package se.hig.oodp.b9.client;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
+import javax.xml.crypto.dsig.Transform;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -54,8 +57,10 @@ public class CardPainter implements ICardPainter
 
         if (card.getCardInfo() == null)
         {
+            Shape oldClip = g.getClip();
+            g.setClip(null);
             g.drawImage(cardBack, -cardBack.getWidth(null) / 2, -cardBack.getHeight(null) / 2, null);
-            System.out.println("BACK");
+            g.setClip(oldClip);
         }
         else
         {
@@ -95,15 +100,28 @@ public class CardPainter implements ICardPainter
 
             Shape oldClip = g.getClip();
             g.setClip(null);
-
             Rectangle clip = clipList.get("card" + type + value + ".png");
+            AffineTransform transform = g.getTransform();
+
             g.translate(-clip.width / 2, -clip.height / 2);
             g.translate(-clip.x, -clip.y);
             g.clipRect(clip.x, clip.y, clip.width, clip.height);
             g.drawImage(cardSheet, 0, 0, null);
 
+            g.setTransform(transform);
             g.setClip(oldClip);
         }
+    }
+
+    @Override
+    public void drawHighlightImage(Graphics2D g, Card card)
+    {
+        Shape oldClip = g.getClip();
+        g.setClip(null);
+        // http://stackoverflow.com/a/6734194
+        g.setColor(new Color(0, 0, 0, 0.5f));
+        g.fillRoundRect(-cardBack.getWidth(null) / 2, -cardBack.getHeight(null) / 2, cardBack.getWidth(null), cardBack.getHeight(null), 5, 5);
+        g.setClip(oldClip);
     }
 
     @Override

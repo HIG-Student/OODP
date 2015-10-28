@@ -14,7 +14,7 @@ import se.hig.oodp.b9.Card;
 import se.hig.oodp.b9.CardCollection;
 import se.hig.oodp.b9.PServerInfo;
 import se.hig.oodp.b9.Player;
-import se.hig.oodp.b9.Rules.Move;
+import se.hig.oodp.b9.Move;
 import se.hig.oodp.b9.Table;
 import se.hig.oodp.b9.Package;
 import se.hig.oodp.b9.PCardMovement;
@@ -168,7 +168,7 @@ public class ServerNetworkerSocket extends ServerNetworker
                                 {
                                     sendObject(new Package<Two<UUID, CardInfo>>(new Two<UUID, CardInfo>(card.getId(), card.getCardInfo()), Package.Type.CardInfo));
                                 }
-                                
+
                                 @Override
                                 public void sendGreeting(PServerInfo info)
                                 {
@@ -181,6 +181,12 @@ public class ServerNetworkerSocket extends ServerNetworker
                                     sendObject(new Package<String>(reason, Package.Type.Close));
 
                                     close();
+                                }
+
+                                @Override
+                                public void sendMoveResult(Boolean bool)
+                                {
+                                    sendObject(new Package<Boolean>(bool, Package.Type.MoveResult));
                                 }
                             };
 
@@ -201,8 +207,11 @@ public class ServerNetworkerSocket extends ServerNetworker
                                     onNewMessage.invoke(new Two<Player, String>(socketPlayer, msg.getMessage()));
                                     break;
                                 case Move:
+                                    System.out.println("S: " + ((Package<Move>) pkg).value.activeCard.getCardInfo() + " (" + ((Package<Move>) pkg).value.activeCard.getId() + ")");
                                     onNewMove.invoke(new Two<Player, Move>(socketPlayer, ((Package<Move>) pkg).value));
                                     break;
+                                default:
+                                    System.out.println("Server: Unknown package!");
                                 }
                             }
                         }

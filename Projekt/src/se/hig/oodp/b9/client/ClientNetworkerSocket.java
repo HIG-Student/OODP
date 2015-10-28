@@ -15,7 +15,7 @@ import se.hig.oodp.b9.PMessage;
 import se.hig.oodp.b9.PServerInfo;
 import se.hig.oodp.b9.Player;
 import se.hig.oodp.b9.Package;
-import se.hig.oodp.b9.Rules.Move;
+import se.hig.oodp.b9.Move;
 import se.hig.oodp.b9.Table;
 import se.hig.oodp.b9.Two;
 
@@ -97,9 +97,7 @@ public class ClientNetworkerSocket extends ClientNetworker
                 {
                     try
                     {
-                        System.out.println("Client: Waiting for package");
                         Package pkg = (Package) objectOutStream.readObject();
-                        System.out.println("Client: Got package: " + pkg.type);
                         switch (pkg.type)
                         {
                         case Close:
@@ -111,6 +109,7 @@ public class ClientNetworkerSocket extends ClientNetworker
                             break;
                         case Move:
                             onMove.invoke(((Package<PCardMovement>) pkg).value);
+                            break;
                         case Table:
                             onTable.invoke(((Package<Table>) pkg).value);
                             break;
@@ -129,6 +128,11 @@ public class ClientNetworkerSocket extends ClientNetworker
                         case ServerInfo:
                             onServerGreeting.invoke(((Package<PServerInfo>) pkg).value);
                             break;
+                        case MoveResult:
+                            onMoveResult.invoke(((Package<Boolean>) pkg).value);
+                            break;
+                        default:
+                            System.out.println("Client: Unknown package!");
                         }
                     }
                     catch (Exception e)
@@ -148,6 +152,7 @@ public class ClientNetworkerSocket extends ClientNetworker
     @Override
     public void sendMove(Move move)
     {
+        System.out.println("C: " + move.activeCard.getCardInfo() + " (" + move.activeCard.getId() + ")");
         sendObject(new Package<Move>(move, Package.Type.Move));
     }
 
@@ -182,7 +187,7 @@ public class ClientNetworkerSocket extends ClientNetworker
             }
             catch (IOException e)
             {
-                
+
             }
         }
     }

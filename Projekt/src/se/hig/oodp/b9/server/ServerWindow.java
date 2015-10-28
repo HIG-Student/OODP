@@ -10,6 +10,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import se.hig.oodp.b9.Rules;
+
 public class ServerWindow extends JFrame
 {
     private JPanel contentPane;
@@ -18,6 +20,38 @@ public class ServerWindow extends JFrame
      * Launch the application.
      */
     public static void main(String[] args)
+    {
+        int port = 59440;
+
+        ServerNetworkerSocket server = null;
+
+        try
+        {
+            server = new ServerNetworkerSocket(port);
+        }
+        catch (IOException e)
+        {
+            System.out.println("Can't create server!\n\t" + e.getMessage());
+            System.exit(1);
+        }
+
+        ServerGame serverGame = new ServerGame(server);
+
+        System.out.println("Server: Waiting for players!");
+        serverGame.networker.onPlayerConnecting.waitFor();
+        System.out.println("Server: Waiting for player 2!");
+        serverGame.networker.onPlayerConnecting.waitFor();
+        System.out.println("Server: Waiting for player 3!");
+        serverGame.networker.onPlayerConnecting.waitFor();
+        System.out.println("Server: Waiting for player 4!");
+        serverGame.networker.onPlayerConnecting.waitFor();
+        System.out.println("Server: Done!");
+        
+        serverGame.rules = new Rules();
+        serverGame.newGame();
+    }
+    
+    public void start()
     {
         EventQueue.invokeLater(new Runnable()
         {

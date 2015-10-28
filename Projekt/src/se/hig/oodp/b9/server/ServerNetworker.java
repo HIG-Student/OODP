@@ -10,7 +10,7 @@ import se.hig.oodp.b9.Event;
 import se.hig.oodp.b9.PCardMovement;
 import se.hig.oodp.b9.PServerInfo;
 import se.hig.oodp.b9.Player;
-import se.hig.oodp.b9.Rules.Move;
+import se.hig.oodp.b9.Move;
 import se.hig.oodp.b9.Table;
 import se.hig.oodp.b9.Two;
 
@@ -129,6 +129,13 @@ public abstract class ServerNetworker
             }
             onPlayerDisconecting.invoke(player);
         }
+    }
+
+    public void sendMoveResult(Player player, boolean bool)
+    {
+        ServerNetworkerClient client = getClient(player);
+        if (client != null)
+            client.sendMoveResult(bool);
     }
 
     // Get

@@ -9,7 +9,11 @@ public class Table implements Serializable
 {
     public List<Player> players;
     
-    public Player nextPlayer;
+    public int nextPlayerIndex = 0;
+    public Player getNextPlayer()
+    {
+        return players.get(nextPlayerIndex);
+    }
 
     public HashMap<Player, CardCollection> playerHands = new HashMap<Player, CardCollection>();
     public HashMap<Player, CardCollection> playerPoints = new HashMap<Player, CardCollection>();
@@ -74,6 +78,11 @@ public class Table implements Serializable
             cardLocation.put(card, deck);
             deck.add(card);
         }
+    }
+    
+    public void nextTurn()
+    {
+        nextPlayerIndex = (nextPlayerIndex + 1) % players.size();
     }
 
     public void clear()

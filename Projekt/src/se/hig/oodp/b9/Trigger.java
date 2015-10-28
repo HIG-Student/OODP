@@ -33,11 +33,17 @@ public class Trigger
         }
     }
 
-    public void waitFor() throws InterruptedException
+    public void waitFor()
     {
         synchronized (waitHandle)
         {
-            waitHandle.wait();
+            try
+            {
+                waitHandle.wait();
+            }
+            catch (InterruptedException e)
+            {
+            }
         }
     }
 

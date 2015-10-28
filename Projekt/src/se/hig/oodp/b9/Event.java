@@ -39,7 +39,7 @@ public class Event<T>
         }
     }
 
-    public T waitFor() throws InterruptedException
+    public T waitFor()
     {
         Object key = new Object();
         synchronized (waitForList)
@@ -48,7 +48,13 @@ public class Event<T>
         }
         synchronized (key)
         {
-            key.wait();
+            try
+            {
+                key.wait();
+            }
+            catch (InterruptedException e)
+            {
+            }
         }
         synchronized (waitForList)
         {

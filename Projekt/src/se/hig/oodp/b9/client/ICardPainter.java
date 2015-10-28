@@ -8,5 +8,6 @@ import se.hig.oodp.b9.Card;
 public interface ICardPainter
 {
     public void drawImage(Graphics2D g, Card card);
+    public void drawHighlightImage(Graphics2D g, Card card);
     public Dimension getSize();
 }

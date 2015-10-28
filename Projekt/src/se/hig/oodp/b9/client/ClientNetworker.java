@@ -9,7 +9,7 @@ import se.hig.oodp.b9.Event;
 import se.hig.oodp.b9.PMessage;
 import se.hig.oodp.b9.PServerInfo;
 import se.hig.oodp.b9.Player;
-import se.hig.oodp.b9.Rules.Move;
+import se.hig.oodp.b9.Move;
 import se.hig.oodp.b9.Table;
 import se.hig.oodp.b9.Trigger;
 import se.hig.oodp.b9.Two;
@@ -42,6 +42,8 @@ public abstract class ClientNetworker
     public Trigger onMoveRequest = new Trigger();
 
     public Event<String> onClose = new Event<String>();
+    
+    public Event<Boolean> onMoveResult = new Event<Boolean>();
 
     public Event<PMessage> onMessage = new Event<PMessage>();
 

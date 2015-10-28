@@ -3,19 +3,24 @@ package se.hig.oodp.b9.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.hig.oodp.b9.Event;
 import se.hig.oodp.b9.Player;
+import se.hig.oodp.b9.Move;
 import se.hig.oodp.b9.Table;
 import se.hig.oodp.b9.Trigger;
 
 public class ClientGame
 {
     public Player me;
-    public List<Player> players = new ArrayList<Player>();
     public Table table;
 
-    public ClientNetworker networker;
+    ClientNetworker networker;
 
     public Trigger onChange = new Trigger();
+
+    public Event<Boolean> turnStatus = new Event<Boolean>();
+
+    boolean myTurn = false;
 
     public ClientGame(Player me, ClientNetworker networker)
     {
@@ -44,17 +49,49 @@ public class ClientGame
         {
             table.changeDeck(cards);
         });
+
+        networker.onMoveRequest.add(() ->
+        {
+            turnStatus.invoke(myTurn = true);
+        });
+
+        networker.onMoveResult.add(result ->
+        {
+            turnStatus.invoke(myTurn = !result);
+        });
+    }
+
+    boolean greetingSent = false;
+
+    public ClientGame sendGreeting()
+    {
+        if (greetingSent)
+            return this;
+        greetingSent = true;
         
         networker.sendGreeting(me);
+        return this;
     }
-    
+
     public void end(String reason)
     {
         networker.close(reason);
     }
-    
+
     public void end()
     {
         networker.close();
+    }
+
+    public ClientGame makeMove(Move move)
+    {
+        networker.sendMove(move);
+        return this;
+    }
+
+    public boolean makeMoveAndWait(Move move)
+    {
+        networker.sendMove(move);
+        return networker.onMoveResult.waitFor();
     }
 }

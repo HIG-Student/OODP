@@ -12,7 +12,7 @@ import se.hig.oodp.b9.PServerInfo;
 import se.hig.oodp.b9.Player;
 import se.hig.oodp.b9.Table;
 import se.hig.oodp.b9.Two;
-import se.hig.oodp.b9.Rules.Move;
+import se.hig.oodp.b9.Move;
 
 public abstract class ServerNetworkerClient
 {
@@ -38,14 +38,16 @@ public abstract class ServerNetworkerClient
     public abstract void sendMoveCard(Card card, CardCollection collection);
 
     public abstract void sendGetMove();
-    
+
     public abstract void sendGreeting(PServerInfo info);
 
     public abstract void closeConnection(String reason);
+
+    public abstract void sendMoveResult(Boolean bool);
 
     // Get
 
     public Event<PMessage> onNewMessage = new Event<PMessage>();
 
-    public Event<Two<Player,Move>> onNewMove = new Event<Two<Player,Move>>();
+    public Event<Two<Player, Move>> onNewMove = new Event<Two<Player, Move>>();
 }
