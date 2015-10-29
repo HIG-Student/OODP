@@ -1,5 +1,6 @@
 package se.hig.oodp.b9.server;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,7 +34,7 @@ public abstract class ServerNetworkerClient
 
     public abstract void sendCardInfo(Card card);
 
-    public abstract void sendEndgame(); // , result?
+    public abstract void sendEndgame(HashMap<Player,Integer> scores);
 
     public abstract void sendMoveCard(Card card, CardCollection collection);
 

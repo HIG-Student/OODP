@@ -72,7 +72,13 @@ public class Package<T extends Serializable> implements Serializable
          * 
          * @see MoveResult
          */
-        MoveResult
+        MoveResult,
+        /**
+         * Result for requested move
+         * 
+         * @see MoveResult
+         */
+        EndGame
     }
 
     /**

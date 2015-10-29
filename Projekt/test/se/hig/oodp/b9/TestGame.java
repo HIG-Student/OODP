@@ -59,7 +59,7 @@ public class TestGame
 
         assertTrue("Hand not empty!", clientGame.get(0).getMyHand().size() == 0);
 
-        clientGame.get(0).turnStatus.waitFor();
+        clientGame.get(0).onTurnStatus.waitFor();
         
         System.out.println("!");
 
@@ -83,7 +83,7 @@ public class TestGame
 
         assertTrue("Hand not empty!", clientGame.get(0).getMyHand().size() == 0);
 
-        clientGame.get(0).turnStatus.waitFor();
+        clientGame.get(0).onTurnStatus.waitFor();
         
         System.out.println("!");
 

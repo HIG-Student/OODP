@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,6 +52,8 @@ public class ServerNetworkerSocket extends ServerNetworker
     {
         server = new ServerSocket(port);
 
+        onLog.add(msg -> System.out.println("Server log: " + msg));
+
         new Thread(() ->
         {
             while (!killed)
@@ -59,13 +62,13 @@ public class ServerNetworkerSocket extends ServerNetworker
                 {
                     Socket socket = server.accept();
 
-                    System.out.println("Server: Found client!");
+                    onLog.invoke("Server: Found client!");
 
                     new Thread(() ->
                     {
                         String playerName = null;
 
-                        System.out.println("Server: Listening for client greeting!");
+                        onLog.invoke("Listening for client greeting!");
 
                         try (ObjectInputStream objectInStream = new ObjectInputStream(socket.getInputStream()))
                         {
@@ -73,7 +76,7 @@ public class ServerNetworkerSocket extends ServerNetworker
 
                             playerName = socketPlayer.getName();
 
-                            System.out.println("Server: New client is: [" + socketPlayer + "]");
+                            onLog.invoke("New client is: [" + socketPlayer + "]");
 
                             ServerNetworkerClient client = new ServerNetworkerClient()
                             {
@@ -119,7 +122,7 @@ public class ServerNetworkerSocket extends ServerNetworker
                                     }
                                     catch (IOException e)
                                     {
-                                        System.out.println("Server: Can't send object!");
+                                        onLog.invoke("Can't send object!");
                                         System.exit(1);
 
                                         return false;
@@ -164,9 +167,9 @@ public class ServerNetworkerSocket extends ServerNetworker
                                 }
 
                                 @Override
-                                public void sendEndgame()
+                                public void sendEndgame(HashMap<Player, Integer> scores)
                                 {
-                                    sendObject(new Package<Boolean>(true, Package.Type.Close));
+                                    sendObject(new Package<HashMap<Player, Integer>>(scores, Package.Type.EndGame));
                                 }
 
                                 @Override
@@ -218,19 +221,19 @@ public class ServerNetworkerSocket extends ServerNetworker
                                     onNewMove.invoke(new Two<Player, Move>(socketPlayer, ((Package<Move>) pkg).getValue()));
                                     break;
                                 default:
-                                    System.out.println("Server: Unknown package!");
+                                    onLog.invoke("Unknown package!");
                                 }
                             }
                         }
                         catch (Exception e)
                         {
-                            System.out.println("Server: Error for client" + (playerName != null ? ("[" + playerName + "]") : "") + "!\n\t" + e.getMessage());
+                            onLog.invoke("Error for client" + (playerName != null ? ("[" + playerName + "]") : "") + "!\n\t" + e.getMessage());
                         }
                     }).start();
                 }
                 catch (Exception e)
                 {
-                    System.out.println("Server: Can't accept client!\n\n" + e.getMessage());
+                    onLog.invoke("Can't accept client!\n\n" + e.getMessage());
                 }
             }
         }).start();

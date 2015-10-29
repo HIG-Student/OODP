@@ -23,6 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import se.hig.oodp.b9.Card;
+import se.hig.oodp.b9.Two;
 import se.hig.oodp.b9.CardCollection;
 import se.hig.oodp.b9.CardInfo;
 import se.hig.oodp.b9.Player;
@@ -34,8 +35,13 @@ import se.hig.oodp.b9.server.ServerNetworkerSocket;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.Stack;
 
 /**
@@ -138,12 +144,26 @@ public class GameWindow
         HashMap<Rectangle, Card> boundingMaps = new HashMap<Rectangle, Card>();
         Move selection = new Move(null);
 
-        game.turnStatus.add(ok ->
+        game.onTurnStatus.add(ok ->
         {
             // TODO: is correct??
             if (!ok)
                 selection.setActiveCard(null);
             frame.repaint();
+        });
+
+        game.onEndGame.add(set ->
+        {
+            List<Two<Player, Integer>> points = new ArrayList<Two<Player, Integer>>();
+            set.forEach((a, b) -> points.add(new Two<Player, Integer>(a, b)));
+
+            Collections.sort(points, (Two<Player, Integer> a, Two<Player, Integer> b) -> a.getTwo().compareTo(b.getTwo()));
+
+            StringBuilder builder = new StringBuilder();
+
+            points.forEach(a -> builder.append(a.getOne().getName() + ": " + a.getTwo().intValue() + "\n"));
+
+            JOptionPane.showMessageDialog(frame, builder.toString());
         });
 
         frame.add(new JPanel()
@@ -187,8 +207,11 @@ public class GameWindow
                                 {
                                     Player player = game.getTable().getPlayers()[i];
                                     CardCollection collection = game.getTable().getPlayerHand(player);
-                                    if (index == collection.size())
+                                    if (index >= collection.size())
                                         break;
+
+                                    // Might break a tiny bit here, i blaim Mr
+                                    // GNU
 
                                     Card card = collection.get(index);
 

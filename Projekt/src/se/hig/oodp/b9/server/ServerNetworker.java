@@ -1,6 +1,7 @@
 package se.hig.oodp.b9.server;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -90,10 +91,10 @@ public abstract class ServerNetworker
             client.sendCardInfo(card);
     }
 
-    public void sendEndgame() // , result?
+    public void sendEndGame(HashMap<Player,Integer> scores) // , result?
     {
         for (ServerNetworkerClient client : clients)
-            client.sendEndgame();
+            client.sendEndgame(scores);
     }
 
     public void sendMoveCard(Card card, CardCollection collection)
@@ -141,6 +142,8 @@ public abstract class ServerNetworker
     // Get
 
     public Event<Player> onPlayerConnecting = new Event<Player>();
+    
+    public Event<String> onLog = new Event<String>();
 
     public Event<Player> onPlayerDisconecting = new Event<Player>();
 

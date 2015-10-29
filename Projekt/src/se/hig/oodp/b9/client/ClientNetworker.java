@@ -1,5 +1,6 @@
 package se.hig.oodp.b9.client;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 import se.hig.oodp.b9.Card;
@@ -43,6 +44,8 @@ public abstract class ClientNetworker
     public Event<String> onClose = new Event<String>();
     
     public Event<Boolean> onMoveResult = new Event<Boolean>();
+    
+    public Event<HashMap<Player,Integer>> onEndGame = new Event<HashMap<Player,Integer>>();
 
     public Event<PMessage> onMessage = new Event<PMessage>();
 

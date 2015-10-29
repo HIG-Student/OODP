@@ -48,12 +48,16 @@ public class Main
 
         Thread.sleep(1000);
 
-        for (int turn = 0; turn < 4; turn++)
+        for (int giv = 0; giv < 3; giv++)
         {
-            for (ClientGame game : clientGame)
+            for (int turn = 0; turn < 4; turn++)
             {
-                game.makeMoveAndWait(new Move(game.getMyHand().getFirstCard()));
+                for (ClientGame game : clientGame)
+                {
+                    game.makeMoveAndWait(new Move(game.getMyHand().getFirstCard()));
+                }
             }
+            clientGame.get(0).getNetworker().onPlayerTurn.waitFor();
         }
 
         System.out.println("Client hand size: " + clientGame.get(0).getMyHand().size());

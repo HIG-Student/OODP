@@ -1,6 +1,7 @@
 package se.hig.oodp.b9.server;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -31,12 +32,12 @@ public class ServerGame
 
     public int getPoints(Player player)
     {
-        return points.get(player);
+        return points.containsKey(player) ? points.get(player) : 0;
     }
 
     public void addPoints(Player player, int toAdd)
     {
-        points.put(player, points.get(player) + toAdd);
+        points.put(player, getPoints(player) + toAdd);
     }
 
     public ServerGame(ServerNetworker networker) // rules?
@@ -123,6 +124,15 @@ public class ServerGame
                         addPoints(two.getOne(), 1);
 
                     moveCard(activeCard, table.getPlayerPoints(two.getOne()));
+
+                    if (activeCard.getCardInfo().getValue() == CardInfo.Value.Ess)
+                        addPoints(two.getOne(), 1);
+
+                    if (activeCard.getCardInfo().getValue() == CardInfo.Value.Två && activeCard.getCardInfo().getType() == CardInfo.Type.Spader)
+                        addPoints(two.getOne(), 1);
+
+                    if (activeCard.getCardInfo().getValue() == CardInfo.Value.Tio && activeCard.getCardInfo().getType() == CardInfo.Type.Ruter)
+                        addPoints(two.getOne(), 2);
                 }
 
                 networker.sendMoveResult(two.getOne(), true);
@@ -182,6 +192,9 @@ public class ServerGame
 
                         if (topCards.size() == 1 && topSpades.size() == 1 && topCards.get(0).equals(topSpades.get(0)))
                             addPoints(topCards.get(0), 1);
+
+                        networker.sendEndGame(points);
+                        newGame();
                     }
                 }
 
@@ -194,6 +207,11 @@ public class ServerGame
         });
     }
 
+    public ServerNetworker getNetworker()
+    {
+        return networker;
+    }
+    
     public void newGame()
     {
         cardDeck = new CardDeck();
@@ -203,7 +221,6 @@ public class ServerGame
             table = new Table(players, UUID.randomUUID(), UUID.randomUUID());
 
             table.changeDeck(cardDeck.getCards());
-
             networker.sendTable(table);
 
             table.onCardMove.add(two ->
@@ -223,9 +240,12 @@ public class ServerGame
         else
         {
             table.changeDeck(cardDeck.getCards());
+            networker.sendTable(table);
+            
             rules.setUp(table);
         }
 
+        table.resetNextTurn();
         networker.sendPlayerTurn(table.getNextPlayer());
     }
 

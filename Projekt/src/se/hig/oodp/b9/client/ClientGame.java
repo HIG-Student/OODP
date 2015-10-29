@@ -1,5 +1,7 @@
 package se.hig.oodp.b9.client;
 
+import java.util.HashMap;
+
 import se.hig.oodp.b9.CardCollection;
 import se.hig.oodp.b9.Event;
 import se.hig.oodp.b9.Player;
@@ -16,7 +18,9 @@ public class ClientGame
 
     public final Trigger onChange = new Trigger();
 
-    public final Event<Boolean> turnStatus = new Event<Boolean>();
+    public final Event<Boolean> onTurnStatus = new Event<Boolean>();
+
+    public final Event<HashMap<Player, Integer>> onEndGame = new Event<HashMap<Player, Integer>>();
 
     boolean myTurn = false;
 
@@ -50,12 +54,17 @@ public class ClientGame
 
         networker.onPlayerTurn.add((player) ->
         {
-            turnStatus.invoke(myTurn = me.equals(player));
+            onTurnStatus.invoke(myTurn = me.equals(player));
         });
 
         networker.onMoveResult.add(result ->
         {
-            turnStatus.invoke(myTurn = !result);
+            onTurnStatus.invoke(myTurn = !result);
+        });
+
+        networker.onEndGame.add(result ->
+        {
+            onEndGame.invoke(result);
         });
     }
 

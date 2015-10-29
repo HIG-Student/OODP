@@ -51,7 +51,7 @@ public class Table implements Serializable
         collections.put(this.poolUUID = poolUUID, pool = new CardCollection(poolUUID, null));
         collections.put(this.deckUUID = deckUUID, deck = new CardCollection(deckUUID, null));
     }
-
+    
     public CardCollection getCardLocation(Card card)
     {
         return cardLocation.containsKey(card) ? cardLocation.get(card) : null;
@@ -141,6 +141,11 @@ public class Table implements Serializable
     public void nextTurn()
     {
         nextPlayerIndex = (nextPlayerIndex + 1) % players.size();
+    }
+
+    public void resetNextTurn()
+    {
+        nextPlayerIndex = 0;
     }
 
     public void clear()

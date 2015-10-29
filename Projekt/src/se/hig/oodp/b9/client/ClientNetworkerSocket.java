@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.UUID;
 
 import se.hig.oodp.b9.Card;
@@ -134,6 +135,9 @@ public class ClientNetworkerSocket extends ClientNetworker
                             break;
                         case MoveResult:
                             onMoveResult.invoke(((Package<Boolean>) pkg).getValue());
+                            break;
+                        case EndGame:
+                            onEndGame.invoke(((Package<HashMap<Player,Integer>>) pkg).getValue());
                             break;
                         default:
                             System.out.println("Client: Unknown package!");
