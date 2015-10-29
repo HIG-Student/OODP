@@ -139,8 +139,9 @@ public class GameWindow
 
         game.turnStatus.add(ok ->
         {
-            selection.activeCard = null;
-            selection.takeCards.clear();
+            // TODO: is correct??
+            if (!ok)
+                selection.setActiveCard(null);
             frame.repaint();
         });
 
@@ -170,12 +171,12 @@ public class GameWindow
                         // Player draw
                         for (int i = 0; i < 4; i++)
                         {
-                            if (i == game.table.players.size())
+                            if (i == game.getTable().getPlayers().length)
                                 break;
 
                             transformStack.push(g2d.getTransform());
                             {
-                                double rot = (Math.PI / 2) * (i - game.table.players.indexOf(game.me));
+                                double rot = (Math.PI / 2) * (i - game.getTable().getPlayerIndex(game.getMe()));
 
                                 g2d.rotate(rot);
 
@@ -183,8 +184,8 @@ public class GameWindow
                                 int index = 0;
                                 for (int x = -2; x <= 1; x++)
                                 {
-                                    Player player = game.table.players.get(i);
-                                    CardCollection collection = game.table.playerHands.get(player);
+                                    Player player = game.getTable().getPlayers()[i];
+                                    CardCollection collection = game.getTable().getPlayerHand(player);
                                     if (index == collection.size())
                                         break;
 
@@ -207,7 +208,7 @@ public class GameWindow
                                         boundingMaps.put(rec, card);
 
                                         cardPainter.drawImage(g2d, card);
-                                        if ((selection.activeCard != null && selection.activeCard.equals(card)) || selection.takeCards.contains(card))
+                                        if ((selection.getActiveCard() != null && selection.getActiveCard().equals(card)) || selection.takeContains(card))
                                             cardPainter.drawHighlightImage(g2d, card);
 
                                     }
@@ -228,15 +229,15 @@ public class GameWindow
                     int index = 0;
                     for (int y = 0; y < 5; y++)
                     {
-                        if (index == game.table.pool.size())
+                        if (index == game.getTable().getPool().size())
                             return;
 
                         for (int x = -6; x < 5; x++)
                         {
-                            if (index == game.table.pool.size())
+                            if (index == game.getTable().getPool().size())
                                 return;
 
-                            Card card = game.table.pool.get(index);
+                            Card card = game.getTable().getPool().get(index);
 
                             transformStack.push(g2d.getTransform());
                             {
@@ -255,7 +256,7 @@ public class GameWindow
                                 boundingMaps.put(rec, card);
 
                                 cardPainter.drawImage(g2d, card);
-                                if ((selection.activeCard != null && selection.activeCard.equals(card)) || selection.takeCards.contains(card))
+                                if ((selection.getActiveCard() != null && selection.getActiveCard().equals(card)) || selection.takeContains(card))
                                     cardPainter.drawHighlightImage(g2d, card);
                             }
                             g2d.setTransform(transformStack.pop());
@@ -276,7 +277,7 @@ public class GameWindow
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                if (!game.myTurn)
+                if (!game.isMyTurn())
                     return;
 
                 for (Rectangle rec : boundings)
@@ -284,27 +285,19 @@ public class GameWindow
                     {
                         Card card = boundingMaps.get(rec);
 
-                        CardCollection collection = game.table.cardLocation.get(card);
+                        CardCollection collection = game.getTable().getCardLocation(card);
 
-                        if (collection == game.table.pool)
+                        if (collection == game.getTable().getPool())
                         {
-                            if (selection.activeCard == null)
+                            if (selection.getActiveCard() == null)
                                 break;
 
-                            if (selection.takeCards.contains(card))
-                            {
-                                selection.takeCards.remove(card);
-                            }
-                            else
-                            {
-                                selection.takeCards.add(card);
-                            }
+                            selection.toggleTake(card);
                         }
                         else
-                            if (collection.owner != null && collection.owner.equals(game.me))
+                            if (collection.owner != null && collection.owner.equals(game.getMe()))
                             {
-                                selection.activeCard = (selection.activeCard != null && selection.activeCard.equals(card)) ? null : card;
-                                selection.takeCards.clear();
+                                selection.toggleActive(card);
                             }
 
                         break;
@@ -347,7 +340,7 @@ public class GameWindow
             {
                 if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER)
                 {
-                    if (selection.activeCard == null)
+                    if (selection.getActiveCard() == null)
                     {
                         // i dunno
                     }
@@ -355,8 +348,7 @@ public class GameWindow
                     {
                         game.myTurn = false;
                         game.makeMove(selection);
-                        selection.activeCard = null;
-                        selection.takeCards.clear();
+                        selection.setActiveCard(null);
                         frame.repaint();
                     }
                 }

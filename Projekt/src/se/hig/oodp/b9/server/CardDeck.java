@@ -14,7 +14,14 @@ import se.hig.oodp.b9.CardInfo;
  */
 public class CardDeck
 {
+    /**
+     * HashMap that maps the card-id to the card
+     */
     HashMap<UUID, Card> idToCard;
+
+    /**
+     * The cards in this deck
+     */
     @SuppressWarnings("serial")
     final List<Card> cards = new ArrayList<Card>()
     {
@@ -47,11 +54,23 @@ public class CardDeck
         Collections.shuffle(cards);
     }
 
+    /**
+     * Get the cards
+     * 
+     * @return the cards as an array
+     */
     public Card[] getCards()
     {
         return cards.toArray(new Card[0]);
     }
-    
+
+    /**
+     * Get card from id
+     * 
+     * @param id
+     *            of the card
+     * @return the card
+     */
     public Card getCard(UUID id)
     {
         return idToCard.containsKey(id) ? idToCard.get(id) : null;

@@ -8,7 +8,13 @@ import java.util.UUID;
  */
 public class Player extends UUIDInstance implements Serializable
 {
+    /**
+     * A unique id for this player's hand
+     */
     public final UUID handUUID = UUID.randomUUID();
+    /**
+     * A unique id for this player's points (cards taken)
+     */
     public final UUID pointsUUID = UUID.randomUUID();
 
     /**
@@ -16,23 +22,28 @@ public class Player extends UUIDInstance implements Serializable
      */
     String name;
 
+    /**
+     * Get the name
+     * 
+     * @return the name
+     */
     public String getName()
     {
         return name;
     }
 
+    /**
+     * Create player
+     * 
+     * @param name
+     *            of the player
+     */
     public Player(String name)
     {
         this.name = name;
         id = UUID.randomUUID();
     }
 
-    public Player(String name, UUID id)
-    {
-        this.name = name;
-        this.id = id;
-    }
-    
     @Override
     public String toString()
     {

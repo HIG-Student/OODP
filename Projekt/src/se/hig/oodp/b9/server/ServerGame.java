@@ -23,7 +23,7 @@ public class ServerGame
     public Rules rules;
 
     public boolean running = false;
-    
+
     public Event<Player> playerAdded = new Event<Player>();
 
     public ServerGame(ServerNetworker networker) // rules?
@@ -66,43 +66,63 @@ public class ServerGame
             networker.sendMessageTo(newPlayer, playersInTheGameStr);
 
             networker.sendGreeting(newPlayer, new PServerInfo());
-            
+
             playerAdded.invoke(newPlayer);
         });
 
         networker.onNewMessage.add(message ->
         {
-            System.out.println("Server: Player [" + message.one + "] says: " + message.two);
-            networker.sendMessageToAll(message.one, message.two);
+            System.out.println("Server: Player [" + message.getOne() + "] says: " + message.getTwo());
+            networker.sendMessageToAll(message.getOne(), message.getTwo());
         });
 
         networker.onNewMove.add(two ->
         {
-            two.two.makeLocal(table);
-            
-            if (rules.canPlayMove(two.one, table, two.two))
-            {
-                if (two.two.takeCards.size() == 0)
-                    moveCard(toLocal(two.two.activeCard), table.pool);
-                else
-                    for (Card card : two.two.takeCards)
-                        moveCard(toLocal(card), table.playerPoints.get(two.one));
+            two.getTwo().populate(table);
 
-                networker.sendMoveResult(two.one, true);
-                
+            if (rules.canPlayMove(two.getOne(), table, two.getTwo()))
+            {
+                Card activeCard = two.getTwo().getActiveCard();
+                Card[] takeCards = two.getTwo().getTakeCards();
+
+                if (takeCards.length == 0)
+                    moveCard(activeCard, table.getPool());
+                else
+                {
+                    for (Card card : takeCards)
+                        moveCard(card, table.getPlayerPoints(two.getOne()));
+
+                    moveCard(activeCard, table.getPlayerPoints(two.getOne()));
+                }
+
+                networker.sendMoveResult(two.getOne(), true);
+
                 table.nextTurn();
-                networker.sendGetMove(table.getNextPlayer());
+
+                System.out.println("Next turn");
+                System.out.println("\t" + table.getNextPlayer());
+                System.out.println("\t" + table.getPlayerHand(table.getNextPlayer()).size());
+
+                if (table.getPlayerHand(table.getNextPlayer()).size() == 0)
+                {
+                    System.out.println("OK!!!!" + table.deckGotCards());
+                    if (table.deckGotCards())
+                    {
+                        rules.give(table);
+                    }
+                    else
+                    {
+                        // END GAME
+                    }
+                }
+
+                networker.sendPlayerTurn(table.getNextPlayer());
             }
             else
             {
-                networker.sendMoveResult(two.one, false);
+                networker.sendMoveResult(two.getOne(), false);
             }
         });
-    }
-
-    public Card toLocal(Card card)
-    {
-        return table.cards.get(card.getId());
     }
 
     public void newGame()
@@ -112,35 +132,37 @@ public class ServerGame
         if (table == null)
         {
             table = new Table(players, UUID.randomUUID(), UUID.randomUUID());
+
+            table.changeDeck(cardDeck.getCards());
+            
+            networker.sendTable(table);
+            
+            table.onCardMove.add(two ->
+            {
+                networker.sendMoveCard(two.getOne(), two.getTwo());
+
+                if (two.getTwo().owner != null)
+                    networker.sendCardInfo(two.getTwo().owner, two.getOne());
+
+                if (two.getTwo() == table.getPool())
+                    for (Player player : players)
+                        networker.sendCardInfo(player, two.getOne());
+            });
+            
+            rules.setUp(table);
+        }
+        else
+        {
+            table.changeDeck(cardDeck.getCards());
+            rules.setUp(table);
         }
 
-        table.changeDeck(cardDeck.getCards());
-        rules.setUp(table);
-
-        networker.sendTable(table);
-
-        for (Player player : players)
-            for (Card card : table.playerHands.get(player).getAll())
-                networker.sendCardInfo(player, card);
-
-        for (Player player : players)
-            for (Card card : table.pool.getAll())
-                networker.sendCardInfo(player, card);
-
-        networker.sendGetMove(table.getNextPlayer());
+        networker.sendPlayerTurn(table.getNextPlayer());
     }
 
     public void moveCard(Card card, CardCollection collection)
     {
         table.moveCard(card, collection);
-        networker.sendMoveCard(card, collection);
-
-        if (collection.owner != null)
-            networker.sendCardInfo(collection.owner, card);
-
-        if (collection == table.pool)
-            for (Player player : players)
-                networker.sendCardInfo(player, card);
     }
 
     public void startGame()
@@ -153,5 +175,10 @@ public class ServerGame
 
         networker.sendMessageToAll("The game is starting!");
         newGame();
+    }
+    
+    public void kill()
+    {
+        networker.kill();
     }
 }

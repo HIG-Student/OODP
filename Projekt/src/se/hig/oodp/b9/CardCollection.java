@@ -28,6 +28,11 @@ public class CardCollection extends UUIDInstance
         this.owner = owner;
     }
 
+    public Card getFirstCard()
+    {
+        return cards.isEmpty() ? null : cards.get(0);
+    }
+
     public void add(Card card)
     {
         cards.add(card);
@@ -56,6 +61,15 @@ public class CardCollection extends UUIDInstance
     public boolean contains(Card card)
     {
         return cards.contains(card);
+    }
+
+    public boolean contains(UUID id)
+    {
+        for (Card card : cards)
+            if (card.getId().equals(id))
+                return true;
+
+        return false;
     }
 
     public int size()

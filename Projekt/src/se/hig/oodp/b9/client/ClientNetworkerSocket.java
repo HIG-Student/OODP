@@ -37,7 +37,9 @@ public class ClientNetworkerSocket extends ClientNetworker
     {
         try
         {
+            objectOutStream.reset();
             objectOutStream.writeObject(obj);
+            objectOutStream.flush();
         }
         catch (IOException e)
         {
@@ -95,41 +97,43 @@ public class ClientNetworkerSocket extends ClientNetworker
             {
                 while (true)
                 {
+                    Package p;
                     try
                     {
                         Package pkg = (Package) objectOutStream.readObject();
-                        switch (pkg.type)
+                        p = pkg;
+                        switch (pkg.getType())
                         {
                         case Close:
-                            onClose.invoke(((Package<String>) pkg).value);
+                            onClose.invoke(((Package<String>) pkg).getValue());
                             close(false);
                             return;
                         case Message:
-                            onMessage.invoke(((Package<PMessage>) pkg).value);
+                            onMessage.invoke(((Package<PMessage>) pkg).getValue());
                             break;
                         case Move:
-                            onMove.invoke(((Package<PCardMovement>) pkg).value);
+                            onMove.invoke(((Package<PCardMovement>) pkg).getValue());
                             break;
                         case Table:
-                            onTable.invoke(((Package<Table>) pkg).value);
+                            onTable.invoke(((Package<Table>) pkg).getValue());
                             break;
                         case CardInfo:
-                            onCardInfo.invoke(((Package<Two<UUID, CardInfo>>) pkg).value);
+                            onCardInfo.invoke(((Package<Two<UUID, CardInfo>>) pkg).getValue());
                             break;
                         case Cards:
-                            onCards.invoke(((Package<Card[]>) pkg).value);
+                            onCards.invoke(((Package<Card[]>) pkg).getValue());
                             break;
                         case PlayerAdded:
-                            onPlayerAdded.invoke(((Package<Player>) pkg).value);
+                            onPlayerAdded.invoke(((Package<Player>) pkg).getValue());
                             break;
-                        case RequestMove:
-                            onMoveRequest.invoke();
+                        case PlayerTurn:
+                            onPlayerTurn.invoke(((Package<Player>) pkg).getValue());
                             break;
                         case ServerInfo:
-                            onServerGreeting.invoke(((Package<PServerInfo>) pkg).value);
+                            onServerGreeting.invoke(((Package<PServerInfo>) pkg).getValue());
                             break;
                         case MoveResult:
-                            onMoveResult.invoke(((Package<Boolean>) pkg).value);
+                            onMoveResult.invoke(((Package<Boolean>) pkg).getValue());
                             break;
                         default:
                             System.out.println("Client: Unknown package!");
@@ -152,7 +156,7 @@ public class ClientNetworkerSocket extends ClientNetworker
     @Override
     public void sendMove(Move move)
     {
-        System.out.println("C: " + move.activeCard.getCardInfo() + " (" + move.activeCard.getId() + ")");
+        System.out.println("C: " + move.getActiveCard().getCardInfo() + " (" + move.getActiveCard().getId() + ")");
         sendObject(new Package<Move>(move, Package.Type.Move));
     }
 

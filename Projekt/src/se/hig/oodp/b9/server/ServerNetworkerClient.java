@@ -37,7 +37,7 @@ public abstract class ServerNetworkerClient
 
     public abstract void sendMoveCard(Card card, CardCollection collection);
 
-    public abstract void sendGetMove();
+    public abstract void sendPlayerTurn(Player player);
 
     public abstract void sendGreeting(PServerInfo info);
 

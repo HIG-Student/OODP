@@ -1,21 +1,23 @@
 package se.hig.oodp.b9;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import se.hig.oodp.b9.client.ClientGame;
 import se.hig.oodp.b9.client.ClientNetworkerSocket;
-import se.hig.oodp.b9.client.GameWindow;
 import se.hig.oodp.b9.server.ServerGame;
 import se.hig.oodp.b9.server.ServerNetworkerSocket;
 
 public class TestGame
 {
-    public ServerGame serverGame;
-    public List<ClientGame> clientGame;
+    public static ServerGame serverGame;
+    public static List<ClientGame> clientGame;
 
     @Before
     public void setUp() throws Exception
@@ -26,18 +28,53 @@ public class TestGame
 
         clientGame = new ArrayList<ClientGame>();
         for (int i = 0; i < 4; i++)
+        {
             clientGame.add(new ClientGame(new Player("Player " + i), new ClientNetworkerSocket("127.0.0.1", port)).sendGreeting());
-
-        for (int i = 0; i < 4; i++)
             serverGame.playerAdded.waitFor();
+        }
 
         serverGame.rules = new Rules();
         serverGame.newGame();
     }
-
-    @Test
-    public void testFoldPlay()
+    
+    @After
+    public void tearDown() throws Exception
     {
-        new GameWindow(clientGame.get(0));
+        for (ClientGame game : clientGame)
+        {
+            game.end();
+        }
+        serverGame.kill();
+    }
+    
+
+    @Test//(timeout = 5000)
+    public void testGive() throws InterruptedException
+    {
+        for (int turn = 0; turn < 4; turn++)
+        {
+            for (ClientGame game : clientGame)
+            {
+                game.makeMoveAndWait(new Move(game.getMyHand().getFirstCard()));
+            }
+        }
+
+        assertTrue("Hand not empty!", clientGame.get(0).getMyHand().size() == 0);
+
+        clientGame.get(0).turnStatus.waitFor();
+
+        assertTrue("Hand not full!", clientGame.get(0).getMyHand().size() == 4);
+    }
+
+    @Test//(timeout = 5000)
+    public void testFoldGame() throws InterruptedException
+    {
+        for (int turn = 0; turn < 4; turn++)
+        {
+            testGive();
+            System.out.println("Give!");
+        }
+
+        assertTrue("Cards are remaining!", serverGame.table.deck.size() == 0);
     }
 }

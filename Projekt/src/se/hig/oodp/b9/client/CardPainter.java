@@ -11,7 +11,6 @@ import java.io.File;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
-import javax.xml.crypto.dsig.Transform;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -21,13 +20,43 @@ import org.w3c.dom.NodeList;
 
 import se.hig.oodp.b9.Card;
 
+/**
+ * Draws images from a spritesheet
+ */
 public class CardPainter implements ICardPainter
 {
+    /**
+     * Standard size of the cards
+     */
     Dimension size;
+    /**
+     * Spritesheet with cards
+     */
     Image cardSheet;
+    /**
+     * The back of the card
+     */
     Image cardBack;
+    /**
+     * Rectangles that clips single cards from the spritesheet
+     */
     HashMap<String, Rectangle> clipList = new HashMap<String, Rectangle>();
 
+    /**
+     * Draws cards from a spritesheet
+     * 
+     * @param pathToCardsSheet
+     *            the path to the image (spritesheet)
+     * @param pathToXML
+     *            path to an XML contaning information about the location of the
+     *            cards in the spritesheet
+     * @param pathToCardBack
+     *            path to the image of the card back
+     * @param size
+     *            the standard size of the cards
+     * @throws Exception
+     *             if problem with loading resources
+     */
     public CardPainter(String pathToCardsSheet, String pathToXML, String pathToCardBack, Dimension size) throws Exception
     {
         cardSheet = ImageIO.read(CardPainter.class.getResource(pathToCardsSheet));

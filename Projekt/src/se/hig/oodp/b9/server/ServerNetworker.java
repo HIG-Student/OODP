@@ -103,11 +103,10 @@ public abstract class ServerNetworker
             client.sendMoveCard(card, collection);
     }
 
-    public void sendGetMove(Player player)
+    public void sendPlayerTurn(Player player)
     {
-        ServerNetworkerClient client = getClient(player);
-        if (client != null)
-            client.sendGetMove();
+        for (ServerNetworkerClient client : clients)
+            client.sendPlayerTurn(player);
     }
 
     public void sendGreeting(Player player, PServerInfo info)
@@ -137,6 +136,8 @@ public abstract class ServerNetworker
         if (client != null)
             client.sendMoveResult(bool);
     }
+    
+    public abstract void kill();
 
     // Get
 

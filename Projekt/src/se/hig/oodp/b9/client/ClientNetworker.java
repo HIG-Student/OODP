@@ -11,7 +11,6 @@ import se.hig.oodp.b9.PServerInfo;
 import se.hig.oodp.b9.Player;
 import se.hig.oodp.b9.Move;
 import se.hig.oodp.b9.Table;
-import se.hig.oodp.b9.Trigger;
 import se.hig.oodp.b9.Two;
 
 public abstract class ClientNetworker
@@ -39,7 +38,7 @@ public abstract class ClientNetworker
 
     public Event<PCardMovement> onMove = new Event<PCardMovement>();
 
-    public Trigger onMoveRequest = new Trigger();
+    public Event<Player> onPlayerTurn = new Event<Player>();
 
     public Event<String> onClose = new Event<String>();
     

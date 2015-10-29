@@ -1,16 +1,14 @@
 package se.hig.oodp.b9;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import se.hig.oodp.b9.Event.Action;
 
 public class Trigger
 {
-    private Object waitHandle = new Object();
+    Object waitHandle = new Object();
 
-    private List<Action> actions = new ArrayList<Action>();
+    List<Action> actions = new ArrayList<Action>();
 
     public void add(Action action)
     {
@@ -20,6 +18,16 @@ public class Trigger
     public void remove(Action action)
     {
         actions.remove(action);
+    }
+
+    public void clear()
+    {
+        actions.clear();
+
+        synchronized (waitHandle)
+        {
+            waitHandle.notifyAll();
+        }
     }
 
     public void invoke()
@@ -43,6 +51,7 @@ public class Trigger
             }
             catch (InterruptedException e)
             {
+                return;
             }
         }
     }

@@ -1,6 +1,5 @@
 package se.hig.oodp.b9.server;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -31,8 +30,11 @@ public class ServerNetworkerSocket extends ServerNetworker
 
     List<Thread> threads = new ArrayList<Thread>();
 
+    boolean killed = false;
+    
     public void kill()
     {
+        killed = true;
         try
         {
             server.close();
@@ -49,7 +51,7 @@ public class ServerNetworkerSocket extends ServerNetworker
 
         new Thread(() ->
         {
-            while (true)
+            while (!killed)
             {
                 try
                 {
@@ -109,7 +111,9 @@ public class ServerNetworkerSocket extends ServerNetworker
                                 {
                                     try
                                     {
+                                        objectOutStream.reset();
                                         objectOutStream.writeObject(obj);
+                                        objectOutStream.flush();
                                     }
                                     catch (IOException e)
                                     {
@@ -152,9 +156,9 @@ public class ServerNetworkerSocket extends ServerNetworker
                                 }
 
                                 @Override
-                                public void sendGetMove()
+                                public void sendPlayerTurn(Player player)
                                 {
-                                    sendObject(new Package<Boolean>(true, Package.Type.RequestMove));
+                                    sendObject(new Package<Player>(player, Package.Type.PlayerTurn));
                                 }
 
                                 @Override
@@ -195,7 +199,7 @@ public class ServerNetworkerSocket extends ServerNetworker
                             while (true)
                             {
                                 Package pkg = (Package) objectInStream.readObject();
-                                switch (pkg.type)
+                                switch (pkg.getType())
                                 {
                                 case Close:
                                     // String reason = ((Package<String>)
@@ -203,12 +207,11 @@ public class ServerNetworkerSocket extends ServerNetworker
                                     socket.close();
                                     break;
                                 case Message:
-                                    PMessage msg = ((Package<PMessage>) pkg).value;
+                                    PMessage msg = ((Package<PMessage>) pkg).getValue();
                                     onNewMessage.invoke(new Two<Player, String>(socketPlayer, msg.getMessage()));
                                     break;
                                 case Move:
-                                    System.out.println("S: " + ((Package<Move>) pkg).value.activeCard.getCardInfo() + " (" + ((Package<Move>) pkg).value.activeCard.getId() + ")");
-                                    onNewMove.invoke(new Two<Player, Move>(socketPlayer, ((Package<Move>) pkg).value));
+                                    onNewMove.invoke(new Two<Player, Move>(socketPlayer, ((Package<Move>) pkg).getValue()));
                                     break;
                                 default:
                                     System.out.println("Server: Unknown package!");

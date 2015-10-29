@@ -66,6 +66,8 @@ public class TestTable
 
         assertNotNull("Can't read table", newTable);
 
+        assertNotNull("Can't get onCardMove event", newTable.onCardMove);
+
         invalidatingCheckTables(table, newTable);
     }
 
@@ -94,14 +96,15 @@ public class TestTable
         return true;
     }
 
-    @Test//(timeout = 5000)
+    @Test
+    // (timeout = 5000)
     // 5000 ms = 5 s
     public void overSocketTest() throws IOException, InterruptedException
     {
         int port = 34234;
-        
+
         ServerNetworkerSocket server;
-        
+
         new ServerGame(server = new ServerNetworkerSocket(port));
 
         ClientNetworkerSocket client = new ClientNetworkerSocket("127.0.0.1", port);
@@ -110,7 +113,7 @@ public class TestTable
         client.onServerGreeting.waitFor();
 
         server.sendTable(table);
-        
+
         Table clientTable = client.onTable.waitFor();
 
         assertTrue("Tables are not equals", invalidatingCheckTables(table, clientTable));

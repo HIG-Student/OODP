@@ -10,6 +10,16 @@ public class Two<T1, T2> implements Serializable
         this.two = two;
     }
 
-    public T1 one;
-    public T2 two;
+    T1 one;
+    T2 two;
+
+    public T1 getOne()
+    {
+        return one;
+    }
+
+    public T2 getTwo()
+    {
+        return two;
+    }
 }

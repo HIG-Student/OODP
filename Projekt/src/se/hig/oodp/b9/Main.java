@@ -1,6 +1,8 @@
 package se.hig.oodp.b9;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import se.hig.oodp.b9.client.ClientGame;
 import se.hig.oodp.b9.client.ClientNetworkerSocket;
@@ -10,9 +12,52 @@ import se.hig.oodp.b9.server.ServerNetworkerSocket;
 
 public class Main
 {
-    public static void main(String[] args)
+    public static void main(String[] args) throws IOException, InterruptedException
     {
-        windows();
+        test();
+    }
+
+    public static void test() throws IOException, InterruptedException
+    {
+        ServerGame serverGame;
+        List<ClientGame> clientGame;
+
+        int port = 59440;
+
+        serverGame = new ServerGame(new ServerNetworkerSocket(port));
+
+        clientGame = new ArrayList<ClientGame>();
+        for (int i = 0; i < 4; i++)
+        {
+            clientGame.add(new ClientGame(new Player("Player " + i), new ClientNetworkerSocket("127.0.0.1", port)).sendGreeting());
+            serverGame.playerAdded.waitFor();
+        }
+
+        Thread.sleep(1000);
+
+        serverGame.rules = new Rules();
+        serverGame.newGame();
+
+        GameWindow.start(clientGame.get(0));
+
+        for (ClientGame game : clientGame)
+        {
+            if (game.getTable() == null)
+                game.getNetworker().onTable.waitFor();
+        }
+
+        Thread.sleep(1000);
+
+        for (int turn = 0; turn < 4; turn++)
+        {
+            for (ClientGame game : clientGame)
+            {
+                game.makeMoveAndWait(new Move(game.getMyHand().getFirstCard()));
+            }
+        }
+
+        System.out.println("Client hand size: " + clientGame.get(0).getMyHand().size());
+
     }
 
     public static void windows()
@@ -39,7 +84,7 @@ public class Main
 
         for (int i = 0; i < 4; i++)
         {
-            Player me = new Player("Player " + i);
+            Player me = new Player("Player " + (i + 1));
 
             ClientNetworkerSocket clientNetworker = null;
 

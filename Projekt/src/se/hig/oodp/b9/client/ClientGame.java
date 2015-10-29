@@ -1,8 +1,6 @@
 package se.hig.oodp.b9.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import se.hig.oodp.b9.CardCollection;
 import se.hig.oodp.b9.Event;
 import se.hig.oodp.b9.Player;
 import se.hig.oodp.b9.Move;
@@ -11,14 +9,14 @@ import se.hig.oodp.b9.Trigger;
 
 public class ClientGame
 {
-    public Player me;
-    public Table table;
+    Player me;
+    Table table;
 
     ClientNetworker networker;
 
-    public Trigger onChange = new Trigger();
+    public final Trigger onChange = new Trigger();
 
-    public Event<Boolean> turnStatus = new Event<Boolean>();
+    public final Event<Boolean> turnStatus = new Event<Boolean>();
 
     boolean myTurn = false;
 
@@ -29,13 +27,13 @@ public class ClientGame
 
         networker.onMove.add(move ->
         {
-            table.moveCard(table.cards.get(move.getCardId()), table.collections.get(move.getCardCollcetionId()));
+            table.moveCard(table.getCard(move.getCardId()), table.getCardCollection(move.getCardCollcetionId()));
             onChange.invoke();
         });
 
         networker.onCardInfo.add(two ->
         {
-            table.cards.get(two.one).setCardInfo(two.two);
+            table.getCard(two.getOne()).setCardInfo(two.getTwo());
             onChange.invoke();
         });
 
@@ -50,15 +48,45 @@ public class ClientGame
             table.changeDeck(cards);
         });
 
-        networker.onMoveRequest.add(() ->
+        networker.onPlayerTurn.add((player) ->
         {
-            turnStatus.invoke(myTurn = true);
+            turnStatus.invoke(myTurn = me.equals(player));
         });
 
         networker.onMoveResult.add(result ->
         {
             turnStatus.invoke(myTurn = !result);
         });
+    }
+    
+    public ClientNetworker getNetworker()
+    {
+        return networker;
+    }
+    
+    public CardCollection getMyHand()
+    {
+        return table.getPlayerHand(me);
+    }
+    
+    public CardCollection getMyPoints()
+    {
+        return table.getPlayerPoints(me);
+    }
+
+    public boolean isMyTurn()
+    {
+        return myTurn;
+    }
+    
+    public Player getMe()
+    {
+        return me;
+    }
+
+    public Table getTable()
+    {
+        return table;
     }
 
     boolean greetingSent = false;
@@ -68,7 +96,7 @@ public class ClientGame
         if (greetingSent)
             return this;
         greetingSent = true;
-        
+
         networker.sendGreeting(me);
         return this;
     }
