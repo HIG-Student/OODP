@@ -25,23 +25,13 @@ import javax.swing.JPanel;
 import se.hig.oodp.b9.Card;
 import se.hig.oodp.b9.Two;
 import se.hig.oodp.b9.CardCollection;
-import se.hig.oodp.b9.CardInfo;
 import se.hig.oodp.b9.Player;
-import se.hig.oodp.b9.Rules;
 import se.hig.oodp.b9.Move;
-import se.hig.oodp.b9.server.ServerGame;
-import se.hig.oodp.b9.server.ServerNetworkerSocket;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.Stack;
 
 /**
@@ -54,41 +44,20 @@ public class GameWindow
      */
     private JFrame frame;
 
+    /**
+     * Painter of cards
+     */
     ICardPainter cardPainter;
 
+    /**
+     * The game
+     */
     ClientGame game;
 
     /**
-     * Launch the application.
-     * 
-     * @throws URISyntaxException
-     * @throws IOException
+     * Start a new game window with a game
+     * @param game the game
      */
-    public static void main(String[] args)
-    {
-        int port = 59440;
-
-        Player me = new Player("Test Player");
-
-        ClientNetworkerSocket clientNetworker = null;
-
-        try
-        {
-            clientNetworker = new ClientNetworkerSocket("2001:6b0:23:91:5c07:e103:e0b:8b59", port);
-            clientNetworker.onMessage.add(msg ->
-            {
-                System.out.println("Client: " + msg.getMessage() + (msg.getSource() != null ? (" (from: " + msg.getSource() + ")") : ""));
-            });
-        }
-        catch (IOException e)
-        {
-            System.out.println("Can't listen to server!\n\t" + e.getMessage());
-            System.exit(1);
-        }
-
-        start(new ClientGame(me, clientNetworker));
-    }
-
     public static void start(ClientGame game)
     {
         EventQueue.invokeLater(new Runnable()
@@ -109,7 +78,9 @@ public class GameWindow
     }
 
     /**
-     * Create the application.
+     * Create the application
+     * 
+     * @param game the game
      */
     public GameWindow(ClientGame game)
     {
@@ -138,6 +109,9 @@ public class GameWindow
         game.sendGreeting();
     }
 
+    /**
+     * Start the game logic
+     */
     public void runGame()
     {
         List<Rectangle> boundings = new ArrayList<Rectangle>();
