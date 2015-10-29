@@ -19,6 +19,7 @@ import se.hig.oodp.b9.Package;
 import se.hig.oodp.b9.PCardMovement;
 import se.hig.oodp.b9.PMessage;
 import se.hig.oodp.b9.CardInfo;
+import se.hig.oodp.b9.Trigger;
 import se.hig.oodp.b9.Two;
 
 ;
@@ -28,10 +29,8 @@ public class ServerNetworkerSocket extends ServerNetworker
     // http://www.oracle.com/technetwork/java/socket-140484.html#server
     ServerSocket server;
 
-    List<Thread> threads = new ArrayList<Thread>();
-
     boolean killed = false;
-    
+
     public void kill()
     {
         killed = true;
@@ -43,7 +42,10 @@ public class ServerNetworkerSocket extends ServerNetworker
         {
 
         }
+        onKill.invoke();
     }
+
+    Trigger onKill = new Trigger();
 
     public ServerNetworkerSocket(int port) throws IOException
     {
@@ -195,6 +197,8 @@ public class ServerNetworkerSocket extends ServerNetworker
                             };
 
                             addClient(client);
+
+                            onKill.add(() -> client.closeConnection("Server killed"));
 
                             while (true)
                             {

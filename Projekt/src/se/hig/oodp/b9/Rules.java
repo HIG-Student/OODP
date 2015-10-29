@@ -30,7 +30,15 @@ public class Rules implements Serializable
             return false;
 
         Card activeCard = move.getActiveCard();
-        Card[] takeCards = move.getTakeCards();
+        Card[][] takeCards = new Card[0][0];
+
+        try
+        {
+            takeCards = move.getTakeCards();
+        }
+        catch (Exception e)
+        {
+        }
 
         if (takeCards.length == 0)
         {
@@ -38,22 +46,29 @@ public class Rules implements Serializable
         }
         else
         {
-            for (Card card : takeCards)
-                if (!table.getPool().contains(card))
+            for (Card[] cardList : takeCards)
+                for (Card card : cardList)
+                    if (!table.getPool().contains(card))
+                        return false;
+
+            for (Card[] cardList : takeCards)
+            {
+                if (activeCard.getCardInfo().getValue() == CardInfo.Value.Ess && cardList.length == 1 && cardList[0].getCardInfo().getValue() == CardInfo.Value.Ess)
+                    continue;
+
+                // Hand can only be ESS : 14 now!
+                // Table can only have ESS : 1
+
+                int handValue = activeCard.getCardInfo().getValue() == CardInfo.Value.Ess ? 14 : activeCard.getCardInfo().getValue().ordinal() + 1;
+                int takeValue = 0;
+                for (Card card : cardList)
+                    takeValue += card.getCardInfo().getValue().ordinal() + 1;
+
+                if (handValue != takeValue)
                     return false;
+            }
 
-            if (activeCard.getCardInfo().getValue() == CardInfo.Value.Ess && takeCards.length == 1 && takeCards[0].getCardInfo().getValue() == CardInfo.Value.Ess)
-                return true;
-
-            // Hand can only be ESS : 14 now!
-            // Table can only have ESS : 1
-
-            int handValue = activeCard.getCardInfo().getValue() == CardInfo.Value.Ess ? 14 : activeCard.getCardInfo().getValue().ordinal() + 1;
-            int takeValue = 0;
-            for (Card card : takeCards)
-                takeValue += card.getCardInfo().getValue().ordinal() + 1;
-
-            return handValue == takeValue;
+            return true;
         }
     }
 }

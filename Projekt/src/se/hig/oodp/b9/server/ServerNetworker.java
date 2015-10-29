@@ -7,7 +7,6 @@ import java.util.UUID;
 import se.hig.oodp.b9.Card;
 import se.hig.oodp.b9.CardCollection;
 import se.hig.oodp.b9.Event;
-import se.hig.oodp.b9.PCardMovement;
 import se.hig.oodp.b9.PServerInfo;
 import se.hig.oodp.b9.Player;
 import se.hig.oodp.b9.Move;

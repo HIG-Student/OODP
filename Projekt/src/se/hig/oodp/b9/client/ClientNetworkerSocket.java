@@ -95,7 +95,7 @@ public class ClientNetworkerSocket extends ClientNetworker
         {
             try (ObjectInputStream objectOutStream = new ObjectInputStream(socket.getInputStream()))
             {
-                while (true)
+                while (!isClosed)
                 {
                     Package p;
                     try

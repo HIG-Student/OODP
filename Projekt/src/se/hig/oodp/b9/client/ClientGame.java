@@ -58,17 +58,17 @@ public class ClientGame
             turnStatus.invoke(myTurn = !result);
         });
     }
-    
+
     public ClientNetworker getNetworker()
     {
         return networker;
     }
-    
+
     public CardCollection getMyHand()
     {
         return table.getPlayerHand(me);
     }
-    
+
     public CardCollection getMyPoints()
     {
         return table.getPlayerPoints(me);
@@ -78,7 +78,12 @@ public class ClientGame
     {
         return myTurn;
     }
-    
+
+    public void setMyTurn(boolean myTurn)
+    {
+        this.myTurn = myTurn;
+    }
+
     public Player getMe()
     {
         return me;

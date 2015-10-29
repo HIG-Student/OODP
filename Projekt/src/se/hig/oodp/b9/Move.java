@@ -8,30 +8,41 @@ import java.util.UUID;
 public class Move implements Serializable
 {
     private UUID activeCardId;
-    private List<UUID> takeCardIds = new ArrayList<UUID>();
+    private UUID[][] takeCardIds;
 
     private transient Card activeCard;
-    private transient List<Card> takeCards = new ArrayList<Card>();
+    private transient List<List<Card>> takeCards = new ArrayList<List<Card>>();
+
+    private transient List<Card> currentTake = new ArrayList<Card>();
 
     public Card getActiveCard()
     {
         return activeCard;
     }
 
-    public Card[] getTakeCards()
+    public Card[][] getTakeCards()
     {
-        return takeCards.toArray(new Card[0]);
+        Card[][] cards = new Card[takeCards.size()][];
+        
+        for(int i = 0;i < takeCards.size();i++)
+            cards[i] = takeCards.get(i).toArray(new Card[0]);
+        
+        return cards;
+    }
+    
+    public Card[] getCurrentTakeCards()
+    {
+        return currentTake.toArray(new Card[0]);
     }
 
-    public Move(Card activeCard, ArrayList<Card> takeCards)
+    public Move(Card activeCard, List<List<Card>> takeCards)
     {
         setActiveCard(activeCard);
 
         this.takeCards = takeCards;
-        this.takeCards.forEach(card -> takeCardIds.add(card.getId()));
+        updateTakeIds();
     }
 
-    
     public Move(Card activeCard)
     {
         setActiveCard(activeCard);
@@ -43,7 +54,8 @@ public class Move implements Serializable
         activeCardId = activeCard == null ? null : activeCard.getId();
 
         takeCards.clear();
-        takeCardIds.clear();
+        currentTake.clear();
+        updateTakeIds();
     }
 
     public void toggleActive(Card card)
@@ -56,13 +68,24 @@ public class Move implements Serializable
 
     private void updateTakeIds()
     {
-        takeCardIds.clear();
-        takeCards.forEach(card -> takeCardIds.add(card.getId()));
+        takeCardIds = new UUID[takeCards.size()][];
+
+        for (int i = 0; i < takeCardIds.length; i++)
+        {
+            takeCardIds[i] = new UUID[takeCards.get(i).size()];
+
+            for (int j = 0; j < takeCards.get(i).size(); j++)
+            {
+                takeCardIds[i][j] = takeCards.get(i).get(j).getId();
+            }
+        }
     }
 
     public void clearTake()
     {
-        takeCards.clear();
+        takeCards = new ArrayList<List<Card>>();
+        currentTake = new ArrayList<Card>();
+
         updateTakeIds();
     }
 
@@ -70,23 +93,25 @@ public class Move implements Serializable
     {
         if (!takeCards.contains(card))
         {
-            takeCards.add(card);
+            currentTake.add(card);
+            
             updateTakeIds();
         }
     }
 
     public void removeTake(Card card)
     {
-        if (takeCards.contains(card))
+        if (currentTake.contains(card))
         {
-            takeCards.remove(card);
+            currentTake.remove(card);
+            
             updateTakeIds();
         }
     }
 
     public void toggleTake(Card card)
     {
-        if (takeCards.contains(card))
+        if (currentTake.contains(card))
             removeTake(card);
         else
             addTake(card);
@@ -94,7 +119,24 @@ public class Move implements Serializable
 
     public boolean takeContains(Card card)
     {
-        return takeCards.contains(card);
+        for (List<Card> list : takeCards)
+            if (list.contains(card))
+                return true;
+
+        return false;
+    }
+    
+    public boolean currentTakeContains(Card card)
+    {
+        return currentTake.contains(card);
+    }
+
+    public void nextTake()
+    {
+        takeCards.add(currentTake);
+        currentTake = new ArrayList<Card>();
+
+        updateTakeIds();
     }
 
     public void populate(Table table)
@@ -102,7 +144,18 @@ public class Move implements Serializable
         if (activeCardId != null)
             activeCard = table.getCard(activeCardId);
 
-        takeCards = new ArrayList<Card>();
-        takeCardIds.forEach(cardId -> takeCards.add(table.getCard(cardId)));
+        takeCards = new ArrayList<List<Card>>();
+
+        for (int i = 0; i < takeCardIds.length; i++)
+        {
+            List<Card> list = new ArrayList<Card>();
+
+            for (int j = 0; j < takeCardIds[i].length; j++)
+            {
+                list.add(table.getCard(takeCardIds[i][j]));
+            }
+
+            takeCards.add(list);
+        }
     }
 }

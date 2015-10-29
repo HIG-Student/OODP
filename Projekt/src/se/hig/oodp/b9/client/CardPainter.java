@@ -148,7 +148,6 @@ public class CardPainter implements ICardPainter
         Shape oldClip = g.getClip();
         g.setClip(null);
         // http://stackoverflow.com/a/6734194
-        g.setColor(new Color(0, 0, 0, 0.5f));
         g.fillRoundRect(-cardBack.getWidth(null) / 2, -cardBack.getHeight(null) / 2, cardBack.getWidth(null), cardBack.getHeight(null), 5, 5);
         g.setClip(oldClip);
     }

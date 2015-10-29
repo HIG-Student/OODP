@@ -40,10 +40,6 @@ public class TestGame
     @After
     public void tearDown() throws Exception
     {
-        for (ClientGame game : clientGame)
-        {
-            game.end();
-        }
         serverGame.kill();
     }
     
@@ -58,12 +54,18 @@ public class TestGame
                 game.makeMoveAndWait(new Move(game.getMyHand().getFirstCard()));
             }
         }
+        
+        System.out.println("!");
 
         assertTrue("Hand not empty!", clientGame.get(0).getMyHand().size() == 0);
 
         clientGame.get(0).turnStatus.waitFor();
+        
+        System.out.println("!");
 
         assertTrue("Hand not full!", clientGame.get(0).getMyHand().size() == 4);
+        
+        System.out.println("!");
     }
 
     @Test//(timeout = 5000)
@@ -71,10 +73,22 @@ public class TestGame
     {
         for (int turn = 0; turn < 4; turn++)
         {
-            testGive();
-            System.out.println("Give!");
+            for (ClientGame game : clientGame)
+            {
+                game.makeMoveAndWait(new Move(game.getMyHand().getFirstCard()));
+            }
         }
+        
+        System.out.println("!");
 
-        assertTrue("Cards are remaining!", serverGame.table.deck.size() == 0);
+        assertTrue("Hand not empty!", clientGame.get(0).getMyHand().size() == 0);
+
+        clientGame.get(0).turnStatus.waitFor();
+        
+        System.out.println("!");
+
+        assertTrue("Hand not full!", clientGame.get(0).getMyHand().size() == 4);
+        
+        System.out.println("!");
     }
 }

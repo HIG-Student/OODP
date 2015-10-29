@@ -4,6 +4,7 @@
 package se.hig.oodp.b9.client;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
@@ -135,7 +136,7 @@ public class GameWindow
     {
         List<Rectangle> boundings = new ArrayList<Rectangle>();
         HashMap<Rectangle, Card> boundingMaps = new HashMap<Rectangle, Card>();
-        Move selection = new Move(null, new ArrayList<Card>());
+        Move selection = new Move(null);
 
         game.turnStatus.add(ok ->
         {
@@ -209,7 +210,10 @@ public class GameWindow
 
                                         cardPainter.drawImage(g2d, card);
                                         if ((selection.getActiveCard() != null && selection.getActiveCard().equals(card)) || selection.takeContains(card))
+                                        {
+                                            g2d.setColor(new Color(0, 0, 0, 0.5f));
                                             cardPainter.drawHighlightImage(g2d, card);
+                                        }
 
                                     }
                                     g2d.setTransform(transformStack.pop());
@@ -256,8 +260,17 @@ public class GameWindow
                                 boundingMaps.put(rec, card);
 
                                 cardPainter.drawImage(g2d, card);
-                                if ((selection.getActiveCard() != null && selection.getActiveCard().equals(card)) || selection.takeContains(card))
+                                if (selection.takeContains(card))
+                                {
+                                    g2d.setColor(new Color(0, 0, 0, 0.5f));
                                     cardPainter.drawHighlightImage(g2d, card);
+                                }
+                                else
+                                    if (selection.currentTakeContains(card))
+                                    {
+                                        g2d.setColor(new Color(0, 1, 0, 0.5f));
+                                        cardPainter.drawHighlightImage(g2d, card);
+                                    }
                             }
                             g2d.setTransform(transformStack.pop());
 
@@ -342,13 +355,20 @@ public class GameWindow
                 {
                     if (selection.getActiveCard() == null)
                     {
-                        // i dunno
+                        // Nothing to do
                     }
                     else
                     {
-                        game.myTurn = false;
-                        game.makeMove(selection);
-                        selection.setActiveCard(null);
+                        if (selection.getCurrentTakeCards().length == 0)
+                        {
+                            game.setMyTurn(false);
+                            game.makeMove(selection);
+                            selection.setActiveCard(null);
+                        }
+                        else
+                        {
+                            selection.nextTake();
+                        }
                         frame.repaint();
                     }
                 }
