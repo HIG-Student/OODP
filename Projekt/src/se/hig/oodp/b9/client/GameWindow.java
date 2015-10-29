@@ -119,7 +119,7 @@ public class GameWindow
 
         this.game = game;
 
-        game.onChange.add(() ->
+        game.onChange.add((bool) ->
         {
             frame.repaint();
         });

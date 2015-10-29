@@ -141,13 +141,15 @@ public abstract class ServerNetworker
 
     // Get
 
-    public Event<Player> onPlayerConnecting = new Event<Player>();
+    public final Event<Player> onPlayerConnecting = new Event<Player>();
     
-    public Event<String> onLog = new Event<String>();
+    public final Event<String> onLog = new Event<String>();
 
-    public Event<Player> onPlayerDisconecting = new Event<Player>();
+    public final Event<Player> onPlayerDisconecting = new Event<Player>();
 
-    public Event<Two<Player, String>> onNewMessage = new Event<Two<Player, String>>();
+    public final Event<Two<Player, String>> onNewMessage = new Event<Two<Player, String>>();
 
-    public Event<Two<Player, Move>> onNewMove = new Event<Two<Player, Move>>();
+    public final Event<Two<Player, Move>> onNewMove = new Event<Two<Player, Move>>();
+    
+    public final Event<Boolean> onKill = new Event<Boolean>();
 }

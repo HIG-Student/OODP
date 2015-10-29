@@ -7,7 +7,6 @@ import se.hig.oodp.b9.Event;
 import se.hig.oodp.b9.Player;
 import se.hig.oodp.b9.Move;
 import se.hig.oodp.b9.Table;
-import se.hig.oodp.b9.Trigger;
 
 public class ClientGame
 {
@@ -16,7 +15,7 @@ public class ClientGame
 
     ClientNetworker networker;
 
-    public final Trigger onChange = new Trigger();
+    public final Event<Boolean> onChange = new Event<Boolean>();
 
     public final Event<Boolean> onTurnStatus = new Event<Boolean>();
 
@@ -32,19 +31,19 @@ public class ClientGame
         networker.onMove.add(move ->
         {
             table.moveCard(table.getCard(move.getCardId()), table.getCardCollection(move.getCardCollcetionId()));
-            onChange.invoke();
+            onChange.invoke(true);
         });
 
         networker.onCardInfo.add(two ->
         {
             table.getCard(two.getOne()).setCardInfo(two.getTwo());
-            onChange.invoke();
+            onChange.invoke(true);
         });
 
         networker.onTable.add(table ->
         {
             this.table = table;
-            onChange.invoke();
+            onChange.invoke(true);
         });
 
         networker.onCards.add(cards ->

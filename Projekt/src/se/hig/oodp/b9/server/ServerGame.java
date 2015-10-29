@@ -211,7 +211,7 @@ public class ServerGame
     {
         return networker;
     }
-    
+
     public void newGame()
     {
         cardDeck = new CardDeck();
@@ -241,12 +241,17 @@ public class ServerGame
         {
             table.changeDeck(cardDeck.getCards());
             networker.sendTable(table);
-            
+
             rules.setUp(table);
         }
 
         table.resetNextTurn();
         networker.sendPlayerTurn(table.getNextPlayer());
+    }
+
+    public Player[] getPlayers()
+    {
+        return players.toArray(new Player[0]);
     }
 
     public void moveCard(Card card, CardCollection collection)
