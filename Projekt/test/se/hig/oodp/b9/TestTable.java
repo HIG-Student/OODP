@@ -23,10 +23,19 @@ import se.hig.oodp.b9.server.CardDeck;
 import se.hig.oodp.b9.server.ServerGame;
 import se.hig.oodp.b9.server.ServerNetworkerSocket;
 
+/**
+ * Test the table
+ */
 public class TestTable
 {
+    /**
+     * The table
+     */
     public Table table;
 
+    /**
+     * Set up
+     */
     @Before
     public void setUp()
     {
@@ -38,11 +47,18 @@ public class TestTable
         table.changeDeck(new CardDeck().getCards());
     }
 
+    /**
+     * Test serialization <br>
+     * <br>
+     * Inspiration from
+     * {@link <a href="http://www.tutorialspoint.com/java/java_serialization.htm">tutorialspoint</a>}
+     * 
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     @Test
     public void serializationTest() throws IOException, ClassNotFoundException
     {
-        // http://www.tutorialspoint.com/java/java_serialization.htm
-
         byte[] data;
 
         try (ByteArrayOutputStream outStream = new ByteArrayOutputStream())
@@ -71,6 +87,17 @@ public class TestTable
         invalidatingCheckTables(table, newTable);
     }
 
+    /**
+     * Check if tables and be considered equal <br>
+     * <br>
+     * OBSERVE: This test messes with the tables
+     * 
+     * @param a
+     *            first table
+     * @param b
+     *            second table
+     * @return equals?
+     */
     public boolean invalidatingCheckTables(Table a, Table b)
     {
         assertEquals("DeckUUID is not same", a.deckUUID, b.deckUUID);
@@ -96,6 +123,9 @@ public class TestTable
         return true;
     }
 
+    /**
+     * Test to send table over socket
+     */
     @Test
     // (timeout = 5000)
     // 5000 ms = 5 s

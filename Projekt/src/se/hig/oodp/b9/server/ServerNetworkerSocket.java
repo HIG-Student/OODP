@@ -5,9 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 import se.hig.oodp.b9.Card;
@@ -22,15 +20,25 @@ import se.hig.oodp.b9.PMessage;
 import se.hig.oodp.b9.CardInfo;
 import se.hig.oodp.b9.Two;
 
-;
-
+/**
+ * {@link ServerNetworker} implementation relying on
+ * {@link <a href="https://docs.oracle.com/javase/tutorial/networking/sockets/">Sockets</a>}
+ * <br>
+ * <br>
+ */
 public class ServerNetworkerSocket extends ServerNetworker
 {
-    // http://www.oracle.com/technetwork/java/socket-140484.html#server
+    /**
+     * The server socket
+     */
     ServerSocket server;
 
+    /**
+     * Is killed?
+     */
     boolean killed = false;
 
+    @Override
     public void kill()
     {
         killed = true;
@@ -45,6 +53,15 @@ public class ServerNetworkerSocket extends ServerNetworker
         onKill.invoke(true);
     }
 
+    /**
+     * Create ServerNetworkerSocket
+     * 
+     * @param port
+     *            port to listen on
+     * @throws IOException
+     *             thrown if we have sockets errors
+     */
+    @SuppressWarnings("unchecked")
     public ServerNetworkerSocket(int port) throws IOException
     {
         server = new ServerSocket(port);
@@ -164,9 +181,9 @@ public class ServerNetworkerSocket extends ServerNetworker
                                 }
 
                                 @Override
-                                public void sendEndgame(HashMap<Player, Integer> scores)
+                                public void sendEndgame(HashMap<Player, Integer> scores, HashMap<Player, Integer> totalScores)
                                 {
-                                    sendObject(new Package<HashMap<Player, Integer>>(scores, Package.Type.EndGame));
+                                    sendObject(new Package<Two<HashMap<Player, Integer>, HashMap<Player, Integer>>>(new Two<HashMap<Player, Integer>, HashMap<Player, Integer>>(scores, totalScores), Package.Type.EndGame));
                                 }
 
                                 @Override
@@ -202,7 +219,7 @@ public class ServerNetworkerSocket extends ServerNetworker
 
                             while (true)
                             {
-                                Package pkg = (Package) objectInStream.readObject();
+                                Package<?> pkg = (Package<?>) objectInStream.readObject();
                                 switch (pkg.getType())
                                 {
                                 case Close:

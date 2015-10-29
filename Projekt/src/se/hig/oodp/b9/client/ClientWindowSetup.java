@@ -5,18 +5,7 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-import java.awt.GridLayout;
-import java.awt.GridBagLayout;
-
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import com.jgoodies.forms.factories.FormFactory;
-
 import javax.swing.JLabel;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
@@ -27,19 +16,39 @@ import java.awt.Color;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.JFormattedTextField;
 
 import se.hig.oodp.b9.Player;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+/**
+ * Window that helps the user start a client game <br>
+ * <br>
+ * Extends {@link JFrame}
+ */
+@SuppressWarnings("serial")
 public class ClientWindowSetup extends JFrame
 {
+    /**
+     * The name input field
+     */
     private JTextField textName;
+    /**
+     * The host input field
+     */
     private JTextField textServer;
+    /**
+     * The port input spinner
+     */
     private JSpinner spinnerPort;
+    /**
+     * The log
+     */
     private JLabel labelLog;
+    /**
+     * The tabbed panel
+     */
     private JTabbedPane tabbedPane;
 
     /**
@@ -65,7 +74,7 @@ public class ClientWindowSetup extends JFrame
     }
 
     /**
-     * Create the frame.
+     * Create the window
      */
     public ClientWindowSetup()
     {

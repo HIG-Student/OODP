@@ -23,8 +23,8 @@ public interface ICardPainter
     public void drawImage(Graphics2D g, Card card);
 
     /**
-     * Draw the highlight
-     * <br><br>
+     * Draw the highlight <br>
+     * <br>
      * Should be centered over the image drawn by {@link drawImage}
      * 
      * @param g

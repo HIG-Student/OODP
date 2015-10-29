@@ -56,7 +56,9 @@ public class GameWindow
 
     /**
      * Start a new game window with a game
-     * @param game the game
+     * 
+     * @param game
+     *            the game
      */
     public static void start(ClientGame game)
     {
@@ -80,7 +82,8 @@ public class GameWindow
     /**
      * Create the application
      * 
-     * @param game the game
+     * @param game
+     *            the game
      */
     public GameWindow(ClientGame game)
     {
@@ -112,6 +115,7 @@ public class GameWindow
     /**
      * Start the game logic
      */
+    @SuppressWarnings("serial")
     public void runGame()
     {
         List<Rectangle> boundings = new ArrayList<Rectangle>();
@@ -120,7 +124,6 @@ public class GameWindow
 
         game.onTurnStatus.add(ok ->
         {
-            // TODO: is correct??
             if (!ok)
                 selection.setActiveCard(null);
             frame.repaint();
@@ -128,14 +131,18 @@ public class GameWindow
 
         game.onEndGame.add(set ->
         {
+            StringBuilder builder = new StringBuilder("This game:\n");
+
             List<Two<Player, Integer>> points = new ArrayList<Two<Player, Integer>>();
-            set.forEach((a, b) -> points.add(new Two<Player, Integer>(a, b)));
-
+            set.getOne().forEach((a, b) -> points.add(new Two<Player, Integer>(a, b)));
             Collections.sort(points, (Two<Player, Integer> a, Two<Player, Integer> b) -> a.getTwo().compareTo(b.getTwo()));
+            points.forEach(a -> builder.append("\t" + a.getOne().getName() + ": " + a.getTwo().intValue() + "\n"));
 
-            StringBuilder builder = new StringBuilder();
-
-            points.forEach(a -> builder.append(a.getOne().getName() + ": " + a.getTwo().intValue() + "\n"));
+            builder.append("\n\nTotal:\n");
+            List<Two<Player, Integer>> totalPoints = new ArrayList<Two<Player, Integer>>();
+            set.getTwo().forEach((a, b) -> totalPoints.add(new Two<Player, Integer>(a, b)));
+            Collections.sort(totalPoints, (Two<Player, Integer> a, Two<Player, Integer> b) -> a.getTwo().compareTo(b.getTwo()));
+            totalPoints.forEach(a -> builder.append("\t" + a.getOne().getName() + ": " + a.getTwo().intValue() + "\n"));
 
             JOptionPane.showMessageDialog(frame, builder.toString());
         });

@@ -5,6 +5,7 @@ import java.util.UUID;
 /**
  * The class representing a game card
  */
+@SuppressWarnings("serial")
 public class Card extends UUIDInstance
 {
     /**

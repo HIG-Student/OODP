@@ -8,6 +8,7 @@ import java.io.Serializable;
  * @param <T>
  *            the data type this package contains
  */
+@SuppressWarnings("serial")
 public class Package<T extends Serializable> implements Serializable
 {
     /**

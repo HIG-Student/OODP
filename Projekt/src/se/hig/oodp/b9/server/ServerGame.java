@@ -1,7 +1,6 @@
 package se.hig.oodp.b9.server;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -15,31 +14,86 @@ import se.hig.oodp.b9.Player;
 import se.hig.oodp.b9.Rules;
 import se.hig.oodp.b9.Table;
 
+/**
+ * Server-side game
+ */
 public class ServerGame
 {
+    /**
+     * The server's networker
+     */
     public ServerNetworker networker;
 
+    /**
+     * The player in this game
+     */
     public List<Player> players = new ArrayList<Player>();
+
+    /**
+     * Mapping for all players' points (numerical)
+     */
     public HashMap<Player, Integer> points = new HashMap<Player, Integer>();
 
+    /**
+     * Mapping for all players' total points (numerical)
+     */
+    public HashMap<Player, Integer> totalPoints = new HashMap<Player, Integer>();
+
+    /**
+     * The deck of cards
+     */
     public CardDeck cardDeck;
+    /**
+     * The table
+     */
     public Table table;
+    /**
+     * The rules
+     */
     public Rules rules;
 
+    /**
+     * Are we running?
+     */
     public boolean running = false;
 
+    /**
+     * Event invoked on player added
+     */
     public Event<Player> playerAdded = new Event<Player>();
 
+    /**
+     * Get player's points
+     * 
+     * @param playerthe
+     *            player
+     * @return the points
+     */
     public int getPoints(Player player)
     {
         return points.containsKey(player) ? points.get(player) : 0;
     }
 
+    /**
+     * Add points to player
+     * 
+     * @param playerthe
+     *            player
+     * @param toAdd
+     *            points to add
+     */
     public void addPoints(Player player, int toAdd)
     {
+        totalPoints.put(player, getPoints(player) + toAdd);
         points.put(player, getPoints(player) + toAdd);
     }
 
+    /**
+     * Create server game
+     * 
+     * @param networker
+     *            communication handler
+     */
     public ServerGame(ServerNetworker networker) // rules?
     {
         this.networker = networker;
@@ -193,28 +247,38 @@ public class ServerGame
                         if (topCards.size() == 1 && topSpades.size() == 1 && topCards.get(0).equals(topSpades.get(0)))
                             addPoints(topCards.get(0), 1);
 
-                        networker.sendEndGame(points);
+                        networker.sendEndGame(points, totalPoints);
                         newGame();
                     }
                 }
 
                 networker.sendPlayerTurn(table.getNextPlayer());
             }
-            else
-            {
-                networker.sendMoveResult(two.getOne(), false);
-            }
-        });
+                else
+                {
+                    networker.sendMoveResult(two.getOne(), false);
+                }
+            });
     }
 
+    /**
+     * Get communication handler
+     * 
+     * @return the communication handler
+     */
     public ServerNetworker getNetworker()
     {
         return networker;
     }
 
+    /**
+     * Start a new game
+     */
     public void newGame()
     {
         cardDeck = new CardDeck();
+
+        points.clear();
 
         if (table == null)
         {
@@ -249,16 +313,32 @@ public class ServerGame
         networker.sendPlayerTurn(table.getNextPlayer());
     }
 
+    /**
+     * Get players in this game
+     * 
+     * @return the players
+     */
     public Player[] getPlayers()
     {
         return players.toArray(new Player[0]);
     }
 
+    /**
+     * Move a card to a new destination
+     * 
+     * @param card
+     *            the card to move
+     * @param collection
+     *            the destination
+     */
     public void moveCard(Card card, CardCollection collection)
     {
         table.moveCard(card, collection);
     }
 
+    /**
+     * Start a new game
+     */
     public void startGame()
     {
         if (running)
@@ -271,6 +351,9 @@ public class ServerGame
         newGame();
     }
 
+    /**
+     * KIll this game
+     */
     public void kill()
     {
         networker.kill();

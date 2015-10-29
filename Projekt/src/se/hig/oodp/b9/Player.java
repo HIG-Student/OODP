@@ -6,6 +6,7 @@ import java.util.UUID;
 /**
  * The representation of a player
  */
+@SuppressWarnings("serial")
 public class Player extends UUIDInstance implements Serializable
 {
     /**

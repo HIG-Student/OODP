@@ -1,6 +1,5 @@
 package se.hig.oodp.b9.client;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -20,20 +19,31 @@ import se.hig.oodp.b9.Move;
 import se.hig.oodp.b9.Table;
 import se.hig.oodp.b9.Two;
 
+/**
+ * {@link ClientNetworker} implementation relying on
+ * {@link <a href="https://docs.oracle.com/javase/tutorial/networking/sockets/">Sockets</a>}
+ */
 public class ClientNetworkerSocket extends ClientNetworker
 {
+    /**
+     * Socket
+     */
     public Socket socket;
 
-    // Just in case
-    @Override
-    public void finalize() throws Throwable
-    {
-        close(false);
-        super.finalize();
-    }
-
+    /**
+     * The object output stream that we {@link #sendObject(Object) write to}
+     */
     ObjectOutputStream objectOutStream;
 
+    /**
+     * Sending an object to the server <br>
+     * <br>
+     * Most commonly packaged in a {@link Package}
+     * 
+     * @param obj
+     *            the object to send
+     * @return faildure?
+     */
     public boolean sendObject(Object obj)
     {
         try
@@ -52,8 +62,17 @@ public class ClientNetworkerSocket extends ClientNetworker
         return true;
     }
 
+    /**
+     * Is the communication closed?
+     */
     boolean isClosed = false;
 
+    /**
+     * Close the communication
+     * 
+     * @param clientIssued
+     *            did we issue this?
+     */
     public void close(boolean clientIssued)
     {
         if (isClosed)
@@ -84,6 +103,19 @@ public class ClientNetworkerSocket extends ClientNetworker
         isClosed = true;
     }
 
+    /**
+     * Create new socket-based communication
+     * 
+     * @param host
+     *            the host to connect to
+     * @param port
+     *            the port to connect to
+     * @throws UnknownHostException
+     *             the host is unknown
+     * @throws IOException
+     *             something wrong when interacting the the streams
+     */
+    @SuppressWarnings("unchecked")
     public ClientNetworkerSocket(String host, int port) throws UnknownHostException, IOException
     {
         socket = new Socket(host, port);
@@ -98,11 +130,9 @@ public class ClientNetworkerSocket extends ClientNetworker
             {
                 while (!isClosed)
                 {
-                    Package p;
                     try
                     {
-                        Package pkg = (Package) objectOutStream.readObject();
-                        p = pkg;
+                        Package<?> pkg = (Package<?>) objectOutStream.readObject();
                         switch (pkg.getType())
                         {
                         case Close:
@@ -137,7 +167,7 @@ public class ClientNetworkerSocket extends ClientNetworker
                             onMoveResult.invoke(((Package<Boolean>) pkg).getValue());
                             break;
                         case EndGame:
-                            onEndGame.invoke(((Package<HashMap<Player,Integer>>) pkg).getValue());
+                            onEndGame.invoke(((Package<Two<HashMap<Player, Integer>, HashMap<Player, Integer>>>) pkg).getValue());
                             break;
                         default:
                             System.out.println("Client: Unknown package!");

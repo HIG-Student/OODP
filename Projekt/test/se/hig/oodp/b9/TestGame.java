@@ -14,11 +14,23 @@ import se.hig.oodp.b9.client.ClientNetworkerSocket;
 import se.hig.oodp.b9.server.ServerGame;
 import se.hig.oodp.b9.server.ServerNetworkerSocket;
 
+/**
+ * Test for the game
+ */
 public class TestGame
 {
+    /**
+     * Server game
+     */
     public static ServerGame serverGame;
+    /**
+     * List of clients
+     */
     public static List<ClientGame> clientGame;
 
+    /**
+     * Set up a server and clients
+     */
     @Before
     public void setUp() throws Exception
     {
@@ -36,15 +48,21 @@ public class TestGame
         serverGame.rules = new Rules();
         serverGame.newGame();
     }
-    
+
+    /**
+     * Clean up
+     */
     @After
     public void tearDown() throws Exception
     {
         serverGame.kill();
     }
-    
 
-    @Test//(timeout = 5000)
+    /**
+     * Test a give
+     */
+    @Test
+    // (timeout = 5000)
     public void testGive() throws InterruptedException
     {
         for (int turn = 0; turn < 4; turn++)
@@ -54,22 +72,26 @@ public class TestGame
                 game.makeMoveAndWait(new Move(game.getMyHand().getFirstCard()));
             }
         }
-        
+
         System.out.println("!");
 
         assertTrue("Hand not empty!", clientGame.get(0).getMyHand().size() == 0);
 
         clientGame.get(0).onTurnStatus.waitFor();
-        
+
         System.out.println("!");
 
         assertTrue("Hand not full!", clientGame.get(0).getMyHand().size() == 4);
-        
+
         System.out.println("!");
     }
 
-    @Test//(timeout = 5000)
-    public void testFoldGame() throws InterruptedException
+    /**
+     * Test a game with only throws
+     */
+    @Test
+    // (timeout = 5000)
+    public void testThrowGame() throws InterruptedException
     {
         for (int turn = 0; turn < 4; turn++)
         {
@@ -78,17 +100,17 @@ public class TestGame
                 game.makeMoveAndWait(new Move(game.getMyHand().getFirstCard()));
             }
         }
-        
+
         System.out.println("!");
 
         assertTrue("Hand not empty!", clientGame.get(0).getMyHand().size() == 0);
 
         clientGame.get(0).onTurnStatus.waitFor();
-        
+
         System.out.println("!");
 
         assertTrue("Hand not full!", clientGame.get(0).getMyHand().size() == 4);
-        
+
         System.out.println("!");
     }
 }

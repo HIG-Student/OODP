@@ -2,8 +2,18 @@ package se.hig.oodp.b9;
 
 import java.io.Serializable;
 
+/**
+ * Rules for the game
+ */
+@SuppressWarnings("serial")
 public class Rules implements Serializable
 {
+    /**
+     * Rules for how to set up the game
+     * 
+     * @param table
+     *            the table this rule is affecting
+     */
     public void setUp(Table table)
     {
         give(table);
@@ -13,6 +23,12 @@ public class Rules implements Serializable
                 table.moveCard(table.getCardFromDeck(), table.getPool());
     }
 
+    /**
+     * Rules for how to do a give
+     * 
+     * @param table
+     *            the table this rule is affecting
+     */
     public void give(Table table)
     {
         for (Player player : table.getPlayers())
@@ -21,6 +37,18 @@ public class Rules implements Serializable
                     table.moveCard(table.getCardFromDeck(), table.getPlayerHand(player));
     }
 
+    /**
+     * Rules for how you can move cards
+     * 
+     * @param player
+     *            the player trying to do a move
+     * @param table
+     *            the table this rule is affecting
+     * @param move
+     *            the move the player is trying to do
+     * @return if this move is valid
+     * @see Move
+     */
     public boolean canPlayMove(Player player, Table table, Move move)
     {
         if (player != table.getNextPlayer())
@@ -32,13 +60,7 @@ public class Rules implements Serializable
         Card activeCard = move.getActiveCard();
         Card[][] takeCards = new Card[0][0];
 
-        try
-        {
-            takeCards = move.getTakeCards();
-        }
-        catch (Exception e)
-        {
-        }
+        takeCards = move.getTakeCards();
 
         if (takeCards.length == 0)
         {

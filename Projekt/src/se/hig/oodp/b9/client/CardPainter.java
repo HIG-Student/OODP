@@ -1,6 +1,5 @@
 package se.hig.oodp.b9.client;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -22,6 +21,8 @@ import se.hig.oodp.b9.Card;
 
 /**
  * Draws images from a spritesheet
+ * 
+ * @see ICardPainter
  */
 public class CardPainter implements ICardPainter
 {
@@ -43,7 +44,10 @@ public class CardPainter implements ICardPainter
     HashMap<String, Rectangle> clipList = new HashMap<String, Rectangle>();
 
     /**
-     * Draws cards from a spritesheet
+     * Draws cards from a spritesheet <br>
+     * <br>
+     * Inspiration for XML reader by
+     * {@link <a href="http://www.mkyong.com/java/how-to-read-xml-file-in-java-dom-parser/">mkyong</a>}
      * 
      * @param pathToCardsSheet
      *            the path to the image (spritesheet)
@@ -63,7 +67,6 @@ public class CardPainter implements ICardPainter
 
         cardBack = ImageIO.read(CardPainter.class.getResource(pathToCardBack));
 
-        // http://www.mkyong.com/java/how-to-read-xml-file-in-java-dom-parser/
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(new File(CardPainter.class.getResource(pathToXML).getFile()));

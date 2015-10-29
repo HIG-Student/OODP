@@ -4,8 +4,9 @@ import java.io.Serializable;
 import java.util.UUID;
 
 /**
- * A base with a (theoretically) guaranteed unique id
+ * A base with a (theoretically) guaranteed {@link UUID unique id}
  */
+@SuppressWarnings("serial")
 public abstract class UUIDInstance implements Serializable
 {
     /**

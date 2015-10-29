@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Representing an event
- * 
+ * Representing an event <br>
+ * <br>
  * Can be invoked and thus alerting subscribing actions
  * 
  * @param <T>
@@ -158,7 +158,8 @@ public class Event<T>
      * (Interrupted) occurred while waiting
      * 
      * @return the value given in the invoke call or null
-     * @throws MultipleExceptions if any exception occurs on an action
+     * @throws MultipleExceptions
+     *             if any exception occurs on an action
      */
     public T throwingWaitFor() throws MultipleExceptions
     {

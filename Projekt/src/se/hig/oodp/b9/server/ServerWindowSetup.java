@@ -5,7 +5,6 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -16,11 +15,34 @@ import javax.swing.SpinnerNumberModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+import se.hig.oodp.b9.Rules;
+import se.hig.oodp.b9.TextNode;
+
+/**
+ * Window that helps the user start a server game <br>
+ * <br>
+ * Extends {@link JFrame}
+ */
+@SuppressWarnings("serial")
 public class ServerWindowSetup extends JFrame
 {
+    /**
+     * Port input spinner
+     */
     private JSpinner spinnerPort;
+    /**
+     * Tabbed pane
+     */
     private JTabbedPane tabbedPane;
+    /**
+     * Port panel
+     */
     private JPanel panelPort;
+
+    /**
+     * String containing the log messages (separated by '\n')
+     */
+    private String logString = "[[LOG]]";
 
     /**
      * Launch the application.
@@ -75,7 +97,7 @@ public class ServerWindowSetup extends JFrame
                 JPanel panelLog = new JPanel();
                 tabbedPane.addTab("Log", null, panelLog, null);
 
-                JLabel labelLog = new JLabel("[[LOG]]");
+                TextNode labelLog = new TextNode(logString);
                 panelLog.add(labelLog);
 
                 btnStart.setEnabled(false);
@@ -84,7 +106,8 @@ public class ServerWindowSetup extends JFrame
                 {
                     ServerGame server = new ServerGame(new ServerNetworkerSocket(port));
 
-                    server.getNetworker().onLog.add(message -> labelLog.setText(labelLog.getText() + "<br>" + message.replace("\n", "<br>")));
+                    server.getNetworker().onLog.add(message -> labelLog.setText((logString += message)));
+
                     server.getNetworker().onPlayerConnecting.add(player ->
                     {
                         panelPlayers.add(new JLabel(player.getName()), BorderLayout.NORTH);
@@ -95,6 +118,7 @@ public class ServerWindowSetup extends JFrame
 
                     final ActionListener al = (e) ->
                     {
+                        server.rules = new Rules();
                         server.startGame();
                         btnStartGame.setEnabled(false);
                     };
@@ -122,6 +146,9 @@ public class ServerWindowSetup extends JFrame
         addPortSpinner();
     }
 
+    /**
+     * Add new port input spinner
+     */
     public void addPortSpinner()
     {
         panelPort = new JPanel();
