@@ -41,11 +41,6 @@ public class ServerWindow extends JFrame
         serverGame.networker.onPlayerConnecting.waitFor();
         System.out.println("Server: Waiting for player 2!");
         serverGame.networker.onPlayerConnecting.waitFor();
-        System.out.println("Server: Waiting for player 3!");
-        serverGame.networker.onPlayerConnecting.waitFor();
-        System.out.println("Server: Waiting for player 4!");
-        serverGame.networker.onPlayerConnecting.waitFor();
-        System.out.println("Server: Done!");
         
         serverGame.rules = new Rules();
         serverGame.newGame();

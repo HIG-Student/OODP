@@ -62,13 +62,13 @@ public class GameWindow
     {
         int port = 59440;
 
-        Player me = new Player("MrGNU");
+        Player me = new Player("Test Player");
 
         ClientNetworkerSocket clientNetworker = null;
 
         try
         {
-            clientNetworker = new ClientNetworkerSocket("127.0.0.1", port);
+            clientNetworker = new ClientNetworkerSocket("2001:6b0:23:91:5c07:e103:e0b:8b59", port);
             clientNetworker.onMessage.add(msg ->
             {
                 System.out.println("Client: " + msg.getMessage() + (msg.getSource() != null ? (" (from: " + msg.getSource() + ")") : ""));
