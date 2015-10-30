@@ -199,6 +199,10 @@ public class ServerWindowSetup extends JFrame
                 catch (Exception e)
                 {
                     JOptionPane.showMessageDialog(ServerWindowSetup.this, "Error:\n\n\t" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    
+                    tabbedPane.removeAll();
+                    btnStart.setEnabled(true);
+                    addPortSpinner();
                 }
             }
         });

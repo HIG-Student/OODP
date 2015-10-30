@@ -136,9 +136,11 @@ public class GameWindow
             frame.repaint();
         });
 
-        game.getNetworker().onClose.add((ok) ->
+        game.getNetworker().onClose.add((str) ->
         {
             System.out.println("Networker closed!");
+            
+            JOptionPane.showMessageDialog(GameWindow.this.frame, "Closed:\n\n\t" + str, "Error", JOptionPane.ERROR_MESSAGE);
             
             frame.setVisible(false);
             frame.dispose();
