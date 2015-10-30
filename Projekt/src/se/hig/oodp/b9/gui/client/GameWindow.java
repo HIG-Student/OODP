@@ -25,7 +25,6 @@ import javax.swing.JPanel;
 import se.hig.oodp.b9.communication.Move;
 import se.hig.oodp.b9.logic.Two;
 import se.hig.oodp.b9.logic.client.ClientGame;
-import se.hig.oodp.b9.model.CardInfo;
 import se.hig.oodp.b9.model.Player;
 
 import java.util.ArrayList;

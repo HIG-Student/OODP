@@ -55,6 +55,7 @@ public class ServerWindowSetup extends JFrame
 
     /**
      * Launch the application.
+     * @param args commandline arguments
      */
     public static void main(String[] args)
     {
@@ -75,6 +76,9 @@ public class ServerWindowSetup extends JFrame
         });
     }
 
+    /**
+     * Number of AIs
+     */
     protected int AINum = 1;
 
     /**
@@ -199,7 +203,7 @@ public class ServerWindowSetup extends JFrame
                 catch (Exception e)
                 {
                     JOptionPane.showMessageDialog(ServerWindowSetup.this, "Error:\n\n\t" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    
+
                     tabbedPane.removeAll();
                     btnStart.setEnabled(true);
                     addPortSpinner();

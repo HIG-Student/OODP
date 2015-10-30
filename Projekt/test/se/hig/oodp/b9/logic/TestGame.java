@@ -33,6 +33,7 @@ public class TestGame
 
     /**
      * Set up a server and clients
+     * @throws Exception if fails
      */
     @Before
     public void setUp() throws Exception
@@ -56,6 +57,7 @@ public class TestGame
 
     /**
      * Clean up
+     * @throws Exception if stuff fails
      */
     @After
     public void tearDown() throws Exception
@@ -65,6 +67,7 @@ public class TestGame
 
     /**
      * Test a give
+     * @throws InterruptedException if interrupted
      */
     @Test
     // (timeout = 5000)
@@ -87,6 +90,7 @@ public class TestGame
 
     /**
      * Test a game with only throws
+     * @throws InterruptedException if interrupted
      */
     @Test
     // (timeout = 5000)

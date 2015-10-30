@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -49,11 +48,11 @@ public class TestTable
      * Inspiration from
      * {@link <a href="http://www.tutorialspoint.com/java/java_serialization.htm">tutorialspoint</a>}
      * 
-     * @throws IOException
-     * @throws ClassNotFoundException
-     */
+     * @throws Exception
+     *             if fails
+     * */
     @Test
-    public void serializationTest() throws IOException, ClassNotFoundException
+    public void serializationTest() throws Exception
     {
         byte[] data;
 
@@ -111,11 +110,14 @@ public class TestTable
 
     /**
      * Test to send table over socket
+     * 
+     * @throws Exception
+     *             if fails
      */
     @Test
     // (timeout = 5000)
     // 5000 ms = 5 s
-    public void overSocketTest() throws IOException, InterruptedException
+    public void overSocketTest() throws Exception
     {
         int port = 34234;
 

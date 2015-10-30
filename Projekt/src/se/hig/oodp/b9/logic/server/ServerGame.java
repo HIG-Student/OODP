@@ -83,8 +83,8 @@ public class ServerGame
     /**
      * Add points to player
      * 
-     * @param playerthe
-     *            player
+     * @param player
+     *            the player
      * @param toAdd
      *            points to add
      */
@@ -323,9 +323,9 @@ public class ServerGame
     /**
      * Move a card to a new destination
      * 
-     * @param card
+     * @param cardId
      *            the card to move
-     * @param collection
+     * @param collectionId
      *            the destination
      */
     public void moveCard(UUID cardId, UUID collectionId)

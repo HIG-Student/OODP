@@ -147,6 +147,8 @@ public abstract class ServerNetworker
      *            the target player
      * @param card
      *            the card to send info about
+     * @param info
+     *            the info
      */
     public void sendCardInfo(Player target, UUID card, CardInfo info)
     {
@@ -160,7 +162,7 @@ public abstract class ServerNetworker
      * 
      * @param scores
      *            the scores of the players for the last game
-     * @param highScores
+     * @param totalScores
      *            the scores for all games
      */
     public void sendEndGame(HashMap<Player, Integer> scores, HashMap<Player, Integer> totalScores)

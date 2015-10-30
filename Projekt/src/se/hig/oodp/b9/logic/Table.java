@@ -181,6 +181,13 @@ public class Table implements Serializable
         return pool.getAllIds();
     }
 
+    /**
+     * Get card info
+     * 
+     * @param card
+     *            the card
+     * @return the info
+     */
     public CardInfo getCardInfo(UUID card)
     {
         return cards.containsKey(card) ? cards.get(card).getCardInfo() : null;
@@ -230,6 +237,13 @@ public class Table implements Serializable
         return playerHands.containsKey(player) ? playerHands.get(player).getAllIds() : new UUID[0];
     }
 
+    /**
+     * Get id of player hand
+     * 
+     * @param player
+     *            the player
+     * @return the hand
+     */
     public UUID getIdOfPlayerHand(Player player)
     {
         return playerHands.containsKey(player) ? playerHands.get(player).getId() : null;
@@ -341,9 +355,9 @@ public class Table implements Serializable
      */
     public Player getOwnerOfCollectionId(UUID collectionId)
     {
-        if(!collections.containsKey(collectionId))
+        if (!collections.containsKey(collectionId))
             return null;
-        
+
         return collections.get(collectionId).owner;
     }
 
@@ -374,9 +388,9 @@ public class Table implements Serializable
     /**
      * Move a card to a new destination
      * 
-     * @param card
+     * @param cardId
      *            the card to move
-     * @param collection
+     * @param collectionId
      *            the destination
      */
     public void moveCard(UUID cardId, UUID collectionId)

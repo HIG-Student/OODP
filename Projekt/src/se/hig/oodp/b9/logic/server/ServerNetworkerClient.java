@@ -64,6 +64,8 @@ public abstract class ServerNetworkerClient
      * 
      * @param card
      *            the card the information is about
+     * @param info
+     *            the info
      */
     public abstract void sendCardInfo(UUID card, CardInfo info);
 

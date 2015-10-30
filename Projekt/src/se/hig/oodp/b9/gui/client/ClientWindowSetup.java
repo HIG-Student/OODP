@@ -55,6 +55,7 @@ public class ClientWindowSetup extends JFrame
 
     /**
      * Launch the application.
+     * @param args commandline arguments
      */
     public static void main(String[] args)
     {

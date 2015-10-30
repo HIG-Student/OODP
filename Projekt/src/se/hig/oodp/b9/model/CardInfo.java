@@ -18,7 +18,22 @@ public class CardInfo implements Serializable
      */
     public enum Type
     {
-        Klöver, Ruter, Hjärter, Spader
+        /**
+         * Klöver
+         */
+        Klöver,
+        /**
+         * Ruter
+         */
+        Ruter,
+        /**
+         * Hjärter
+         */
+        Hjärter,
+        /**
+         * Spader
+         */
+        Spader
     }
 
     /**
@@ -26,7 +41,58 @@ public class CardInfo implements Serializable
      */
     public enum Value
     {
-        Ess, Två, Tre, Fyra, Fem, Sex, Sju, Åtta, Nio, Tio, Knekt, Dam, Kung
+        /**
+         * Ess
+         */
+        Ess,
+        /**
+         * Två
+         */
+        Två,
+        /**
+         * Tre
+         */
+        Tre,
+        /**
+         * Fyra
+         */
+        Fyra,
+        /**
+         * Fem
+         */
+        Fem,
+        /**
+         * Sex
+         */
+        Sex,
+        /**
+         * Sju
+         */
+        Sju,
+        /**
+         * Åtta
+         */
+        Åtta,
+        /**
+         * Nio
+         */
+        Nio,
+        /**
+         * Tio
+         */
+        Tio,
+        /**
+         * Knekt
+         */
+        Knekt,
+        /**
+         * Dam
+         */
+        Dam,
+        /**
+         * Kung
+         */
+        Kung
     }
 
     /**

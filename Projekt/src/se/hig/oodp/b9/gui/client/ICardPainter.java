@@ -17,7 +17,7 @@ public interface ICardPainter
      * 
      * @param g
      *            graphics2d that we should draw on/with
-     * @param card
+     * @param info
      *            to draw
      */
     public void drawImage(Graphics2D g, CardInfo info);
@@ -25,11 +25,11 @@ public interface ICardPainter
     /**
      * Draw the highlight <br>
      * <br>
-     * Should be centered over the image drawn by {@link drawImage}
+     * Should be centered over the image drawn by {@link #drawImage(Graphics2D g, CardInfo info)}
      * 
      * @param g
      *            graphics2d that we should draw on/with
-     * @param card
+     * @param info
      *            to draw highlight for
      */
     public void drawHighlightImage(Graphics2D g, CardInfo info);

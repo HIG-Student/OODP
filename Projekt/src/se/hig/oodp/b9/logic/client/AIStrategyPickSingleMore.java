@@ -9,6 +9,12 @@ import se.hig.oodp.b9.logic.Table;
 import se.hig.oodp.b9.model.CardInfo;
 import se.hig.oodp.b9.model.Player;
 
+/**
+ * AI picks up multiple card (of the same value) from the pool if the AI have
+ * the same card on the hand<br>
+ * <br>
+ * Does not combine values
+ */
 public class AIStrategyPickSingleMore extends AIStrategy
 {
     public Move makeMove(ClientGame client, Player me, Table table)
@@ -29,7 +35,7 @@ public class AIStrategyPickSingleMore extends AIStrategy
                     list.add(list2);
                 }
             }
-            
+
             if (!list.isEmpty())
                 return new Move(id, list);
         }

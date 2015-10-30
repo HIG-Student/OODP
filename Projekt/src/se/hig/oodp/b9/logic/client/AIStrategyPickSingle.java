@@ -9,6 +9,9 @@ import se.hig.oodp.b9.logic.Table;
 import se.hig.oodp.b9.model.CardInfo;
 import se.hig.oodp.b9.model.Player;
 
+/**
+ * AI picks up one card from the pool if the AI have the same card on the hand
+ */
 public class AIStrategyPickSingle extends AIStrategy
 {
     public Move makeMove(ClientGame client, Player me, Table table)

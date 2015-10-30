@@ -141,7 +141,7 @@ public class CardCollection extends UUIDInstance
     /**
      * Remove a card from this collection
      * 
-     * @param card
+     * @param card the card to remove
      */
     public void remove(Card card)
     {

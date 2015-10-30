@@ -4,6 +4,9 @@ import se.hig.oodp.b9.communication.Move;
 import se.hig.oodp.b9.logic.Table;
 import se.hig.oodp.b9.model.Player;
 
+/**
+ * AI always throws a card
+ */
 public class AIStrategyThrowAll extends AIStrategy
 {
     public Move makeMove(ClientGame client, Player me, Table table)
