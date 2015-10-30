@@ -14,7 +14,7 @@ public class UMLGenerator
 {
     public static void main(String[] args)
     {
-        generateUML(ClientNetworker.class);
+        generateUML(ServerNetworkerSocket.class);
     }
 
     public static void generateUML(Class<?> c)
@@ -23,9 +23,12 @@ public class UMLGenerator
 
         if (c.isInterface())
             UMLString.append("<<interface>>\n");
-        
+
         if (Modifier.isAbstract(c.getModifiers()))
             UMLString.append("<<abstract>>\n");
+        
+        if (Modifier.isStatic((c.getModifiers())))
+            UMLString.append("<<static>>\n");
 
         UMLString.append(c.getSimpleName() + "\n");
 
@@ -45,6 +48,12 @@ public class UMLGenerator
                         UMLString.append(" ");
 
             UMLString.append(" ");
+
+            if (Modifier.isStatic((field.getModifiers())))
+                UMLString.append("<<static>> ");
+            
+            if (Modifier.isStatic((field.getModifiers())))
+                UMLString.append("<<final>> ");
 
             UMLString.append(field.getName());
 
@@ -87,6 +96,9 @@ public class UMLGenerator
 
         for (Method method : c.getDeclaredMethods())
         {
+            if (method.isSynthetic())
+                continue;
+
             if (Modifier.isPublic(method.getModifiers()))
                 UMLString.append("+");
             else
@@ -99,6 +111,12 @@ public class UMLGenerator
                         UMLString.append(" ");
 
             UMLString.append(" ");
+            
+            if (Modifier.isStatic((method.getModifiers())))
+                UMLString.append("<<static>> ");
+            
+            if (Modifier.isAbstract(method.getModifiers()))
+                UMLString.append("<<abstract>> ");
 
             UMLString.append(method.getName());
 
