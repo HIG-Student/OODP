@@ -28,10 +28,10 @@ public class UMLGenerator
 
         if (c.isInterface())
             UMLString.append("<<interface>>\n");
+        else
+            if (Modifier.isAbstract(c.getModifiers()))
+                UMLString.append("<<abstract>>\n");
 
-        if (Modifier.isAbstract(c.getModifiers()))
-            UMLString.append("<<abstract>>\n");
-        
         if (Modifier.isStatic((c.getModifiers())))
             UMLString.append("<<static>>\n");
 
@@ -56,7 +56,7 @@ public class UMLGenerator
 
             if (Modifier.isStatic((field.getModifiers())))
                 UMLString.append("<<static>> ");
-            
+
             if (Modifier.isStatic((field.getModifiers())))
                 UMLString.append("<<final>> ");
 
@@ -116,10 +116,10 @@ public class UMLGenerator
                         UMLString.append(" ");
 
             UMLString.append(" ");
-            
+
             if (Modifier.isStatic((method.getModifiers())))
                 UMLString.append("<<static>> ");
-            
+
             if (Modifier.isAbstract(method.getModifiers()))
                 UMLString.append("<<abstract>> ");
 
