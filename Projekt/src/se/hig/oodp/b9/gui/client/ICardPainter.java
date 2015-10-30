@@ -3,7 +3,6 @@ package se.hig.oodp.b9.gui.client;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 
-import se.hig.oodp.b9.model.Card;
 import se.hig.oodp.b9.model.CardInfo;
 
 /**
