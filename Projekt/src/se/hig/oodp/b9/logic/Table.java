@@ -402,10 +402,10 @@ public class Table implements Serializable
         if (!cards.containsKey(cardId))
             return null;
 
-        if (!collections.containsKey(cards.get(cardId)))
+        if (!cardLocation.containsKey(cards.get(cardId)))
             return null;
 
-        return collections.get(cards.get(cardId)).owner;
+        return cardLocation.get(cards.get(cardId)).owner;
     }
 
     /**

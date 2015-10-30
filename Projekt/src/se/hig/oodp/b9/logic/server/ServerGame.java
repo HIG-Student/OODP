@@ -154,7 +154,7 @@ public class ServerGame
                     for (UUID[] cardList : takeCards)
                         for (UUID card : cardList)
                         {
-                            moveCard(card, two.getOne().handUUID);
+                            moveCard(card, two.getOne().pointsUUID);
 
                             if (table.getCardInfo(card).getValue() == CardInfo.Value.Ess)
                                 addPoints(two.getOne(), 1);
