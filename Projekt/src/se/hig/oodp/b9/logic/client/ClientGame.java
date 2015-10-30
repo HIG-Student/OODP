@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import se.hig.oodp.b9.communication.Move;
-import se.hig.oodp.b9.logic.CardCollection;
 import se.hig.oodp.b9.logic.Event;
 import se.hig.oodp.b9.logic.Table;
 import se.hig.oodp.b9.logic.Two;
+import se.hig.oodp.b9.model.CardInfo;
 import se.hig.oodp.b9.model.Player;
 
 /**
@@ -51,6 +51,25 @@ public class ClientGame
     boolean myTurn = false;
 
     /**
+     * Mapped card info
+     */
+    HashMap<UUID, CardInfo> mappedCardInfo = new HashMap<UUID, CardInfo>();
+
+    /**
+     * Get card info<br>
+     * <br>
+     * cached from server
+     * 
+     * @param card
+     *            the card
+     * @return the info
+     */
+    public CardInfo getCardInfo(UUID card)
+    {
+        return mappedCardInfo.containsKey(card) ? mappedCardInfo.get(card) : null;
+    }
+
+    /**
      * Create new game
      * 
      * @param me
@@ -71,6 +90,7 @@ public class ClientGame
 
         networker.onCardInfo.add(two ->
         {
+            mappedCardInfo.put(two.getOne(), two.getTwo());
             onChange.invoke(true);
         });
 

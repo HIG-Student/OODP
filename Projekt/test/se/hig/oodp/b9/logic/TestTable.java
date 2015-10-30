@@ -97,11 +97,11 @@ public class TestTable
         assertEquals("DeckUUID is not same", a.deckUUID, b.deckUUID);
         assertEquals("PoolUUID is not same", a.poolUUID, b.poolUUID);
 
-        assertEquals("Not same amount of players", a.players.size(), b.players.size());
+        assertEquals("Not same amount of players", a.getPlayers().length, b.getPlayers().length);
 
-        for (Player player : a.players)
+        for (Player player : a.getPlayers())
         {
-            assertTrue("Players differs", b.playerHands.containsKey(player));
+            assertTrue("Players differs", b.getPlayerIndex(player) != -1);
         }
 
         assertTrue("Wrong amount of cards", (a.cards.size() == b.deck.size()) && (b.deck.size() == 52));

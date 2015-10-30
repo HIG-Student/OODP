@@ -49,7 +49,7 @@ public class GameWindow
     /**
      * Card info mapped to cards
      */
-    HashMap<UUID, CardInfo> cardInfoMapper = new HashMap<UUID, CardInfo>();
+    // HashMap<UUID, CardInfo> cardInfoMapper = new HashMap<UUID, CardInfo>();
 
     /**
      * Painter of cards
@@ -107,12 +107,6 @@ public class GameWindow
 
         game.onChange.add((bool) ->
         {
-            frame.repaint();
-        });
-
-        game.getNetworker().onCardInfo.add(two ->
-        {
-            cardInfoMapper.put(two.getOne(), two.getTwo());
             frame.repaint();
         });
 
@@ -230,11 +224,11 @@ public class GameWindow
                                         boundings.add(0, rec);
                                         boundingMaps.put(rec, card);
 
-                                        cardPainter.drawImage(g2d, cardInfoMapper.containsKey(card) ? cardInfoMapper.get(card) : null);
+                                        cardPainter.drawImage(g2d, game.getCardInfo(card));
                                         if ((selection.getActiveCard() != null && selection.getActiveCard().equals(card)) || selection.takeContains(card))
                                         {
                                             g2d.setColor(new Color(0, 0, 0, 0.5f));
-                                            cardPainter.drawHighlightImage(g2d, cardInfoMapper.containsKey(card) ? cardInfoMapper.get(card) : null);
+                                            cardPainter.drawHighlightImage(g2d, game.getCardInfo(card));
                                         }
 
                                     }
@@ -281,17 +275,17 @@ public class GameWindow
                                 boundings.add(0, rec);
                                 boundingMaps.put(rec, card);
 
-                                cardPainter.drawImage(g2d, cardInfoMapper.containsKey(card) ? cardInfoMapper.get(card) : null);
+                                cardPainter.drawImage(g2d, game.getCardInfo(card));
                                 if (selection.takeContains(card))
                                 {
                                     g2d.setColor(new Color(0, 0, 0, 0.5f));
-                                    cardPainter.drawHighlightImage(g2d, cardInfoMapper.containsKey(card) ? cardInfoMapper.get(card) : null);
+                                    cardPainter.drawHighlightImage(g2d, game.getCardInfo(card));
                                 }
                                 else
                                     if (selection.currentTakeContains(card))
                                     {
                                         g2d.setColor(new Color(0, 1, 0, 0.5f));
-                                        cardPainter.drawHighlightImage(g2d, cardInfoMapper.containsKey(card) ? cardInfoMapper.get(card) : null);
+                                        cardPainter.drawHighlightImage(g2d, game.getCardInfo(card));
                                     }
                             }
                             g2d.setTransform(transformStack.pop());

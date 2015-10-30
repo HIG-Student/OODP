@@ -2,15 +2,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
 
 import se.hig.oodp.b9.logic.Event;
-import se.hig.oodp.b9.logic.server.*;
-import se.hig.oodp.b9.logic.client.*;
-import se.hig.oodp.b9.gui.server.*;
-import se.hig.oodp.b9.gui.client.*;
-import se.hig.oodp.b9.model.*;
-import se.hig.oodp.b9.*;
 
 // UML: http://pages.cs.wisc.edu/~hasti/cs302/examples/UMLdiagram.html
 // UML: http://www.cs.bsu.edu/homepages/pvg/misc/uml/

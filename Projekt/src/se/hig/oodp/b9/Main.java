@@ -7,6 +7,8 @@ import java.util.List;
 import se.hig.oodp.b9.communication.Move;
 import se.hig.oodp.b9.gui.client.GameWindow;
 import se.hig.oodp.b9.logic.Rules;
+import se.hig.oodp.b9.logic.client.AI;
+import se.hig.oodp.b9.logic.client.AIStrategyPickSingleMore;
 import se.hig.oodp.b9.logic.client.ClientGame;
 import se.hig.oodp.b9.logic.client.ClientNetworkerSocket;
 import se.hig.oodp.b9.logic.server.ServerGame;
@@ -15,9 +17,35 @@ import se.hig.oodp.b9.model.Player;
 
 public class Main
 {
-    public static void main(String[] args) throws IOException, InterruptedException
+    public static void main(String[] args) throws Exception
     {
-        test();
+        testAI();
+    }
+
+    public static void testAI() throws Exception
+    {
+        ServerGame serverGame;
+
+        int port = 59440;
+
+        serverGame = new ServerGame(new ServerNetworkerSocket(port));
+
+        Thread.sleep(1000);
+        
+        ClientGame game = new ClientGame(new Player("Player"), new ClientNetworkerSocket("127.0.0.1", port)).sendGreeting();
+        serverGame.playerAdded.waitFor();
+        
+        Thread.sleep(1000);
+        
+        new AI(new ClientGame(new Player("AI"), new ClientNetworkerSocket("127.0.0.1", port)).sendGreeting(), new AIStrategyPickSingleMore());
+        serverGame.playerAdded.waitFor();
+        
+        Thread.sleep(1000);
+        
+        serverGame.rules = new Rules();
+        serverGame.newGame();
+
+        GameWindow.start(game);
     }
 
     public static void test() throws IOException, InterruptedException
