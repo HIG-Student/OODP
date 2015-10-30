@@ -48,7 +48,7 @@ public class PCardMovement implements Serializable
      * 
      * @return the id of the destination
      */
-    public UUID getCardCollcetionId()
+    public UUID getCardCollectionId()
     {
         return cardCollectionId;
     }

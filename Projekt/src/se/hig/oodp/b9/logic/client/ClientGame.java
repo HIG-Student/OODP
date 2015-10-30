@@ -65,7 +65,7 @@ public class ClientGame
 
         networker.onMove.add(move ->
         {
-            table.moveCard(move.getCardId(), move.getCardCollcetionId());
+            table.moveCard(move.getCardId(), move.getCardCollectionId());
             onChange.invoke(true);
         });
 

@@ -76,7 +76,7 @@ public class Rules implements Serializable
         {
             for (UUID[] cardList : takeCards)
                 for (UUID card : cardList)
-                    if (!Arrays.asList(table.getPool()).contains(card))
+                    if (!Arrays.asList(table.getPoolIds()).contains(card))
                         return false;
 
             for (UUID[] cardList : takeCards)
