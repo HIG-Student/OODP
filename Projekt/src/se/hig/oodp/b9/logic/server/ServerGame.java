@@ -59,13 +59,25 @@ public class ServerGame
     /**
      * Get player's points
      * 
-     * @param playerthe
-     *            player
+     * @param player
+     *            the player
      * @return the points
      */
     public int getPoints(Player player)
     {
         return points.containsKey(player) ? points.get(player) : 0;
+    }
+
+    /**
+     * Get player's total points
+     * 
+     * @param player
+     *            the player
+     * @return the points
+     */
+    public int getTotalPoints(Player player)
+    {
+        return totalPoints.containsKey(player) ? totalPoints.get(player) : 0;
     }
 
     /**
@@ -78,7 +90,7 @@ public class ServerGame
      */
     public void addPoints(Player player, int toAdd)
     {
-        totalPoints.put(player, getPoints(player) + toAdd);
+        totalPoints.put(player, getTotalPoints(player) + toAdd);
         points.put(player, getPoints(player) + toAdd);
     }
 

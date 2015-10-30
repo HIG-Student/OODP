@@ -118,7 +118,7 @@ public class GameWindow
 
         try
         {
-            cardPainter = new CardPainter("/cards/playingCards.png", "/cards/playingCards.xml", "/cards/Singles/cardBack_blue2.png", new Dimension(140, 190));
+            cardPainter = new CardPainter("cards/playingCards.png", "cards/playingCards.xml", "cards/Singles/cardBack_blue2.png", new Dimension(140, 190));
         }
         catch (Exception e)
         {

@@ -57,7 +57,7 @@ public class UMLGenerator
             if (Modifier.isStatic((field.getModifiers())))
                 UMLString.append("<<static>> ");
 
-            if (Modifier.isStatic((field.getModifiers())))
+            if (Modifier.isFinal((field.getModifiers())))
                 UMLString.append("<<final>> ");
 
             UMLString.append(field.getName());
