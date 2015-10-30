@@ -47,11 +47,6 @@ public class GameWindow
     private JFrame frame;
 
     /**
-     * Card info mapped to cards
-     */
-    // HashMap<UUID, CardInfo> cardInfoMapper = new HashMap<UUID, CardInfo>();
-
-    /**
      * Painter of cards
      */
     ICardPainter cardPainter;
@@ -141,6 +136,14 @@ public class GameWindow
             frame.repaint();
         });
 
+        game.getNetworker().onClose.add((ok) ->
+        {
+            System.out.println("Networker closed!");
+            
+            frame.setVisible(false);
+            frame.dispose();
+        });
+
         game.onEndGame.add(set ->
         {
             StringBuilder builder = new StringBuilder("This game:\n");
@@ -195,16 +198,15 @@ public class GameWindow
                                 g2d.rotate(rot);
 
                                 // Player card draw
+
+                                Player player = game.getTable().getPlayers()[i];
+                                UUID[] collection = game.getTable().getPlayerHandIds(player);
+
                                 int index = 0;
                                 for (int x = -2; x <= 1; x++)
                                 {
-                                    Player player = game.getTable().getPlayers()[i];
-                                    UUID[] collection = game.getTable().getPlayerHandIds(player);
                                     if (index >= collection.length)
                                         break;
-
-                                    // Might break a tiny bit here, i blaim Mr
-                                    // GNU
 
                                     UUID card = collection[index];
 
@@ -247,17 +249,20 @@ public class GameWindow
 
                     // Pool draw
                     int index = 0;
+
+                    UUID[] poolCardIds = game.getTable().getPoolIds();
+
                     for (int y = 0; y < 5; y++)
                     {
-                        if (index == game.getTable().getPoolIds().length)
+                        if (index == poolCardIds.length)
                             return;
 
                         for (int x = -6; x < 5; x++)
                         {
-                            if (index == game.getTable().getPoolIds().length)
+                            if (index == poolCardIds.length)
                                 return;
 
-                            UUID card = game.getTable().getPoolIds()[index];
+                            UUID card = poolCardIds[index];
 
                             transformStack.push(g2d.getTransform());
                             {
@@ -403,8 +408,8 @@ public class GameWindow
     private void initialize()
     {
         frame = new JFrame();
-        // frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
         Dimension size = new Dimension(1006, 1029 + 20);
 

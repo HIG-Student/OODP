@@ -17,8 +17,15 @@ import java.awt.event.ActionEvent;
 
 import se.hig.oodp.b9.gui.TextNode;
 import se.hig.oodp.b9.logic.Rules;
+import se.hig.oodp.b9.logic.client.AI;
+import se.hig.oodp.b9.logic.client.AIStrategyPickSingleMore;
+import se.hig.oodp.b9.logic.client.AIStrategyPickSingle;
+import se.hig.oodp.b9.logic.client.AIStrategyThrowAll;
+import se.hig.oodp.b9.logic.client.ClientGame;
+import se.hig.oodp.b9.logic.client.ClientNetworkerSocket;
 import se.hig.oodp.b9.logic.server.ServerGame;
 import se.hig.oodp.b9.logic.server.ServerNetworkerSocket;
+import se.hig.oodp.b9.model.Player;
 
 /**
  * Window that helps the user start a server game <br>
@@ -68,6 +75,8 @@ public class ServerWindowSetup extends JFrame
         });
     }
 
+    protected int AINum = 1;
+
     /**
      * Create the frame.
      */
@@ -104,6 +113,52 @@ public class ServerWindowSetup extends JFrame
 
                 btnStart.setEnabled(false);
 
+                JPanel panelAI = new JPanel();
+                tabbedPane.addTab("AI", null, panelAI, null);
+                panelAI.setLayout(new BorderLayout(0, 0));
+
+                JButton btnAddAI1 = new JButton("AI - throwing");
+                panelAI.add(btnAddAI1, BorderLayout.NORTH);
+                btnAddAI1.addActionListener(action ->
+                {
+                    try
+                    {
+                        new AI(new ClientGame(new Player("AI " + AINum++), new ClientNetworkerSocket("127.0.0.1", port)).sendGreeting(), new AIStrategyThrowAll());
+                    }
+                    catch (Exception e)
+                    {
+                        JOptionPane.showMessageDialog(ServerWindowSetup.this, "Error:\n\n\t" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                });
+
+                JButton btnAddAI2 = new JButton("AI - take single");
+                panelAI.add(btnAddAI2, BorderLayout.WEST);
+                btnAddAI2.addActionListener(action ->
+                {
+                    try
+                    {
+                        new AI(new ClientGame(new Player("AI " + AINum++), new ClientNetworkerSocket("127.0.0.1", port)).sendGreeting(), new AIStrategyPickSingle());
+                    }
+                    catch (Exception e)
+                    {
+                        JOptionPane.showMessageDialog(ServerWindowSetup.this, "Error:\n\n\t" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                });
+
+                JButton btnAddAI3 = new JButton("AI - take multiple single");
+                panelAI.add(btnAddAI3, BorderLayout.SOUTH);
+                btnAddAI3.addActionListener(action ->
+                {
+                    try
+                    {
+                        new AI(new ClientGame(new Player("AI " + AINum++), new ClientNetworkerSocket("127.0.0.1", port)).sendGreeting(), new AIStrategyPickSingleMore());
+                    }
+                    catch (Exception e)
+                    {
+                        JOptionPane.showMessageDialog(ServerWindowSetup.this, "Error:\n\n\t" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                });
+
                 try
                 {
                     ServerGame server = new ServerGame(new ServerNetworkerSocket(port));
@@ -116,6 +171,13 @@ public class ServerWindowSetup extends JFrame
 
                         if (server.getPlayers().length >= 2)
                             btnStartGame.setEnabled(true);
+
+                        if (server.getPlayers().length >= 4)
+                        {
+                            btnAddAI1.setEnabled(false);
+                            btnAddAI2.setEnabled(false);
+                            btnAddAI3.setEnabled(false);
+                        }
                     });
 
                     final ActionListener al = (e) ->
