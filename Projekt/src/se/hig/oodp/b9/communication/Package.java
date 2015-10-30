@@ -18,14 +18,10 @@ public class Package<T extends Serializable> implements Serializable
     {
         /**
          * Sending a new table
-         * 
-         * @see Table
          */
         Table,
         /**
          * Sending information about a card
-         * 
-         * @see CardInfo
          */
         CardInfo,
         /**
@@ -36,8 +32,6 @@ public class Package<T extends Serializable> implements Serializable
         Move,
         /**
          * Player added
-         * 
-         * @see Player
          */
         PlayerAdded,
         /**
@@ -47,9 +41,7 @@ public class Package<T extends Serializable> implements Serializable
          */
         Message,
         /**
-         * The player whoes turn it is
-         * 
-         * @see Player
+         * The player whose turn it is
          */
         PlayerTurn,
         /**
@@ -58,20 +50,14 @@ public class Package<T extends Serializable> implements Serializable
         Close,
         /**
          * Information about the server
-         * 
-         * @see PServerInfo
          */
         ServerInfo,
         /**
          * Result for requested move
-         * 
-         * @see MoveResult
          */
         MoveResult,
         /**
          * Result for requested move
-         * 
-         * @see MoveResult
          */
         EndGame
     }

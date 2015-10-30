@@ -1,6 +1,5 @@
 package se.hig.oodp.b9.logic;
 
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -459,9 +458,13 @@ public class Table implements Serializable
      * <li><a href= "https://dzone.com/articles/understanding-sunmiscunsafe" >
      * Rafael Winterhalter</a></li>
      * </ul>
+     * 
+     * @param stream
+     *            the stream
+     * @throws Exception
+     *             if fails
      */
-    @SuppressWarnings("all")
-    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+    private void readObject(ObjectInputStream stream) throws Exception
     {
         stream.defaultReadObject();
 

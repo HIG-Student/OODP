@@ -46,8 +46,9 @@ public class CardPainter implements ICardPainter
     /**
      * Draws cards from a spritesheet <br>
      * <br>
-     * Inspiration for XML reader by
-     * {@link <a href="http://www.mkyong.com/java/how-to-read-xml-file-in-java-dom-parser/">mkyong</a>}
+     * Inspiration for XML reader by <a href=
+     * "http://www.mkyong.com/java/how-to-read-xml-file-in-java-dom-parser/"
+     * >mkyong</a>
      * 
      * @param pathToCardsSheet
      *            the path to the image (spritesheet)
@@ -66,7 +67,7 @@ public class CardPainter implements ICardPainter
         cardSheet = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource(pathToCardsSheet));
 
         cardBack = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource(pathToCardBack));
-        
+
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(new File(ClassLoader.getSystemResource(pathToXML).getPath()));

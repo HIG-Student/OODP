@@ -45,8 +45,9 @@ public class TestTable
     /**
      * Test serialization <br>
      * <br>
-     * Inspiration from
-     * {@link <a href="http://www.tutorialspoint.com/java/java_serialization.htm">tutorialspoint</a>}
+     * Inspiration from <a
+     * href="http://www.tutorialspoint.com/java/java_serialization.htm"
+     * >tutorialspoint</a>
      * 
      * @throws Exception
      *             if fails

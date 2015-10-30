@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Container for two generic data values <br>
  * <br>
- * Yes, i know, this name is really bad >.<
+ * Yes, i know, this name is really bad...
  * 
  * @param <T1>
  *            the first data balue type

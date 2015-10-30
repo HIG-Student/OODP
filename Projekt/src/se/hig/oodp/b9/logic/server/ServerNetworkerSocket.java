@@ -19,9 +19,9 @@ import se.hig.oodp.b9.model.CardInfo;
 import se.hig.oodp.b9.model.Player;
 
 /**
- * {@link ServerNetworker} implementation relying on
- * {@link <a href="https://docs.oracle.com/javase/tutorial/networking/sockets/">Sockets</a>}
- * <br>
+ * {@link ServerNetworker} implementation relying on <a
+ * href="https://docs.oracle.com/javase/tutorial/networking/sockets/"
+ * >Sockets</a> <br>
  * <br>
  */
 public class ServerNetworkerSocket extends ServerNetworker
