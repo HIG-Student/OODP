@@ -287,6 +287,14 @@ public class ServerGame
                     networker.sendCardInfo(player, two.getOne(), table.getCardInfo(two.getOne()));
         });
 
+        for (Player player : players)
+            for (UUID card : table.getPlayerHandIds(player))
+                networker.sendCardInfo(player, card, table.getCardInfo(card));
+
+        for (Player player : players)
+            for (UUID card : table.getCardCollection(table.poolUUID))
+                networker.sendCardInfo(player, card, table.getCardInfo(card));
+
         networker.sendPlayerTurn(table.getNextPlayer());
     }
 

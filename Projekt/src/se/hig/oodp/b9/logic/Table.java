@@ -124,7 +124,7 @@ public class Table implements Serializable
 
         Collections.shuffle(cardList);
 
-        for(Card card : cardList)
+        for (Card card : cardList)
         {
             cardLocation.put(card, deck);
             deck.add(card);
@@ -341,13 +341,10 @@ public class Table implements Serializable
      */
     public Player getOwnerOfCollectionId(UUID collectionId)
     {
-        if (playerHands.get(collectionId).owner != null)
-            return playerHands.get(collectionId).owner;
-
-        if (playerPoints.get(collectionId).owner != null)
-            return playerPoints.get(collectionId).owner;
-
-        return null;
+        if(!collections.containsKey(collectionId))
+            return null;
+        
+        return collections.get(collectionId).owner;
     }
 
     /**
