@@ -120,7 +120,7 @@ public class UMLGenerator
             if (Modifier.isStatic((method.getModifiers())))
                 UMLString.append("<<static>> ");
 
-            if (Modifier.isAbstract(method.getModifiers()))
+            if (Modifier.isAbstract(method.getModifiers()) && !c.isInterface())
                 UMLString.append("<<abstract>> ");
 
             UMLString.append(method.getName());
