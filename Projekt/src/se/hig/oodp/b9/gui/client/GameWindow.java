@@ -31,6 +31,7 @@ import se.hig.oodp.b9.model.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
@@ -49,6 +50,11 @@ public class GameWindow
      * Painter of cards
      */
     ICardPainter cardPainter;
+
+    /**
+     * Compares player score (highest first)
+     */
+    private Comparator<Two<Player, Integer>> compare = (Two<Player, Integer> a, Two<Player, Integer> b) -> b.getTwo().compareTo(a.getTwo());
 
     /**
      * The game
@@ -136,13 +142,13 @@ public class GameWindow
 
             List<Two<Player, Integer>> points = new ArrayList<Two<Player, Integer>>();
             set.getOne().forEach((a, b) -> points.add(new Two<Player, Integer>(a, b)));
-            Collections.sort(points, (Two<Player, Integer> a, Two<Player, Integer> b) -> a.getTwo().compareTo(b.getTwo()));
+            Collections.sort(points, compare);
             points.forEach(a -> builder.append("\t" + a.getOne().getName() + ": " + a.getTwo().intValue() + "\n"));
 
             builder.append("\n\nTotal:\n");
             List<Two<Player, Integer>> totalPoints = new ArrayList<Two<Player, Integer>>();
             set.getTwo().forEach((a, b) -> totalPoints.add(new Two<Player, Integer>(a, b)));
-            Collections.sort(totalPoints, (Two<Player, Integer> a, Two<Player, Integer> b) -> a.getTwo().compareTo(b.getTwo()));
+            Collections.sort(totalPoints, compare);
             totalPoints.forEach(a -> builder.append("\t" + a.getOne().getName() + ": " + a.getTwo().intValue() + "\n"));
 
             JOptionPane.showMessageDialog(frame, builder.toString());
