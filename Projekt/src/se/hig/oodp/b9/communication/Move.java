@@ -1,4 +1,4 @@
-package se.hig.oodp.b9.model;
+package se.hig.oodp.b9.communication;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import se.hig.oodp.b9.logic.Table;
+import se.hig.oodp.b9.model.Card;
 
 /**
  * Represents an action the player can take

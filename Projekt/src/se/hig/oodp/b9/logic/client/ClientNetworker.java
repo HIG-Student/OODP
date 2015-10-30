@@ -3,15 +3,15 @@ package se.hig.oodp.b9.logic.client;
 import java.util.HashMap;
 import java.util.UUID;
 
+import se.hig.oodp.b9.communication.Move;
+import se.hig.oodp.b9.communication.PCardMovement;
+import se.hig.oodp.b9.communication.PMessage;
+import se.hig.oodp.b9.communication.PServerInfo;
 import se.hig.oodp.b9.logic.Event;
 import se.hig.oodp.b9.logic.Table;
 import se.hig.oodp.b9.logic.Two;
 import se.hig.oodp.b9.model.Card;
 import se.hig.oodp.b9.model.CardInfo;
-import se.hig.oodp.b9.model.Move;
-import se.hig.oodp.b9.model.PCardMovement;
-import se.hig.oodp.b9.model.PMessage;
-import se.hig.oodp.b9.model.PServerInfo;
 import se.hig.oodp.b9.model.Player;
 
 /**

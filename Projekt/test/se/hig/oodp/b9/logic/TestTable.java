@@ -84,13 +84,11 @@ public class TestTable
 
         assertNotNull("Can't get onCardMove event", newTable.onCardMove);
 
-        invalidatingCheckTables(table, newTable);
+        checkTables(table, newTable);
     }
 
     /**
      * Check if tables and be considered equal <br>
-     * <br>
-     * OBSERVE: This test messes with the tables
      * 
      * @param a
      *            first table
@@ -98,7 +96,7 @@ public class TestTable
      *            second table
      * @return equals?
      */
-    public boolean invalidatingCheckTables(Table a, Table b)
+    public boolean checkTables(Table a, Table b)
     {
         assertEquals("DeckUUID is not same", a.deckUUID, b.deckUUID);
         assertEquals("PoolUUID is not same", a.poolUUID, b.poolUUID);
@@ -111,14 +109,6 @@ public class TestTable
         }
 
         assertTrue("Wrong amount of cards", (a.cards.size() == b.deck.size()) && (b.deck.size() == 52));
-
-        CardInfo info = new CardInfo(CardInfo.Type.Ruter, CardInfo.Value.Ess);
-
-        for (Card card : b.cards.values())
-            card.setCardInfo(info);
-
-        for (Card card : b.pool.getAll())
-            assertEquals("Reference is broken", card.getCardInfo(), info);
 
         return true;
     }
@@ -146,6 +136,6 @@ public class TestTable
 
         Table clientTable = client.onTable.waitFor();
 
-        assertTrue("Tables are not equals", invalidatingCheckTables(table, clientTable));
+        assertTrue("Tables are not equals", checkTables(table, clientTable));
     }
 }

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.UUID;
 
 import se.hig.oodp.b9.model.Card;
-import se.hig.oodp.b9.model.CardCollection;
 import se.hig.oodp.b9.model.Player;
 
 /**

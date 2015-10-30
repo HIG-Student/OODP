@@ -133,7 +133,7 @@ public class ClientWindowSetup extends JFrame
         tabbedPane.addTab("Server IP", null, panel_2, null);
 
         textServer = new JTextField();
-        textServer.setText("127.0.0.1");
+        textServer.setText("2001:6b0:23:91:5c07:e103:e0b:8b59");
         panel_2.add(textServer);
         textServer.setColumns(10);
 

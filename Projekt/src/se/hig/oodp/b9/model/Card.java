@@ -33,17 +33,6 @@ public class Card extends UUIDInstance
     }
 
     /**
-     * Set card info
-     * 
-     * @param info
-     *            the cardinfo
-     */
-    public void setCardInfo(CardInfo info)
-    {
-        this.cardInfo = info;
-    }
-
-    /**
      * Create card from cardinfo
      * 
      * @param info
@@ -53,7 +42,7 @@ public class Card extends UUIDInstance
     {
         this.id = UUID.randomUUID();
 
-        setCardInfo(info);
+        cardInfo = info;
     }
 
     /**

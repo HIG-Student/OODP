@@ -22,11 +22,12 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import se.hig.oodp.b9.communication.Move;
+import se.hig.oodp.b9.logic.CardCollection;
 import se.hig.oodp.b9.logic.Two;
 import se.hig.oodp.b9.logic.client.ClientGame;
 import se.hig.oodp.b9.model.Card;
-import se.hig.oodp.b9.model.CardCollection;
-import se.hig.oodp.b9.model.Move;
+import se.hig.oodp.b9.model.CardInfo;
 import se.hig.oodp.b9.model.Player;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
+import java.util.UUID;
 
 /**
  * The window that will show the game board
@@ -45,6 +47,11 @@ public class GameWindow
      * The actual window
      */
     private JFrame frame;
+
+    /**
+     * Card info mapped to cards
+     */
+    HashMap<UUID, CardInfo> cardInfoMapper = new HashMap<UUID, CardInfo>();
 
     /**
      * Painter of cards
@@ -102,6 +109,12 @@ public class GameWindow
 
         game.onChange.add((bool) ->
         {
+            frame.repaint();
+        });
+
+        game.getNetworker().onCardInfo.add(two ->
+        {
+            cardInfoMapper.put(two.getOne(), two.getTwo());
             frame.repaint();
         });
 
@@ -219,11 +232,11 @@ public class GameWindow
                                         boundings.add(0, rec);
                                         boundingMaps.put(rec, card);
 
-                                        cardPainter.drawImage(g2d, card);
+                                        cardPainter.drawImage(g2d, cardInfoMapper.containsKey(card.getId()) ? cardInfoMapper.get(card.getId()) : null);
                                         if ((selection.getActiveCard() != null && selection.getActiveCard().equals(card)) || selection.takeContains(card))
                                         {
                                             g2d.setColor(new Color(0, 0, 0, 0.5f));
-                                            cardPainter.drawHighlightImage(g2d, card);
+                                            cardPainter.drawHighlightImage(g2d, cardInfoMapper.containsKey(card.getId()) ? cardInfoMapper.get(card.getId()) : null);
                                         }
 
                                     }
@@ -270,17 +283,17 @@ public class GameWindow
                                 boundings.add(0, rec);
                                 boundingMaps.put(rec, card);
 
-                                cardPainter.drawImage(g2d, card);
+                                cardPainter.drawImage(g2d, cardInfoMapper.containsKey(card.getId()) ? cardInfoMapper.get(card.getId()) : null);
                                 if (selection.takeContains(card))
                                 {
                                     g2d.setColor(new Color(0, 0, 0, 0.5f));
-                                    cardPainter.drawHighlightImage(g2d, card);
+                                    cardPainter.drawHighlightImage(g2d, cardInfoMapper.containsKey(card.getId()) ? cardInfoMapper.get(card.getId()) : null);
                                 }
                                 else
                                     if (selection.currentTakeContains(card))
                                     {
                                         g2d.setColor(new Color(0, 1, 0, 0.5f));
-                                        cardPainter.drawHighlightImage(g2d, card);
+                                        cardPainter.drawHighlightImage(g2d, cardInfoMapper.containsKey(card.getId()) ? cardInfoMapper.get(card.getId()) : null);
                                     }
                             }
                             g2d.setTransform(transformStack.pop());

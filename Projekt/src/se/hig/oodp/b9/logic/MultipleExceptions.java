@@ -1,4 +1,4 @@
-package se.hig.oodp.b9.model;
+package se.hig.oodp.b9.logic;
 
 import java.util.ArrayList;
 import java.util.List;

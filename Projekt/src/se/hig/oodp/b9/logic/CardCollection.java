@@ -1,8 +1,12 @@
-package se.hig.oodp.b9.model;
+package se.hig.oodp.b9.logic;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import se.hig.oodp.b9.model.Card;
+import se.hig.oodp.b9.model.Player;
+import se.hig.oodp.b9.model.UUIDInstance;
 
 /**
  * Collection of cards

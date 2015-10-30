@@ -1,6 +1,8 @@
-package se.hig.oodp.b9.model;
+package se.hig.oodp.b9.communication;
 
 import java.io.Serializable;
+
+import se.hig.oodp.b9.model.Player;
 
 /**
  * A message

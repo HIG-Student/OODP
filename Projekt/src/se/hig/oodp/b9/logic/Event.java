@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import se.hig.oodp.b9.model.MultipleExceptions;
-
 /**
  * Representing an event <br>
  * <br>

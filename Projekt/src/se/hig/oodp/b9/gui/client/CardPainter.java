@@ -18,6 +18,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import se.hig.oodp.b9.model.Card;
+import se.hig.oodp.b9.model.CardInfo;
 
 /**
  * Draws images from a spritesheet
@@ -82,12 +83,12 @@ public class CardPainter implements ICardPainter
     }
 
     @Override
-    public void drawImage(Graphics2D g, Card card)
+    public void drawImage(Graphics2D g, CardInfo info)
     {
         String type = "";
         String value = "";
 
-        if (card.getCardInfo() == null)
+        if (info == null)
         {
             Shape oldClip = g.getClip();
             g.setClip(null);
@@ -96,7 +97,7 @@ public class CardPainter implements ICardPainter
         }
         else
         {
-            switch (card.getCardInfo().getType())
+            switch (info.getType())
             {
             case Hjärter:
                 type = "Hearts";
@@ -112,7 +113,7 @@ public class CardPainter implements ICardPainter
                 break;
             }
 
-            switch (card.getCardInfo().getValue())
+            switch (info.getValue())
             {
             case Ess:
                 value = "A";
@@ -127,7 +128,7 @@ public class CardPainter implements ICardPainter
                 value = "J";
                 break;
             default:
-                value = "" + (card.getCardInfo().getValue().ordinal() + 1);
+                value = "" + (info.getValue().ordinal() + 1);
             }
 
             Shape oldClip = g.getClip();
@@ -146,7 +147,7 @@ public class CardPainter implements ICardPainter
     }
 
     @Override
-    public void drawHighlightImage(Graphics2D g, Card card)
+    public void drawHighlightImage(Graphics2D g, CardInfo info)
     {
         Shape oldClip = g.getClip();
         g.setClip(null);

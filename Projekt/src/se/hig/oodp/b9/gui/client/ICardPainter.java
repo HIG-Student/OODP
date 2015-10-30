@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 
 import se.hig.oodp.b9.model.Card;
+import se.hig.oodp.b9.model.CardInfo;
 
 /**
  * Interface for painting cards
@@ -20,7 +21,7 @@ public interface ICardPainter
      * @param card
      *            to draw
      */
-    public void drawImage(Graphics2D g, Card card);
+    public void drawImage(Graphics2D g, CardInfo info);
 
     /**
      * Draw the highlight <br>
@@ -32,7 +33,7 @@ public interface ICardPainter
      * @param card
      *            to draw highlight for
      */
-    public void drawHighlightImage(Graphics2D g, Card card);
+    public void drawHighlightImage(Graphics2D g, CardInfo info);
 
     /**
      * Get the standard size

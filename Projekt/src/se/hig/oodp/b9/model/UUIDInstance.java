@@ -12,7 +12,7 @@ public abstract class UUIDInstance implements Serializable
     /**
      * (theoretically) guaranteed unique id
      */
-    UUID id;
+    protected UUID id;
 
     /**
      * Get the id
@@ -30,7 +30,7 @@ public abstract class UUIDInstance implements Serializable
      * @param id
      *            the (theoretically) guaranteed unique id of this instance
      */
-    public void setId(UUID id)
+    protected void setId(UUID id)
     {
         this.id = id;
     }

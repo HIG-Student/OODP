@@ -2,11 +2,11 @@ package se.hig.oodp.b9.logic.client;
 
 import java.util.HashMap;
 
+import se.hig.oodp.b9.communication.Move;
+import se.hig.oodp.b9.logic.CardCollection;
 import se.hig.oodp.b9.logic.Event;
 import se.hig.oodp.b9.logic.Table;
 import se.hig.oodp.b9.logic.Two;
-import se.hig.oodp.b9.model.CardCollection;
-import se.hig.oodp.b9.model.Move;
 import se.hig.oodp.b9.model.Player;
 
 /**
@@ -70,7 +70,6 @@ public class ClientGame
 
         networker.onCardInfo.add(two ->
         {
-            table.getCard(two.getOne()).setCardInfo(two.getTwo());
             onChange.invoke(true);
         });
 

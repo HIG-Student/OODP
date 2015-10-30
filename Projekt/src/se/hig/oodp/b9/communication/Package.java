@@ -1,4 +1,4 @@
-package se.hig.oodp.b9.model;
+package se.hig.oodp.b9.communication;
 
 import java.io.Serializable;
 

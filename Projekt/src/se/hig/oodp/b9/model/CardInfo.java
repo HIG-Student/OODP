@@ -32,7 +32,7 @@ public class CardInfo implements Serializable
     /**
      * The type of the card
      */
-    Type type;
+    final Type type;
 
     /**
      * Get the type of the card
@@ -47,7 +47,7 @@ public class CardInfo implements Serializable
     /**
      * The value of the card
      */
-    Value value;
+    final Value value;
 
     /**
      * Get the value of the card

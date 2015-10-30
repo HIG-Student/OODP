@@ -2,9 +2,9 @@ package se.hig.oodp.b9.logic;
 
 import java.io.Serializable;
 
+import se.hig.oodp.b9.communication.Move;
 import se.hig.oodp.b9.model.Card;
 import se.hig.oodp.b9.model.CardInfo;
-import se.hig.oodp.b9.model.Move;
 import se.hig.oodp.b9.model.Player;
 
 /**
