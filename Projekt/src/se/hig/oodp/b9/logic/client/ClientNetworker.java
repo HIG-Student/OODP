@@ -10,7 +10,6 @@ import se.hig.oodp.b9.communication.PServerInfo;
 import se.hig.oodp.b9.logic.Event;
 import se.hig.oodp.b9.logic.Table;
 import se.hig.oodp.b9.logic.Two;
-import se.hig.oodp.b9.model.Card;
 import se.hig.oodp.b9.model.CardInfo;
 import se.hig.oodp.b9.model.Player;
 
@@ -108,11 +107,6 @@ public abstract class ClientNetworker
      * Event invoked on new table
      */
     public Event<Table> onTable = new Event<Table>();
-
-    /**
-     * Event invoked on new cards
-     */
-    public Event<Card[]> onCards = new Event<Card[]>();
 
     /**
      * Event invoked on new card info

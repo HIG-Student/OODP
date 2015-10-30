@@ -23,10 +23,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import se.hig.oodp.b9.communication.Move;
-import se.hig.oodp.b9.logic.CardCollection;
 import se.hig.oodp.b9.logic.Two;
 import se.hig.oodp.b9.logic.client.ClientGame;
-import se.hig.oodp.b9.model.Card;
 import se.hig.oodp.b9.model.CardInfo;
 import se.hig.oodp.b9.model.Player;
 
@@ -139,7 +137,7 @@ public class GameWindow
     public void runGame()
     {
         List<Rectangle> boundings = new ArrayList<Rectangle>();
-        HashMap<Rectangle, Card> boundingMaps = new HashMap<Rectangle, Card>();
+        HashMap<Rectangle, UUID> boundingMaps = new HashMap<Rectangle, UUID>();
         Move selection = new Move(null);
 
         game.onTurnStatus.add(ok ->
@@ -207,14 +205,14 @@ public class GameWindow
                                 for (int x = -2; x <= 1; x++)
                                 {
                                     Player player = game.getTable().getPlayers()[i];
-                                    CardCollection collection = game.getTable().getPlayerHand(player);
-                                    if (index >= collection.size())
+                                    UUID[] collection = game.getTable().getPlayerHandIds(player);
+                                    if (index >= collection.length)
                                         break;
 
                                     // Might break a tiny bit here, i blaim Mr
                                     // GNU
 
-                                    Card card = collection.get(index);
+                                    UUID card = collection[index];
 
                                     transformStack.push(g2d.getTransform());
                                     {
@@ -232,11 +230,11 @@ public class GameWindow
                                         boundings.add(0, rec);
                                         boundingMaps.put(rec, card);
 
-                                        cardPainter.drawImage(g2d, cardInfoMapper.containsKey(card.getId()) ? cardInfoMapper.get(card.getId()) : null);
+                                        cardPainter.drawImage(g2d, cardInfoMapper.containsKey(card) ? cardInfoMapper.get(card) : null);
                                         if ((selection.getActiveCard() != null && selection.getActiveCard().equals(card)) || selection.takeContains(card))
                                         {
                                             g2d.setColor(new Color(0, 0, 0, 0.5f));
-                                            cardPainter.drawHighlightImage(g2d, cardInfoMapper.containsKey(card.getId()) ? cardInfoMapper.get(card.getId()) : null);
+                                            cardPainter.drawHighlightImage(g2d, cardInfoMapper.containsKey(card) ? cardInfoMapper.get(card) : null);
                                         }
 
                                     }
@@ -257,15 +255,15 @@ public class GameWindow
                     int index = 0;
                     for (int y = 0; y < 5; y++)
                     {
-                        if (index == game.getTable().getPool().size())
+                        if (index == game.getTable().getPoolIds().length)
                             return;
 
                         for (int x = -6; x < 5; x++)
                         {
-                            if (index == game.getTable().getPool().size())
+                            if (index == game.getTable().getPoolIds().length)
                                 return;
 
-                            Card card = game.getTable().getPool().get(index);
+                            UUID card = game.getTable().getPoolIds()[index];
 
                             transformStack.push(g2d.getTransform());
                             {
@@ -283,17 +281,17 @@ public class GameWindow
                                 boundings.add(0, rec);
                                 boundingMaps.put(rec, card);
 
-                                cardPainter.drawImage(g2d, cardInfoMapper.containsKey(card.getId()) ? cardInfoMapper.get(card.getId()) : null);
+                                cardPainter.drawImage(g2d, cardInfoMapper.containsKey(card) ? cardInfoMapper.get(card) : null);
                                 if (selection.takeContains(card))
                                 {
                                     g2d.setColor(new Color(0, 0, 0, 0.5f));
-                                    cardPainter.drawHighlightImage(g2d, cardInfoMapper.containsKey(card.getId()) ? cardInfoMapper.get(card.getId()) : null);
+                                    cardPainter.drawHighlightImage(g2d, cardInfoMapper.containsKey(card) ? cardInfoMapper.get(card) : null);
                                 }
                                 else
                                     if (selection.currentTakeContains(card))
                                     {
                                         g2d.setColor(new Color(0, 1, 0, 0.5f));
-                                        cardPainter.drawHighlightImage(g2d, cardInfoMapper.containsKey(card.getId()) ? cardInfoMapper.get(card.getId()) : null);
+                                        cardPainter.drawHighlightImage(g2d, cardInfoMapper.containsKey(card) ? cardInfoMapper.get(card) : null);
                                     }
                             }
                             g2d.setTransform(transformStack.pop());
@@ -320,11 +318,11 @@ public class GameWindow
                 for (Rectangle rec : boundings)
                     if (rec.contains(e.getPoint()))
                     {
-                        Card card = boundingMaps.get(rec);
+                        UUID card = boundingMaps.get(rec);
 
-                        CardCollection collection = game.getTable().getCardLocation(card);
+                        UUID collectionId = game.getTable().getCardLocation(card);
 
-                        if (collection == game.getTable().getPool())
+                        if (game.getTable().poolUUID.equals(collectionId))
                         {
                             if (selection.getActiveCard() == null)
                                 break;
@@ -332,7 +330,7 @@ public class GameWindow
                             selection.toggleTake(card);
                         }
                         else
-                            if (collection.owner != null && collection.owner.equals(game.getMe()))
+                            if (game.getMe().equals(game.getTable().getOwnerOfCollectionId(collectionId)))
                             {
                                 selection.toggleActive(card);
                             }

@@ -1,6 +1,7 @@
 package se.hig.oodp.b9.logic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -81,6 +82,28 @@ public class CardCollection extends UUIDInstance
     }
 
     /**
+     * Add cards to this collection
+     * 
+     * @param cards
+     *            the cards to be added
+     */
+    public void add(Card[] cards)
+    {
+        this.cards.addAll(Arrays.asList(cards));
+    }
+
+    /**
+     * Add cards to this collection
+     * 
+     * @param cards
+     *            the cards to be added
+     */
+    public void add(List<Card> cards)
+    {
+        this.cards.addAll(cards);
+    }
+
+    /**
      * Get a card based on an index
      * 
      * @param index
@@ -100,6 +123,19 @@ public class CardCollection extends UUIDInstance
     public Card[] getAll()
     {
         return cards.toArray(new Card[0]);
+    }
+
+    /**
+     * Get all cards as an new array
+     * 
+     * @return the cards
+     */
+    public UUID[] getAllIds()
+    {
+        List<UUID> ids = new ArrayList<UUID>();
+        for (Card card : cards)
+            ids.add(card.getId());
+        return ids.toArray(new UUID[0]);
     }
 
     /**

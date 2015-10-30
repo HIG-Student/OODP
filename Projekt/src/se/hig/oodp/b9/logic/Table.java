@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
 import se.hig.oodp.b9.model.Card;
+import se.hig.oodp.b9.model.CardInfo;
 import se.hig.oodp.b9.model.Player;
 
 /**
@@ -80,7 +83,7 @@ public class Table implements Serializable
     /**
      * Event invoked on a card move
      */
-    public transient final Event<Two<Card, CardCollection>> onCardMove = new Event<Two<Card, CardCollection>>();
+    public transient final Event<Two<UUID, UUID>> onCardMove = new Event<Two<UUID, UUID>>();
 
     /**
      * Create new table
@@ -108,6 +111,24 @@ public class Table implements Serializable
 
         collections.put(this.poolUUID = poolUUID, pool = new CardCollection(poolUUID, null));
         collections.put(this.deckUUID = deckUUID, deck = new CardCollection(deckUUID, null));
+
+        List<Card> cardList = new ArrayList<Card>();
+
+        for (CardInfo.Type type : CardInfo.Type.values())
+            for (CardInfo.Value value : CardInfo.Value.values())
+            {
+                Card card = new Card(new CardInfo(type, value));
+                cards.put(card.getId(), card);
+                cardList.add(card);
+            }
+
+        Collections.shuffle(cardList);
+
+        for(Card card : cardList)
+        {
+            cardLocation.put(card, deck);
+            deck.add(card);
+        }
     }
 
     /**
@@ -117,9 +138,27 @@ public class Table implements Serializable
      *            the card to check
      * @return the card-collection the card is in
      */
-    public CardCollection getCardLocation(Card card)
+    CardCollection getCardLocation(Card card)
     {
         return cardLocation.containsKey(card) ? cardLocation.get(card) : null;
+    }
+
+    /**
+     * Get the card-collection that card is in
+     * 
+     * @param card
+     *            the card to check
+     * @return the card-collection the card is in
+     */
+    public UUID getCardLocation(UUID card)
+    {
+        if (!cards.containsKey(card))
+            return null;
+
+        if (!cardLocation.containsKey(cards.get(card)))
+            return null;
+
+        return cardLocation.get(cards.get(card)).getId();
     }
 
     /**
@@ -127,9 +166,24 @@ public class Table implements Serializable
      * 
      * @return the pool
      */
-    public CardCollection getPool()
+    Card[] getPool()
     {
-        return pool;
+        return pool.getAll();
+    }
+
+    /**
+     * Get the pool
+     * 
+     * @return the pool
+     */
+    public UUID[] getPoolIds()
+    {
+        return pool.getAllIds();
+    }
+
+    public CardInfo getCardInfo(UUID card)
+    {
+        return cards.containsKey(card) ? cards.get(card).getCardInfo() : null;
     }
 
     /**
@@ -137,9 +191,19 @@ public class Table implements Serializable
      * 
      * @return the deck
      */
-    public CardCollection getDeck()
+    Card[] getDeck()
     {
-        return deck;
+        return deck.getAll();
+    }
+
+    /**
+     * Get the deck
+     * 
+     * @return the deck
+     */
+    public UUID[] getDeckIds()
+    {
+        return deck.getAllIds();
     }
 
     /**
@@ -149,9 +213,26 @@ public class Table implements Serializable
      *            the owning player
      * @return the hand of the player
      */
-    public CardCollection getPlayerHand(Player player)
+    Card[] getPlayerHand(Player player)
     {
-        return playerHands.containsKey(player) ? playerHands.get(player) : null;
+        return playerHands.containsKey(player) ? playerHands.get(player).getAll() : new Card[0];
+    }
+
+    /**
+     * Get the card-collection that is the player's hand
+     * 
+     * @param player
+     *            the owning player
+     * @return the hand of the player
+     */
+    public UUID[] getPlayerHandIds(Player player)
+    {
+        return playerHands.containsKey(player) ? playerHands.get(player).getAllIds() : new UUID[0];
+    }
+
+    public UUID getIdOfPlayerHand(Player player)
+    {
+        return playerHands.containsKey(player) ? playerHands.get(player).getId() : null;
     }
 
     /**
@@ -163,9 +244,23 @@ public class Table implements Serializable
      * @return the points of the player (the cards the player can get points
      *         for)
      */
-    public CardCollection getPlayerPoints(Player player)
+    Card[] getPlayerPoints(Player player)
     {
-        return playerPoints.containsKey(player) ? playerPoints.get(player) : null;
+        return playerPoints.containsKey(player) ? playerPoints.get(player).getAll() : new Card[0];
+    }
+
+    /**
+     * Get the card-collection that is the player's points (the cards the player
+     * can get points for)
+     * 
+     * @param player
+     *            the owning player
+     * @return the points of the player (the cards the player can get points
+     *         for)
+     */
+    public UUID[] getPlayerPointIds(Player player)
+    {
+        return playerPoints.containsKey(player) ? playerPoints.get(player).getAllIds() : new UUID[0];
     }
 
     /**
@@ -197,7 +292,7 @@ public class Table implements Serializable
      *            the id
      * @return the card
      */
-    public Card getCard(UUID id)
+    Card getCard(UUID id)
     {
         return cards.containsKey(id) ? cards.get(id) : null;
     }
@@ -209,9 +304,9 @@ public class Table implements Serializable
      *            the id
      * @return the card-collection
      */
-    public CardCollection getCardCollection(UUID id)
+    public UUID[] getCardCollection(UUID id)
     {
-        return collections.containsKey(id) ? collections.get(id) : null;
+        return collections.containsKey(id) ? collections.get(id).getAllIds() : new UUID[0];
     }
 
     /**
@@ -229,12 +324,30 @@ public class Table implements Serializable
      * 
      * @return the topmost card
      */
-    public Card getCardFromDeck()
+    public UUID getCardFromDeck()
     {
         if (deck.size() == 0)
             return null;
 
-        return deck.get(0);
+        return deck.get(0).getId();
+    }
+
+    /**
+     * Get owner of id
+     * 
+     * @param collectionId
+     *            id of collection
+     * @return the owner
+     */
+    public Player getOwnerOfCollectionId(UUID collectionId)
+    {
+        if (playerHands.get(collectionId).owner != null)
+            return playerHands.get(collectionId).owner;
+
+        if (playerPoints.get(collectionId).owner != null)
+            return playerPoints.get(collectionId).owner;
+
+        return null;
     }
 
     /**
@@ -245,9 +358,9 @@ public class Table implements Serializable
      * @param collection
      *            the destination
      */
-    public void moveCard(Card card, CardCollection collection)
+    void moveCard(Card card, CardCollection collection)
     {
-        if (card == null || collection == null)
+        if (card == null || collection == null || !cards.containsValue(card) || !collections.containsValue(collection))
         {
             System.out.println("Trying to move null!");
             return;
@@ -258,25 +371,44 @@ public class Table implements Serializable
         cardLocation.put(card, collection);
         collection.add(card);
 
-        onCardMove.invoke(new Two<Card, CardCollection>(card, collection));
+        onCardMove.invoke(new Two<UUID, UUID>(card.getId(), collection.getId()));
     }
 
     /**
-     * Swaps the old cards with new ones
+     * Move a card to a new destination
      * 
-     * @param newCards
-     *            the new cards
+     * @param card
+     *            the card to move
+     * @param collection
+     *            the destination
      */
-    public void changeDeck(Card[] newCards)
+    public void moveCard(UUID cardId, UUID collectionId)
     {
-        clear();
+        if (!cards.containsKey(cardId))
+            return;
 
-        for (Card card : newCards)
-        {
-            cards.put(card.getId(), card);
-            cardLocation.put(card, deck);
-            deck.add(card);
-        }
+        if (!collections.containsKey(collectionId))
+            return;
+
+        moveCard(cards.get(cardId), collections.get(collectionId));
+    }
+
+    /**
+     * Get owner of card
+     * 
+     * @param cardId
+     *            the card
+     * @return the owner
+     */
+    public Player getOwnerOfCard(UUID cardId)
+    {
+        if (!cards.containsKey(cardId))
+            return null;
+
+        if (!collections.containsKey(cards.get(cardId)))
+            return null;
+
+        return collections.get(cards.get(cardId)).owner;
     }
 
     /**
@@ -293,22 +425,6 @@ public class Table implements Serializable
     public void resetNextTurn()
     {
         nextPlayerIndex = 0;
-    }
-
-    /**
-     * Clear information in this table (related the cards)
-     */
-    public void clear()
-    {
-        for (Player player : players)
-        {
-            playerHands.get(player).clear();
-            playerPoints.get(player).clear();
-        }
-        pool.clear();
-        deck.clear();
-        cards.clear();
-        cardLocation.clear();
     }
 
     /**

@@ -57,13 +57,13 @@ public class Main
             {
                 for (ClientGame game : clientGame)
                 {
-                    game.makeMoveAndWait(new Move(game.getMyHand().getFirstCard()));
+                    game.makeMoveAndWait(new Move(game.getMyHand()[0]));
                 }
             }
             clientGame.get(0).getNetworker().onPlayerTurn.waitFor();
         }
 
-        System.out.println("Client hand size: " + clientGame.get(0).getMyHand().size());
+        System.out.println("Client hand size: " + clientGame.get(0).getMyHand().length);
 
     }
 

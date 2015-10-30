@@ -23,12 +23,6 @@ public class Package<T extends Serializable> implements Serializable
          */
         Table,
         /**
-         * Sending new cards
-         * 
-         * @see Card
-         */
-        Cards,
-        /**
          * Sending information about a card
          * 
          * @see CardInfo

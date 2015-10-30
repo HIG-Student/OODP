@@ -13,10 +13,8 @@ import se.hig.oodp.b9.communication.PCardMovement;
 import se.hig.oodp.b9.communication.PMessage;
 import se.hig.oodp.b9.communication.PServerInfo;
 import se.hig.oodp.b9.communication.Package;
-import se.hig.oodp.b9.logic.CardCollection;
 import se.hig.oodp.b9.logic.Table;
 import se.hig.oodp.b9.logic.Two;
-import se.hig.oodp.b9.model.Card;
 import se.hig.oodp.b9.model.CardInfo;
 import se.hig.oodp.b9.model.Player;
 
@@ -157,15 +155,9 @@ public class ServerNetworkerSocket extends ServerNetworker
                                 }
 
                                 @Override
-                                public void sendNewCards(UUID[] cardIds)
+                                public void sendMoveCard(UUID card, UUID collection)
                                 {
-                                    sendObject(new Package<UUID[]>(cardIds, Package.Type.Cards));
-                                }
-
-                                @Override
-                                public void sendMoveCard(Card card, CardCollection collection)
-                                {
-                                    sendObject(new Package<PCardMovement>(new PCardMovement(card.getId(), collection.getId()), Package.Type.Move));
+                                    sendObject(new Package<PCardMovement>(new PCardMovement(card, collection), Package.Type.Move));
                                 }
 
                                 @Override
@@ -187,9 +179,9 @@ public class ServerNetworkerSocket extends ServerNetworker
                                 }
 
                                 @Override
-                                public void sendCardInfo(Card card)
+                                public void sendCardInfo(UUID card, CardInfo info)
                                 {
-                                    sendObject(new Package<Two<UUID, CardInfo>>(new Two<UUID, CardInfo>(card.getId(), card.getCardInfo()), Package.Type.CardInfo));
+                                    sendObject(new Package<Two<UUID, CardInfo>>(new Two<UUID, CardInfo>(card, info), Package.Type.CardInfo));
                                 }
 
                                 @Override

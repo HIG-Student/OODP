@@ -6,11 +6,10 @@ import java.util.UUID;
 import se.hig.oodp.b9.communication.Move;
 import se.hig.oodp.b9.communication.PMessage;
 import se.hig.oodp.b9.communication.PServerInfo;
-import se.hig.oodp.b9.logic.CardCollection;
 import se.hig.oodp.b9.logic.Event;
 import se.hig.oodp.b9.logic.Table;
 import se.hig.oodp.b9.logic.Two;
-import se.hig.oodp.b9.model.Card;
+import se.hig.oodp.b9.model.CardInfo;
 import se.hig.oodp.b9.model.Player;
 
 /**
@@ -30,14 +29,6 @@ public abstract class ServerNetworkerClient
      *            the table to send
      */
     public abstract void sendTable(Table table);
-
-    /**
-     * Send new cards
-     * 
-     * @param cardIds
-     *            the cards
-     */
-    public abstract void sendNewCards(UUID[] cardIds);
 
     /**
      * Alert of new player added
@@ -74,7 +65,7 @@ public abstract class ServerNetworkerClient
      * @param card
      *            the card the information is about
      */
-    public abstract void sendCardInfo(Card card);
+    public abstract void sendCardInfo(UUID card, CardInfo info);
 
     /**
      * Send end-of-game alert and information
@@ -94,7 +85,7 @@ public abstract class ServerNetworkerClient
      * @param collection
      *            the destination
      */
-    public abstract void sendMoveCard(Card card, CardCollection collection);
+    public abstract void sendMoveCard(UUID card, UUID collection);
 
     /**
      * Send new player turn

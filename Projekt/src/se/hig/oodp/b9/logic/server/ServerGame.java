@@ -6,11 +6,9 @@ import java.util.List;
 import java.util.UUID;
 
 import se.hig.oodp.b9.communication.PServerInfo;
-import se.hig.oodp.b9.logic.CardCollection;
 import se.hig.oodp.b9.logic.Event;
 import se.hig.oodp.b9.logic.Rules;
 import se.hig.oodp.b9.logic.Table;
-import se.hig.oodp.b9.model.Card;
 import se.hig.oodp.b9.model.CardInfo;
 import se.hig.oodp.b9.model.Player;
 
@@ -39,10 +37,6 @@ public class ServerGame
      */
     public HashMap<Player, Integer> totalPoints = new HashMap<Player, Integer>();
 
-    /**
-     * The deck of cards
-     */
-    public CardDeck cardDeck;
     /**
      * The table
      */
@@ -146,46 +140,44 @@ public class ServerGame
 
         networker.onNewMove.add(two ->
         {
-            two.getTwo().populate(table);
-
             if (rules.canPlayMove(two.getOne(), table, two.getTwo()))
             {
-                Card activeCard = two.getTwo().getActiveCard();
-                Card[][] takeCards = two.getTwo().getTakeCards();
+                UUID activeCard = two.getTwo().getActiveCard();
+                UUID[][] takeCards = two.getTwo().getTakeCards();
 
                 if (takeCards.length == 0)
                 {
-                    moveCard(activeCard, table.getPool());
+                    moveCard(activeCard, table.poolUUID);
                 }
                 else
                 {
-                    for (Card[] cardList : takeCards)
-                        for (Card card : cardList)
+                    for (UUID[] cardList : takeCards)
+                        for (UUID card : cardList)
                         {
-                            moveCard(card, table.getPlayerPoints(two.getOne()));
+                            moveCard(card, two.getOne().handUUID);
 
-                            if (card.getCardInfo().getValue() == CardInfo.Value.Ess)
+                            if (table.getCardInfo(card).getValue() == CardInfo.Value.Ess)
                                 addPoints(two.getOne(), 1);
 
-                            if (card.getCardInfo().getValue() == CardInfo.Value.Två && card.getCardInfo().getType() == CardInfo.Type.Spader)
+                            if (table.getCardInfo(card).getValue() == CardInfo.Value.Två && table.getCardInfo(card).getType() == CardInfo.Type.Spader)
                                 addPoints(two.getOne(), 1);
 
-                            if (card.getCardInfo().getValue() == CardInfo.Value.Tio && card.getCardInfo().getType() == CardInfo.Type.Ruter)
+                            if (table.getCardInfo(card).getValue() == CardInfo.Value.Tio && table.getCardInfo(card).getType() == CardInfo.Type.Ruter)
                                 addPoints(two.getOne(), 2);
                         }
 
-                    if (table.getPool().size() == 0)
+                    if (table.getPoolIds().length == 0)
                         addPoints(two.getOne(), 1);
 
-                    moveCard(activeCard, table.getPlayerPoints(two.getOne()));
+                    moveCard(activeCard, two.getOne().pointsUUID);
 
-                    if (activeCard.getCardInfo().getValue() == CardInfo.Value.Ess)
+                    if (table.getCardInfo(activeCard).getValue() == CardInfo.Value.Ess)
                         addPoints(two.getOne(), 1);
 
-                    if (activeCard.getCardInfo().getValue() == CardInfo.Value.Två && activeCard.getCardInfo().getType() == CardInfo.Type.Spader)
+                    if (table.getCardInfo(activeCard).getValue() == CardInfo.Value.Två && table.getCardInfo(activeCard).getType() == CardInfo.Type.Spader)
                         addPoints(two.getOne(), 1);
 
-                    if (activeCard.getCardInfo().getValue() == CardInfo.Value.Tio && activeCard.getCardInfo().getType() == CardInfo.Type.Ruter)
+                    if (table.getCardInfo(activeCard).getValue() == CardInfo.Value.Tio && table.getCardInfo(activeCard).getType() == CardInfo.Type.Ruter)
                         addPoints(two.getOne(), 2);
                 }
 
@@ -195,9 +187,8 @@ public class ServerGame
 
                 System.out.println("Next turn");
                 System.out.println("\t" + table.getNextPlayer());
-                System.out.println("\t" + table.getPlayerHand(table.getNextPlayer()).size());
 
-                if (table.getPlayerHand(table.getNextPlayer()).size() == 0)
+                if (table.getPlayerHandIds(table.getNextPlayer()).length == 0)
                 {
                     System.out.println("OK!!!!" + table.deckGotCards());
                     if (table.deckGotCards())
@@ -213,14 +204,14 @@ public class ServerGame
                         int topCardCount = 0;
 
                         for (Player player : players)
-                            if (table.getPlayerPoints(player).size() > topCardCount)
+                            if (table.getPlayerPointIds(player).length > topCardCount)
                             {
-                                topCardCount = table.getPlayerPoints(player).size();
+                                topCardCount = table.getPlayerPointIds(player).length;
                                 topCards.clear();
                                 topCards.add(player);
                             }
                             else
-                                if (table.getPlayerPoints(player).size() == topCardCount)
+                                if (table.getPlayerPointIds(player).length == topCardCount)
                                     topCards.add(player);
 
                         for (Player player : topCards)
@@ -231,14 +222,14 @@ public class ServerGame
                         int topSpadeCount = 0;
 
                         for (Player player : players)
-                            if (table.getPlayerPoints(player).size() > topSpadeCount)
+                            if (table.getPlayerPointIds(player).length > topSpadeCount)
                             {
-                                topSpadeCount = table.getPlayerPoints(player).size();
+                                topSpadeCount = table.getPlayerPointIds(player).length;
                                 topSpades.clear();
                                 topSpades.add(player);
                             }
                             else
-                                if (table.getPlayerPoints(player).size() == topSpadeCount)
+                                if (table.getPlayerPointIds(player).length == topSpadeCount)
                                     topSpades.add(player);
 
                         for (Player player : topSpades)
@@ -276,40 +267,26 @@ public class ServerGame
      */
     public void newGame()
     {
-        cardDeck = new CardDeck();
-
         points.clear();
 
-        if (table == null)
+        table = new Table(players, UUID.randomUUID(), UUID.randomUUID());
+
+        rules.setUp(table);
+
+        networker.sendTable(table);
+
+        table.onCardMove.add(two ->
         {
-            table = new Table(players, UUID.randomUUID(), UUID.randomUUID());
+            networker.sendMoveCard(two.getOne(), two.getTwo());
 
-            table.changeDeck(cardDeck.getCards());
-            networker.sendTable(table);
+            if (table.getOwnerOfCard(two.getOne()) != null)
+                networker.sendCardInfo(table.getOwnerOfCard(two.getOne()), two.getOne(), table.getCardInfo(two.getOne()));
 
-            table.onCardMove.add(two ->
-            {
-                networker.sendMoveCard(two.getOne(), two.getTwo());
+            if (two.getTwo() == table.poolUUID)
+                for (Player player : players)
+                    networker.sendCardInfo(player, two.getOne(), table.getCardInfo(two.getOne()));
+        });
 
-                if (two.getTwo().owner != null)
-                    networker.sendCardInfo(two.getTwo().owner, two.getOne());
-
-                if (two.getTwo() == table.getPool())
-                    for (Player player : players)
-                        networker.sendCardInfo(player, two.getOne());
-            });
-
-            rules.setUp(table);
-        }
-        else
-        {
-            table.changeDeck(cardDeck.getCards());
-            networker.sendTable(table);
-
-            rules.setUp(table);
-        }
-
-        table.resetNextTurn();
         networker.sendPlayerTurn(table.getNextPlayer());
     }
 
@@ -331,9 +308,9 @@ public class ServerGame
      * @param collection
      *            the destination
      */
-    public void moveCard(Card card, CardCollection collection)
+    public void moveCard(UUID cardId, UUID collectionId)
     {
-        table.moveCard(card, collection);
+        table.moveCard(cardId, collectionId);
     }
 
     /**

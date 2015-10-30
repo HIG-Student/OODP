@@ -7,11 +7,10 @@ import java.util.UUID;
 
 import se.hig.oodp.b9.communication.Move;
 import se.hig.oodp.b9.communication.PServerInfo;
-import se.hig.oodp.b9.logic.CardCollection;
 import se.hig.oodp.b9.logic.Event;
 import se.hig.oodp.b9.logic.Table;
 import se.hig.oodp.b9.logic.Two;
-import se.hig.oodp.b9.model.Card;
+import se.hig.oodp.b9.model.CardInfo;
 import se.hig.oodp.b9.model.Player;
 
 /**
@@ -70,18 +69,6 @@ public abstract class ServerNetworker
     {
         for (ServerNetworkerClient client : clients)
             client.sendTable(table);
-    }
-
-    /**
-     * Send new cards to clients
-     * 
-     * @param cardIds
-     *            new cards to send
-     */
-    public void sendNewCards(UUID[] cardIds)
-    {
-        for (ServerNetworkerClient client : clients)
-            client.sendNewCards(cardIds);
     }
 
     /**
@@ -161,11 +148,11 @@ public abstract class ServerNetworker
      * @param card
      *            the card to send info about
      */
-    public void sendCardInfo(Player target, Card card)
+    public void sendCardInfo(Player target, UUID card, CardInfo info)
     {
         ServerNetworkerClient client = getClient(target);
         if (client != null)
-            client.sendCardInfo(card);
+            client.sendCardInfo(card, info);
     }
 
     /**
@@ -190,7 +177,7 @@ public abstract class ServerNetworker
      * @param collection
      *            the destination
      */
-    public void sendMoveCard(Card card, CardCollection collection)
+    public void sendMoveCard(UUID card, UUID collection)
     {
         for (ServerNetworkerClient client : clients)
             client.sendMoveCard(card, collection);

@@ -15,7 +15,6 @@ import se.hig.oodp.b9.communication.PServerInfo;
 import se.hig.oodp.b9.communication.Package;
 import se.hig.oodp.b9.logic.Table;
 import se.hig.oodp.b9.logic.Two;
-import se.hig.oodp.b9.model.Card;
 import se.hig.oodp.b9.model.CardInfo;
 import se.hig.oodp.b9.model.Player;
 
@@ -151,9 +150,6 @@ public class ClientNetworkerSocket extends ClientNetworker
                         case CardInfo:
                             onCardInfo.invoke(((Package<Two<UUID, CardInfo>>) pkg).getValue());
                             break;
-                        case Cards:
-                            onCards.invoke(((Package<Card[]>) pkg).getValue());
-                            break;
                         case PlayerAdded:
                             onPlayerAdded.invoke(((Package<Player>) pkg).getValue());
                             break;
@@ -190,7 +186,6 @@ public class ClientNetworkerSocket extends ClientNetworker
     @Override
     public void sendMove(Move move)
     {
-        System.out.println("C: " + move.getActiveCard().getCardInfo() + " (" + move.getActiveCard().getId() + ")");
         sendObject(new Package<Move>(move, Package.Type.Move));
     }
 

@@ -46,6 +46,8 @@ public class TestGame
         {
             clientGame.add(new ClientGame(new Player("Player " + i), new ClientNetworkerSocket("127.0.0.1", port)).sendGreeting());
             serverGame.playerAdded.waitFor();
+            clientGame.get(i).getNetworker().onMove.add(action -> System.out.println("onMove: " + action));
+            clientGame.get(i).getNetworker().onMoveResult.add(action -> System.out.println("onResult: " + action));
         }
 
         serverGame.rules = new Rules();
@@ -72,21 +74,15 @@ public class TestGame
         {
             for (ClientGame game : clientGame)
             {
-                game.makeMoveAndWait(new Move(game.getMyHand().getFirstCard()));
+                game.makeMoveAndWait(new Move(game.getMyHand()[0]));
             }
         }
 
-        System.out.println("!");
-
-        assertTrue("Hand not empty!", clientGame.get(0).getMyHand().size() == 0);
+        assertTrue("Hand not empty!", clientGame.get(0).getMyHand().length == 0);
 
         clientGame.get(0).onTurnStatus.waitFor();
 
-        System.out.println("!");
-
-        assertTrue("Hand not full!", clientGame.get(0).getMyHand().size() == 4);
-
-        System.out.println("!");
+        assertTrue("Hand not full!", clientGame.get(0).getMyHand().length == 4);
     }
 
     /**
@@ -100,20 +96,14 @@ public class TestGame
         {
             for (ClientGame game : clientGame)
             {
-                game.makeMoveAndWait(new Move(game.getMyHand().getFirstCard()));
+                game.makeMoveAndWait(new Move(game.getMyHand()[0]));
             }
         }
 
-        System.out.println("!");
-
-        assertTrue("Hand not empty!", clientGame.get(0).getMyHand().size() == 0);
+        assertTrue("Hand not empty!", clientGame.get(0).getMyHand().length == 0);
 
         clientGame.get(0).onTurnStatus.waitFor();
-
-        System.out.println("!");
-
-        assertTrue("Hand not full!", clientGame.get(0).getMyHand().size() == 4);
-
-        System.out.println("!");
+        
+        assertTrue("Hand not full!", clientGame.get(0).getMyHand().length == 4);
     }
 }

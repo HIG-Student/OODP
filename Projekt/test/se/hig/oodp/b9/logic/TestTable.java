@@ -16,11 +16,8 @@ import org.junit.Test;
 
 import se.hig.oodp.b9.logic.Table;
 import se.hig.oodp.b9.logic.client.ClientNetworkerSocket;
-import se.hig.oodp.b9.logic.server.CardDeck;
 import se.hig.oodp.b9.logic.server.ServerGame;
 import se.hig.oodp.b9.logic.server.ServerNetworkerSocket;
-import se.hig.oodp.b9.model.Card;
-import se.hig.oodp.b9.model.CardInfo;
 import se.hig.oodp.b9.model.Player;
 
 /**
@@ -44,7 +41,6 @@ public class TestTable
             players.add(new Player("TestPlayer" + i));
 
         table = new Table(players, UUID.randomUUID(), UUID.randomUUID());
-        table.changeDeck(new CardDeck().getCards());
     }
 
     /**

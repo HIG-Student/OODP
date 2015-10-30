@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import se.hig.oodp.b9.logic.Table;
-import se.hig.oodp.b9.model.Card;
-
 /**
  * Represents an action the player can take
  */
@@ -15,34 +12,25 @@ import se.hig.oodp.b9.model.Card;
 public class Move implements Serializable
 {
     /**
-     * Id for the card the player have in the hand
-     */
-    private UUID activeCardId;
-    /**
-     * Ids for the cards the player want to pick up
-     */
-    private UUID[][] takeCardIds;
-
-    /**
      * The card in the player's hand
      */
-    private transient Card activeCard;
+    private UUID activeCard;
     /**
      * The card the player want to pick up
      */
-    private transient List<List<Card>> takeCards = new ArrayList<List<Card>>();
+    private List<List<UUID>> takeCard = new ArrayList<List<UUID>>();
 
     /**
      * The current batch of cards the player want to pick up
      */
-    private transient List<Card> currentTake = new ArrayList<Card>();
+    private List<UUID> currentTake = new ArrayList<UUID>();
 
     /**
      * Get the card in the player's hand
      * 
      * @return the card in the player's hand
      */
-    public Card getActiveCard()
+    public UUID getActiveCard()
     {
         return activeCard;
     }
@@ -52,12 +40,12 @@ public class Move implements Serializable
      * 
      * @return the cards
      */
-    public Card[][] getTakeCards()
+    public UUID[][] getTakeCards()
     {
-        Card[][] cards = new Card[takeCards.size()][];
+        UUID[][] cards = new UUID[takeCard.size()][];
 
-        for (int i = 0; i < takeCards.size(); i++)
-            cards[i] = takeCards.get(i).toArray(new Card[0]);
+        for (int i = 0; i < takeCard.size(); i++)
+            cards[i] = takeCard.get(i).toArray(new UUID[0]);
 
         return cards;
     }
@@ -67,9 +55,9 @@ public class Move implements Serializable
      * 
      * @return the cards
      */
-    public Card[] getCurrentTakeCards()
+    public UUID[] getCurrentTakeCards()
     {
-        return currentTake.toArray(new Card[0]);
+        return currentTake.toArray(new UUID[0]);
     }
 
     /**
@@ -80,12 +68,11 @@ public class Move implements Serializable
      * @param takeCards
      *            cards on the table
      */
-    public Move(Card activeCard, List<List<Card>> takeCards)
+    public Move(UUID activeCard, List<List<UUID>> takeCards)
     {
         setActiveCard(activeCard);
 
-        this.takeCards = takeCards;
-        updateTakeIds();
+        this.takeCard = takeCards;
     }
 
     /**
@@ -94,7 +81,7 @@ public class Move implements Serializable
      * @param activeCard
      *            card in the player's hand
      */
-    public Move(Card activeCard)
+    public Move(UUID activeCard)
     {
         setActiveCard(activeCard);
     }
@@ -105,14 +92,12 @@ public class Move implements Serializable
      * @param card
      *            the card
      */
-    public void setActiveCard(Card card)
+    public void setActiveCard(UUID card)
     {
         activeCard = card;
-        activeCardId = activeCard == null ? null : activeCard.getId();
 
-        takeCards.clear();
+        takeCard.clear();
         currentTake.clear();
-        updateTakeIds();
     }
 
     /**
@@ -121,7 +106,7 @@ public class Move implements Serializable
      * @param card
      *            the card
      */
-    public void toggleActive(Card card)
+    public void toggleActive(UUID card)
     {
         if (activeCard == card)
             setActiveCard(null);
@@ -130,34 +115,13 @@ public class Move implements Serializable
     }
 
     /**
-     * Updating the arrays with ids for the arrays with cards the player want to
-     * take
-     */
-    private void updateTakeIds()
-    {
-        takeCardIds = new UUID[takeCards.size()][];
-
-        for (int i = 0; i < takeCardIds.length; i++)
-        {
-            takeCardIds[i] = new UUID[takeCards.get(i).size()];
-
-            for (int j = 0; j < takeCards.get(i).size(); j++)
-            {
-                takeCardIds[i][j] = takeCards.get(i).get(j).getId();
-            }
-        }
-    }
-
-    /**
      * Empties the cards the player want to take and the card in the player's
      * hand the player want to play
      */
     public void clearTake()
     {
-        takeCards = new ArrayList<List<Card>>();
-        currentTake = new ArrayList<Card>();
-
-        updateTakeIds();
+        takeCard = new ArrayList<List<UUID>>();
+        currentTake = new ArrayList<UUID>();
     }
 
     /**
@@ -166,14 +130,10 @@ public class Move implements Serializable
      * @param card
      *            the card
      */
-    public void addTake(Card card)
+    public void addTake(UUID card)
     {
-        if (!takeCards.contains(card))
-        {
+        if (!takeCard.contains(card))
             currentTake.add(card);
-
-            updateTakeIds();
-        }
     }
 
     /**
@@ -182,14 +142,10 @@ public class Move implements Serializable
      * @param card
      *            the card
      */
-    public void removeTake(Card card)
+    public void removeTake(UUID card)
     {
         if (currentTake.contains(card))
-        {
             currentTake.remove(card);
-
-            updateTakeIds();
-        }
     }
 
     /**
@@ -199,7 +155,7 @@ public class Move implements Serializable
      * @param card
      *            the card
      */
-    public void toggleTake(Card card)
+    public void toggleTake(UUID card)
     {
         if (currentTake.contains(card))
             removeTake(card);
@@ -214,9 +170,9 @@ public class Move implements Serializable
      *            the card to check
      * @return if the card is marked as targeted or not
      */
-    public boolean takeContains(Card card)
+    public boolean takeContains(UUID card)
     {
-        for (List<Card> list : takeCards)
+        for (List<UUID> list : takeCard)
             if (list.contains(card))
                 return true;
 
@@ -230,7 +186,7 @@ public class Move implements Serializable
      *            the card to check
      * @return if the card is in the current batch
      */
-    public boolean currentTakeContains(Card card)
+    public boolean currentTakeContains(UUID card)
     {
         return currentTake.contains(card);
     }
@@ -240,35 +196,7 @@ public class Move implements Serializable
      */
     public void nextTake()
     {
-        takeCards.add(currentTake);
-        currentTake = new ArrayList<Card>();
-
-        updateTakeIds();
-    }
-
-    /**
-     * Relink cards form an array of ids and a table
-     * 
-     * @param table
-     *            the table that contains the cards to link to
-     */
-    public void populate(Table table)
-    {
-        if (activeCardId != null)
-            activeCard = table.getCard(activeCardId);
-
-        takeCards = new ArrayList<List<Card>>();
-
-        for (int i = 0; i < takeCardIds.length; i++)
-        {
-            List<Card> list = new ArrayList<Card>();
-
-            for (int j = 0; j < takeCardIds[i].length; j++)
-            {
-                list.add(table.getCard(takeCardIds[i][j]));
-            }
-
-            takeCards.add(list);
-        }
+        takeCard.add(currentTake);
+        currentTake = new ArrayList<UUID>();
     }
 }

@@ -1,6 +1,7 @@
 package se.hig.oodp.b9.logic.client;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 import se.hig.oodp.b9.communication.Move;
 import se.hig.oodp.b9.logic.CardCollection;
@@ -64,7 +65,7 @@ public class ClientGame
 
         networker.onMove.add(move ->
         {
-            table.moveCard(table.getCard(move.getCardId()), table.getCardCollection(move.getCardCollcetionId()));
+            table.moveCard(move.getCardId(), move.getCardCollcetionId());
             onChange.invoke(true);
         });
 
@@ -77,11 +78,6 @@ public class ClientGame
         {
             this.table = table;
             onChange.invoke(true);
-        });
-
-        networker.onCards.add(cards ->
-        {
-            table.changeDeck(cards);
         });
 
         networker.onPlayerTurn.add((player) ->
@@ -115,9 +111,9 @@ public class ClientGame
      * 
      * @return the hand
      */
-    public CardCollection getMyHand()
+    public UUID[] getMyHand()
     {
-        return table.getPlayerHand(me);
+        return table.getPlayerHandIds(me);
     }
 
     /**
@@ -125,9 +121,9 @@ public class ClientGame
      * 
      * @return the client's player's points (cards that the player have taken)
      */
-    public CardCollection getMyPoints()
+    public UUID[] getMyPoints()
     {
-        return table.getPlayerPoints(me);
+        return table.getPlayerPointIds(me);
     }
 
     /**
