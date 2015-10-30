@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.hig.oodp.b9.client.ClientGame;
-import se.hig.oodp.b9.client.ClientNetworkerSocket;
-import se.hig.oodp.b9.client.GameWindow;
-import se.hig.oodp.b9.server.ServerGame;
-import se.hig.oodp.b9.server.ServerNetworkerSocket;
+import se.hig.oodp.b9.gui.client.GameWindow;
+import se.hig.oodp.b9.logic.Rules;
+import se.hig.oodp.b9.logic.client.ClientGame;
+import se.hig.oodp.b9.logic.client.ClientNetworkerSocket;
+import se.hig.oodp.b9.logic.server.ServerGame;
+import se.hig.oodp.b9.logic.server.ServerNetworkerSocket;
+import se.hig.oodp.b9.model.Move;
+import se.hig.oodp.b9.model.Player;
 
 public class Main
 {
