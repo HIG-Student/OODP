@@ -8,6 +8,7 @@ import se.hig.oodp.b9.logic.Event;
 // UML: http://pages.cs.wisc.edu/~hasti/cs302/examples/UMLdiagram.html
 // UML: http://www.cs.bsu.edu/homepages/pvg/misc/uml/
 
+@SuppressWarnings("all")
 public class UMLGenerator
 {
     public static void main(String[] args)

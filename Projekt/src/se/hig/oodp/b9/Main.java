@@ -16,6 +16,7 @@ import se.hig.oodp.b9.logic.server.ServerGame;
 import se.hig.oodp.b9.logic.server.ServerNetworkerSocket;
 import se.hig.oodp.b9.model.Player;
 
+@SuppressWarnings("all")
 public class Main
 {
     public static void main(String[] args) throws Exception
