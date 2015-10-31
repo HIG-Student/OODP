@@ -1,7 +1,6 @@
 package se.hig.oodp.b9.logic;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -15,15 +14,30 @@ import java.util.List;
 public class Event<T>
 {
     /**
-     * The list containing return values and a wait-lock for the "WaitFor"
-     * method
+     * Occurrence of this exception will throw an InterruptdException instead of
+     * the MultipleExceptions
      */
-    HashMap<Object, T> waitForList = new HashMap<Object, T>();
+    private static final MultipleExceptions INTERRUPTED = new MultipleExceptions();
 
     /**
-     * The list containing exceptions for the "throwingWaitFor"
+     * The list containing wait results for the "WaitFor" method
      */
-    HashMap<Object, MultipleExceptions> throwingWaitForList = new HashMap<Object, MultipleExceptions>();
+    List<WaitResult> waitForList = new ArrayList<WaitResult>();
+
+    /**
+     * Results to be sent to those waiting for an event
+     */
+    private class WaitResult
+    {
+        /**
+         * The data to return
+         */
+        public T returnData = null;
+        /**
+         * Exceptions that have occurred
+         */
+        public MultipleExceptions exceptions = null;
+    }
 
     /**
      * The list with the subscribed actions
@@ -38,7 +52,10 @@ public class Event<T>
      */
     public void add(Action<T> action)
     {
-        actions.add(action);
+        synchronized (actions)
+        {
+            actions.add(action);
+        }
     }
 
     /**
@@ -49,7 +66,10 @@ public class Event<T>
      */
     public void remove(Action<T> action)
     {
-        actions.remove(action);
+        synchronized (actions)
+        {
+            actions.remove(action);
+        }
     }
 
     /**
@@ -59,22 +79,24 @@ public class Event<T>
      */
     public void clear()
     {
-        actions.clear();
-
-        synchronized (waitForList)
+        synchronized (actions)
         {
-            for (Object obj : waitForList.keySet())
+            actions.clear();
+
+            synchronized (waitForList)
             {
-                waitForList.put(obj, null);
-
-                synchronized (obj)
+                for (WaitResult obj : waitForList)
                 {
-                    obj.notifyAll();
-                }
-            }
+                    obj.exceptions = INTERRUPTED;
 
-            waitForList.clear();
-            throwingWaitForList.clear();
+                    synchronized (obj)
+                    {
+                        obj.notifyAll();
+                    }
+                }
+
+                waitForList.clear();
+            }
         }
     }
 
@@ -88,27 +110,30 @@ public class Event<T>
     {
         MultipleExceptions exception = new MultipleExceptions();
 
-        for (Action<T> action : actions)
-            try
-            {
-                action.doAction(arg);
-            }
-            catch (Exception e)
-            {
-                exception.add(e);
-            }
+        synchronized (actions)
+        {
+            for (Action<T> action : actions)
+                try
+                {
+                    action.doAction(arg);
+                }
+                catch (Exception e)
+                {
+                    exception.add(e);
+                }
+        }
 
         synchronized (waitForList)
         {
-            for (Object obj : waitForList.keySet())
+            for (WaitResult obj : waitForList)
             {
-                waitForList.put(obj, arg);
-
-                if (exception.getExceptions().length > 0)
-                    throwingWaitForList.put(obj, exception);
-
                 synchronized (obj)
                 {
+                    obj.returnData = arg;
+
+                    if (exception.getExceptions().length > 0)
+                        obj.exceptions = exception;
+
                     obj.notifyAll();
                 }
             }
@@ -126,27 +151,25 @@ public class Event<T>
      */
     public T waitFor()
     {
-        Object key = new Object();
-        synchronized (waitForList)
+        WaitResult result = new WaitResult();
+
+        synchronized (result)
         {
-            waitForList.put(key, null);
-        }
-        synchronized (key)
-        {
+            synchronized (waitForList)
+            {
+                waitForList.add(result);
+            }
+
             try
             {
-                key.wait();
+                result.wait();
             }
             catch (InterruptedException e)
             {
                 return null;
             }
-        }
-        synchronized (waitForList)
-        {
-            T result = waitForList.get(key);
-            waitForList.remove(key);
-            return result;
+
+            return result.returnData;
         }
     }
 
@@ -154,41 +177,39 @@ public class Event<T>
      * Waits for the event to be invoked, and returning the value of the
      * invoktion
      * 
-     * OBSERVE: Return can be null if the event is cleared or any exception
-     * (Interrupted) occurred while waiting
-     * 
      * @return the value given in the invoke call or null
      * @throws MultipleExceptions
      *             if any exception occurs on an action
+     * @throws InterruptedException
+     *             thrown if 'clear' was called
      */
-    public T throwingWaitFor() throws MultipleExceptions
+    public T throwingWaitFor() throws MultipleExceptions, InterruptedException
     {
-        Object key = new Object();
-        synchronized (waitForList)
-        {
-            waitForList.put(key, null);
-        }
+        WaitResult result = new WaitResult();
 
-        synchronized (key)
+        synchronized (result)
         {
+            synchronized (waitForList)
+            {
+                waitForList.add(result);
+            }
+
             try
             {
-                key.wait();
+                result.wait();
             }
             catch (InterruptedException e)
             {
-                return null;
+                throw e;
             }
-        }
 
-        synchronized (waitForList)
-        {
-            if (throwingWaitForList.containsKey(key))
-                throw throwingWaitForList.get(key);
+            if (result.exceptions != null)
+                if (result.exceptions == INTERRUPTED)
+                    throw new InterruptedException();
+                else
+                    throw result.exceptions;
 
-            T result = waitForList.get(key);
-            waitForList.remove(key);
-            return result;
+            return result.returnData;
         }
     }
 

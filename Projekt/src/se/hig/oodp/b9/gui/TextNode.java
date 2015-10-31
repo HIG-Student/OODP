@@ -5,7 +5,7 @@ import javax.swing.JTextArea;
 /**
  * Area with multi-line text <br>
  * <br>
- * Inspiration from <a href="#http://stackoverflow.com/a/5816711"> Michael
+ * Code from <a href="#http://stackoverflow.com/a/5816711"> Michael
  * Clark</a>
  */
 @SuppressWarnings("serial")

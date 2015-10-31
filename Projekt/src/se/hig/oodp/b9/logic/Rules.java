@@ -2,6 +2,7 @@ package se.hig.oodp.b9.logic;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.UUID;
 
 import se.hig.oodp.b9.communication.Move;
@@ -74,10 +75,17 @@ public class Rules implements Serializable
         }
         else
         {
+            HashMap<UUID, Boolean> usedCards = new HashMap<UUID, Boolean>();
+            
             for (UUID[] cardList : takeCards)
                 for (UUID card : cardList)
                     if (!Arrays.asList(table.getPoolIds()).contains(card))
                         return false;
+                    else
+                        if (usedCards.containsKey(card))
+                            return false;
+                        else
+                            usedCards.put(card, true);
 
             for (UUID[] cardList : takeCards)
             {

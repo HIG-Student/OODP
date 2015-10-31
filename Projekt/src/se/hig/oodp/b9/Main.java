@@ -1,6 +1,5 @@
 package se.hig.oodp.b9;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,17 +32,17 @@ public class Main
         serverGame = new ServerGame(new ServerNetworkerSocket(port));
 
         Thread.sleep(1000);
-        
+
         ClientGame game = new ClientGame(new Player("Player"), new ClientNetworkerSocket("127.0.0.1", port)).sendGreeting();
         serverGame.playerAdded.waitFor();
-        
+
         Thread.sleep(1000);
-        
+
         new AI(new ClientGame(new Player("AI"), new ClientNetworkerSocket("127.0.0.1", port)).sendGreeting(), new AIStrategyPickSingleMore());
         serverGame.playerAdded.waitFor();
-        
+
         Thread.sleep(1000);
-        
+
         serverGame.rules = new Rules();
         serverGame.newGame();
 

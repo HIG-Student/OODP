@@ -8,9 +8,9 @@ import java.io.Serializable;
  * Yes, i know, this name is really bad...
  * 
  * @param <T1>
- *            the first data balue type
+ *            the first data type
  * @param <T2>
- *            the second data balue type
+ *            the second data type
  */
 @SuppressWarnings("serial")
 public class Two<T1, T2> implements Serializable

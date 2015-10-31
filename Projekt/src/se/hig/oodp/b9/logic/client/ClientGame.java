@@ -82,6 +82,14 @@ public class ClientGame
         this.me = me;
         this.networker = networker;
 
+        setUp();
+    }
+
+    /**
+     * Set up
+     */
+    protected void setUp()
+    {
         networker.onMove.add(move ->
         {
             table.moveCard(move.getCardId(), move.getCardCollectionId());

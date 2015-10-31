@@ -94,6 +94,9 @@ public class Move implements Serializable
      */
     public void setActiveCard(UUID card)
     {
+        if (currentTakeContains(card) || takeContains(card))
+            return;
+
         activeCard = card;
 
         takeCard.clear();
@@ -132,8 +135,9 @@ public class Move implements Serializable
      */
     public void addTake(UUID card)
     {
-        if (!takeCard.contains(card))
-            currentTake.add(card);
+        if (activeCard != null)
+            if (!takeContains(card) && !currentTakeContains(card) && card != activeCard)
+                currentTake.add(card);
     }
 
     /**
@@ -157,10 +161,12 @@ public class Move implements Serializable
      */
     public void toggleTake(UUID card)
     {
-        if (currentTake.contains(card))
-            removeTake(card);
-        else
-            addTake(card);
+        if (activeCard != null)
+            if (currentTakeContains(card))
+                removeTake(card);
+            else
+                if (!takeContains(card))
+                    addTake(card);
     }
 
     /**
@@ -196,7 +202,10 @@ public class Move implements Serializable
      */
     public void nextTake()
     {
-        takeCard.add(currentTake);
-        currentTake = new ArrayList<UUID>();
+        if (!currentTake.isEmpty())
+        {
+            takeCard.add(currentTake);
+            currentTake = new ArrayList<UUID>();
+        }
     }
 }

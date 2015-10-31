@@ -45,17 +45,6 @@ public class Card extends UUIDInstance
         cardInfo = info;
     }
 
-    /**
-     * Create card from id
-     * 
-     * @param id
-     *            the id of the card
-     */
-    public Card(UUID id)
-    {
-        this.id = id;
-    }
-
     @Override
     public String toString()
     {

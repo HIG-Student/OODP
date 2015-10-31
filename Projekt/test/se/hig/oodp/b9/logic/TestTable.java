@@ -19,41 +19,35 @@ import se.hig.oodp.b9.logic.server.ServerGame;
 import se.hig.oodp.b9.logic.server.ServerNetworkerSocket;
 import se.hig.oodp.b9.model.Player;
 
-/**
- * Test the table
- */
+@SuppressWarnings("javadoc")
 public class TestTable
 {
-    /**
-     * The table
-     */
+    List<Player> players;
     public Table table;
 
-    /**
-     * Set up
-     */
     @Before
     public void setUp()
     {
-        List<Player> players = new ArrayList<Player>();
+        players = new ArrayList<Player>();
         for (int i = 0; i < 3; i++)
             players.add(new Player("TestPlayer" + i));
 
         table = new Table(players, UUID.randomUUID(), UUID.randomUUID());
     }
 
-    /**
-     * Test serialization <br>
-     * <br>
-     * Inspiration from <a
-     * href="http://www.tutorialspoint.com/java/java_serialization.htm"
-     * >tutorialspoint</a>
-     * 
-     * @throws Exception
-     *             if fails
-     * */
     @Test
-    public void serializationTest() throws Exception
+    public void testSetUp()
+    {
+        assertEquals("Incorrect player count", 3, table.getPlayers().length);
+        assertEquals("Incorrect card count", 52, table.getDeck().length);
+    }
+
+    /*
+     * Inspiration from:
+     * href="http://www.tutorialspoint.com/java/java_serialization.htm
+     */
+    @Test
+    public void testSerialization() throws Exception
     {
         byte[] data;
 
@@ -78,21 +72,12 @@ public class TestTable
 
         assertNotNull("Can't read table", newTable);
 
-        assertNotNull("Can't get onCardMove event", newTable.onCardMove);
+        assertNotNull("'onCardMove event' not remade", newTable.onCardMove);
 
         checkTables(table, newTable);
     }
 
-    /**
-     * Check if tables and be considered equal <br>
-     * 
-     * @param a
-     *            first table
-     * @param b
-     *            second table
-     * @return equals?
-     */
-    public boolean checkTables(Table a, Table b)
+    public void checkTables(Table a, Table b)
     {
         assertEquals("DeckUUID is not same", a.deckUUID, b.deckUUID);
         assertEquals("PoolUUID is not same", a.poolUUID, b.poolUUID);
@@ -105,20 +90,10 @@ public class TestTable
         }
 
         assertTrue("Wrong amount of cards", (a.cards.size() == b.deck.size()) && (b.deck.size() == 52));
-
-        return true;
     }
 
-    /**
-     * Test to send table over socket
-     * 
-     * @throws Exception
-     *             if fails
-     */
-    @Test
-    // (timeout = 5000)
-    // 5000 ms = 5 s
-    public void overSocketTest() throws Exception
+    @Test(timeout = 5000)
+    public void testOverSocket() throws Exception
     {
         int port = 34234;
 
@@ -135,6 +110,56 @@ public class TestTable
 
         Table clientTable = client.onTable.waitFor();
 
-        assertTrue("Tables are not equals", checkTables(table, clientTable));
+        checkTables(table, clientTable);
+    }
+
+    @Test
+    public void testNextPlayer() throws Exception
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            assertEquals("Turns are incorrect!", players.get(i % players.size()), table.getNextPlayer());
+            table.nextTurn();
+        }
+    }
+
+    private class Count
+    {
+        public int value;
+    }
+
+    private class CurrentCard
+    {
+        public UUID value;
+    }
+
+    @Test
+    public void testCardMove() throws Exception
+    {
+        CurrentCard at = new CurrentCard();
+        Count count = new Count();
+
+        table.onCardMove.add(two ->
+        {
+            assertEquals("Event gives wrong card!", at.value, two.getOne());
+            assertTrue("Event gives wrong destination!", two.getTwo() == table.poolUUID);
+            count.value++;
+        });
+
+        for (int i = 0; i < 52; i++)
+        {
+            UUID id = table.getCardFromDeck();
+
+            assertNotNull("Can't take card", id);
+
+            at.value = id;
+            table.moveCard(id, table.poolUUID);
+        }
+
+        assertNull("Should not be able to take card", table.getCardFromDeck());
+
+        assertEquals("Pool size is incorrect!", 52, table.getPoolIds().length);
+
+        assertEquals("Event not working!", 52, count.value);
     }
 }

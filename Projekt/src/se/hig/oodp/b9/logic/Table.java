@@ -87,17 +87,28 @@ public class Table implements Serializable
     /**
      * Create new table
      * 
-     * @param arrayList
+     * @param players
      *            list with players
      * @param poolUUID
      *            the pool id
      * @param deckUUID
      *            the deck id
      */
-    public Table(List<Player> arrayList, UUID poolUUID, UUID deckUUID)
+    public Table(List<Player> players, UUID poolUUID, UUID deckUUID)
     {
-        this.players = arrayList;
-        for (Player player : arrayList)
+        this.players = players;
+        this.poolUUID = poolUUID;
+        this.deckUUID = deckUUID;
+
+        setUp();
+    }
+
+    /**
+     * Sets up this table
+     */
+    protected void setUp()
+    {
+        for (Player player : players)
         {
             CardCollection playerHand = new CardCollection(player.handUUID, player);
             playerHands.put(player, playerHand);
@@ -108,8 +119,8 @@ public class Table implements Serializable
             collections.put(player.pointsUUID, playerPoint);
         }
 
-        collections.put(this.poolUUID = poolUUID, pool = new CardCollection(poolUUID, null));
-        collections.put(this.deckUUID = deckUUID, deck = new CardCollection(deckUUID, null));
+        collections.put(poolUUID, pool = new CardCollection(poolUUID, null));
+        collections.put(deckUUID, deck = new CardCollection(deckUUID, null));
 
         List<Card> cardList = new ArrayList<Card>();
 
