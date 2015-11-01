@@ -5,8 +5,7 @@ import javax.swing.JTextArea;
 /**
  * Area with multi-line text <br>
  * <br>
- * Code from <a href="#http://stackoverflow.com/a/5816711"> Michael
- * Clark</a>
+ * Code from <a href="#http://stackoverflow.com/a/5816711"> Michael Clark</a>
  */
 @SuppressWarnings("serial")
 public class TextNode extends JTextArea

@@ -20,41 +20,52 @@ public class ServerGame
     /**
      * The server's networker
      */
-    public ServerNetworker networker;
+    private ServerNetworker networker;
 
     /**
      * The player in this game
      */
-    public List<Player> players = new ArrayList<Player>();
+    private List<Player> players = new ArrayList<Player>();
 
     /**
      * Mapping for all players' points (numerical)
      */
-    public HashMap<Player, Integer> points = new HashMap<Player, Integer>();
+    private HashMap<Player, Integer> points = new HashMap<Player, Integer>();
 
     /**
      * Mapping for all players' total points (numerical)
      */
-    public HashMap<Player, Integer> totalPoints = new HashMap<Player, Integer>();
+    private HashMap<Player, Integer> totalPoints = new HashMap<Player, Integer>();
 
     /**
      * The table
      */
-    public Table table;
+    private Table table;
+
+    /**
+     * Get the table
+     * 
+     * @return the table
+     */
+    public Table getTable()
+    {
+        return table;
+    }
+
     /**
      * The rules
      */
-    public Rules rules;
+    private Rules rules;
 
     /**
      * Are we running?
      */
-    public boolean running = false;
+    private boolean running = false;
 
     /**
      * Event invoked on player added
      */
-    public Event<Player> playerAdded = new Event<Player>();
+    public final Event<Player> playerAdded = new Event<Player>();
 
     /**
      * Get player's points
@@ -99,11 +110,22 @@ public class ServerGame
      * 
      * @param networker
      *            communication handler
+     * @param rules
+     *            the rules to follow
      */
-    public ServerGame(ServerNetworker networker) // rules?
+    public ServerGame(ServerNetworker networker, Rules rules) // rules?
     {
         this.networker = networker;
+        this.rules = rules;
 
+        setUp();
+    }
+
+    /**
+     * Sets up the stuff
+     */
+    protected void setUp()
+    {
         networker.onPlayerConnecting.add(newPlayer ->
         {
             if (running)
@@ -275,11 +297,25 @@ public class ServerGame
     }
 
     /**
-     * Start a new game
+     * Start a new game with the old rules
      */
     public void newGame()
     {
+        newGame(null);
+    }
+
+    /**
+     * Start a new game with new rules
+     * 
+     * @param newRules
+     *            the rules to follow
+     */
+    public void newGame(Rules newRules)
+    {
         points.clear();
+
+        if (newRules != null)
+            rules = newRules;
 
         table = new Table(players, UUID.randomUUID(), UUID.randomUUID());
 
@@ -353,6 +389,7 @@ public class ServerGame
      */
     public void kill()
     {
+        System.out.println("Server kill invoked!");
         networker.kill();
     }
 }
