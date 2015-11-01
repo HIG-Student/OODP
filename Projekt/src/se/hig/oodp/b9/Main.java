@@ -29,7 +29,7 @@ public class Main
 
         int port = 59440;
 
-        serverGame = new ServerGame(new ServerNetworkerSocket(port));
+        serverGame = new ServerGame(new ServerNetworkerSocket(port), new Rules());
 
         Thread.sleep(1000);
 
@@ -43,7 +43,6 @@ public class Main
 
         Thread.sleep(1000);
 
-        serverGame.rules = new Rules();
         serverGame.newGame();
 
         GameWindow.start(game);
@@ -56,7 +55,7 @@ public class Main
 
         int port = 59440;
 
-        serverGame = new ServerGame(new ServerNetworkerSocket(port));
+        serverGame = new ServerGame(new ServerNetworkerSocket(port), new Rules());
 
         clientGame = new ArrayList<ClientGame>();
         for (int i = 0; i < 4; i++)
@@ -67,7 +66,6 @@ public class Main
 
         Thread.sleep(1000);
 
-        serverGame.rules = new Rules();
         serverGame.newGame();
 
         GameWindow.start(clientGame.get(0));
@@ -114,7 +112,7 @@ public class Main
             System.exit(1);
         }
 
-        ServerGame serverGame = new ServerGame(server);
+        ServerGame serverGame = new ServerGame(server, new Rules());
 
         // Client setup
 
@@ -144,7 +142,6 @@ public class Main
         for (int i = 0; i < 4; i++)
             serverGame.playerAdded.waitFor();
 
-        serverGame.rules = new Rules();
         serverGame.newGame();
     }
 
@@ -166,7 +163,7 @@ public class Main
             System.exit(1);
         }
 
-        ServerGame serverGame = new ServerGame(server);
+        ServerGame serverGame = new ServerGame(server, new Rules());
 
         // Client setup
 
@@ -210,7 +207,6 @@ public class Main
                 System.exit(1);
             }
 
-        serverGame.rules = new Rules();
         serverGame.newGame();
     }
 }

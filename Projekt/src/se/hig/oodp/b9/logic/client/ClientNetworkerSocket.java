@@ -3,6 +3,7 @@ package se.hig.oodp.b9.logic.client;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class ClientNetworkerSocket extends ClientNetworker
     /**
      * Socket
      */
-    public Socket socket;
+    Socket socket;
 
     /**
      * The object output stream that we {@link #sendObject(Object) write to}
@@ -72,25 +73,21 @@ public class ClientNetworkerSocket extends ClientNetworker
      * 
      * @param clientIssued
      *            did we issue this?
+     * @param reason
+     *            the reason
      */
-    public void close(boolean clientIssued)
+    @Override
+    public void close(boolean clientIssued, String reason)
     {
         if (isClosed)
             return;
 
-        if (objectOutStream != null)
-            try
-            {
-                objectOutStream.close();
-            }
-            catch (IOException e)
-            {
-            }
+        isClosed = true;
 
         if (socket != null)
         {
             if (clientIssued)
-                sendObject(new Package<Boolean>(true, Package.Type.Close));
+                sendObject(new Package<String>(reason != null ? reason : "Client closed", Package.Type.Close));
 
             try
             {
@@ -100,7 +97,6 @@ public class ClientNetworkerSocket extends ClientNetworker
             {
             }
         }
-        isClosed = true;
     }
 
     /**
@@ -118,7 +114,10 @@ public class ClientNetworkerSocket extends ClientNetworker
     @SuppressWarnings("unchecked")
     public ClientNetworkerSocket(String host, int port) throws UnknownHostException, IOException
     {
-        socket = new Socket(host, port);
+        // http://stackoverflow.com/a/4969788
+        
+        socket = new Socket();
+        socket.connect(new InetSocketAddress(host, port), 2000);
 
         System.out.println("Client: Creating output stream");
         objectOutStream = new ObjectOutputStream(socket.getOutputStream());
@@ -136,8 +135,10 @@ public class ClientNetworkerSocket extends ClientNetworker
                         switch (pkg.getType())
                         {
                         case Close:
-                            onClose.invoke(((Package<String>) pkg).getValue());
-                            close(false);
+                            String reason = ((Package<String>) pkg).getValue();
+                            System.out.println("Client: Close: NOW");
+                            onClose.invoke(reason);
+                            close(false, reason);
                             return;
                         case Message:
                             onMessage.invoke(((Package<PMessage>) pkg).getValue());
@@ -172,57 +173,38 @@ public class ClientNetworkerSocket extends ClientNetworker
                     }
                     catch (Exception e)
                     {
-                        System.out.println("Client: Error on getting package data\n\t" + e.getMessage());
-                        System.exit(1);
+                        if (!isClosed)
+                        {
+                            e.printStackTrace();
+                            System.out.println("Client: Error on getting package data\n\t" + e.getMessage());
+                            System.exit(1);
+                        }
                     }
                 }
             }
             catch (Exception e)
             {
-                System.out.println("Client: Error on getting socket data\n\t" + e.getMessage());
+                if (!isClosed)
+                    System.out.println("Client: Error on getting socket data\n\t" + e.getMessage());
             }
         }).start();
     }
 
     @Override
-    public void sendMove(Move move)
+    public boolean sendMove(Move move)
     {
-        sendObject(new Package<Move>(move, Package.Type.Move));
+        return sendObject(new Package<Move>(move, Package.Type.Move));
     }
 
     @Override
-    public void sendMessageTo(Player target, String message)
+    public boolean sendMessageTo(Player target, String message)
     {
-        sendObject(new Package<PMessage>(new PMessage(target, message), Package.Type.Message));
+        return sendObject(new Package<PMessage>(new PMessage(target, message), Package.Type.Message));
     }
 
     @Override
-    public void sendGreeting(Player target)
+    public boolean sendGreeting(Player target)
     {
-        sendObject(target);
-    }
-
-    @Override
-    public void close(String reason)
-    {
-        try
-        {
-            sendObject(new Package<String>(reason, Package.Type.Close));
-        }
-        catch (Exception e)
-        {
-
-        }
-        finally
-        {
-            try
-            {
-                socket.close();
-            }
-            catch (IOException e)
-            {
-
-            }
-        }
+        return sendObject(target);
     }
 }

@@ -37,9 +37,21 @@ public class ServerNetworkerSocket extends ServerNetworker
     boolean killed = false;
 
     @Override
-    public void kill()
+    public void kill(String reason)
     {
         killed = true;
+
+        for (ServerNetworkerClient client : clients)
+            try
+            {
+                client.closeConnection(reason != null ? reason : "Server closed");
+                Thread.sleep(10);
+            }
+            catch (Exception e)
+            {
+
+            }
+
         try
         {
             server.close();
@@ -134,8 +146,8 @@ public class ServerNetworkerSocket extends ServerNetworker
                                     }
                                     catch (IOException e)
                                     {
-                                        onLog.invoke("Can't send object!");
-                                        System.exit(1);
+                                        if (!killed)
+                                            onLog.invoke("Can't send object!");
 
                                         return false;
                                     }
@@ -143,71 +155,71 @@ public class ServerNetworkerSocket extends ServerNetworker
                                 }
 
                                 @Override
-                                public void sendTable(Table table)
+                                public boolean sendTable(Table table)
                                 {
-                                    sendObject(new Package<Table>(table, Package.Type.Table));
+                                    return sendObject(new Package<Table>(table, Package.Type.Table));
                                 }
 
                                 @Override
-                                public void sendPlayerAdded(Player player)
+                                public boolean sendPlayerAdded(Player player)
                                 {
-                                    sendObject(new Package<Player>(player, Package.Type.PlayerAdded));
+                                    return sendObject(new Package<Player>(player, Package.Type.PlayerAdded));
                                 }
 
                                 @Override
-                                public void sendMoveCard(UUID card, UUID collection)
+                                public boolean sendMoveCard(UUID card, UUID collection)
                                 {
-                                    sendObject(new Package<PCardMovement>(new PCardMovement(card, collection), Package.Type.Move));
+                                    return sendObject(new Package<PCardMovement>(new PCardMovement(card, collection), Package.Type.Move));
                                 }
 
                                 @Override
-                                public void sendMessage(Player source, String message)
+                                public boolean sendMessage(Player source, String message)
                                 {
-                                    sendObject(new Package<PMessage>(new PMessage(source, message), Package.Type.Message));
+                                    return sendObject(new Package<PMessage>(new PMessage(source, message), Package.Type.Message));
                                 }
 
                                 @Override
-                                public void sendPlayerTurn(Player player)
+                                public boolean sendPlayerTurn(Player player)
                                 {
-                                    sendObject(new Package<Player>(player, Package.Type.PlayerTurn));
+                                    return sendObject(new Package<Player>(player, Package.Type.PlayerTurn));
                                 }
 
                                 @Override
-                                public void sendEndgame(HashMap<Player, Integer> scores, HashMap<Player, Integer> totalScores)
+                                public boolean sendEndgame(HashMap<Player, Integer> scores, HashMap<Player, Integer> totalScores)
                                 {
-                                    sendObject(new Package<Two<HashMap<Player, Integer>, HashMap<Player, Integer>>>(new Two<HashMap<Player, Integer>, HashMap<Player, Integer>>(scores, totalScores), Package.Type.EndGame));
+                                    return sendObject(new Package<Two<HashMap<Player, Integer>, HashMap<Player, Integer>>>(new Two<HashMap<Player, Integer>, HashMap<Player, Integer>>(scores, totalScores), Package.Type.EndGame));
                                 }
 
                                 @Override
-                                public void sendCardInfo(UUID card, CardInfo info)
+                                public boolean sendCardInfo(UUID card, CardInfo info)
                                 {
-                                    sendObject(new Package<Two<UUID, CardInfo>>(new Two<UUID, CardInfo>(card, info), Package.Type.CardInfo));
+                                    return sendObject(new Package<Two<UUID, CardInfo>>(new Two<UUID, CardInfo>(card, info), Package.Type.CardInfo));
                                 }
 
                                 @Override
-                                public void sendGreeting(PServerInfo info)
+                                public boolean sendGreeting(PServerInfo info)
                                 {
-                                    sendObject(new Package<PServerInfo>(info, Package.Type.ServerInfo));
+                                    return sendObject(new Package<PServerInfo>(info, Package.Type.ServerInfo));
                                 }
 
                                 @Override
-                                public void closeConnection(String reason)
+                                public boolean closeConnection(String reason)
                                 {
-                                    sendObject(new Package<String>(reason, Package.Type.Close));
+                                    boolean ok = sendObject(new Package<String>(reason, Package.Type.Close));
 
                                     close();
+
+                                    return ok;
                                 }
 
                                 @Override
-                                public void sendMoveResult(Boolean bool)
+                                public boolean sendMoveResult(Boolean bool)
                                 {
-                                    sendObject(new Package<Boolean>(bool, Package.Type.MoveResult));
+                                    return sendObject(new Package<Boolean>(bool, Package.Type.MoveResult));
                                 }
                             };
 
                             addClient(client);
-
-                            onKill.add((bool) -> client.closeConnection("Server killed"));
 
                             while (true)
                             {
@@ -215,8 +227,8 @@ public class ServerNetworkerSocket extends ServerNetworker
                                 switch (pkg.getType())
                                 {
                                 case Close:
-                                    // String reason = ((Package<String>)
-                                    // pkg).value;
+                                    String reason = ((Package<String>) pkg).getValue();
+                                    onLog.invoke("Close: " + reason);
                                     socket.close();
                                     break;
                                 case Message:
@@ -233,13 +245,15 @@ public class ServerNetworkerSocket extends ServerNetworker
                         }
                         catch (Exception e)
                         {
-                            onLog.invoke("Error for client" + (playerName != null ? ("[" + playerName + "]") : "") + "!\n\t" + e.getMessage());
+                            if (!killed)
+                                onLog.invoke("Error for client" + (playerName != null ? ("[" + playerName + "]") : "") + "!\n\t" + e.getMessage());
                         }
                     }).start();
                 }
                 catch (Exception e)
                 {
-                    onLog.invoke("Can't accept client!\n\n" + e.getMessage());
+                    if (!killed)
+                        onLog.invoke("Can't accept client!\n\n" + e.getMessage());
                 }
             }
         }).start();
