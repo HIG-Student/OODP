@@ -5,10 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.io.File;
-import java.net.URL;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
