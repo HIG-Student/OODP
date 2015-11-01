@@ -8,8 +8,10 @@ import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 
+import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -64,9 +66,9 @@ public class CardPainter implements ICardPainter
      */
     public CardPainter(String pathToCardsSheet, String pathToXML, String pathToCardBack, Dimension size) throws Exception
     {
-        cardSheet = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource(pathToCardsSheet));
+        cardSheet = ImageIO.read(CardPainter.class.getResource(pathToCardsSheet));
 
-        cardBack = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource(pathToCardBack));
+        cardBack = ImageIO.read(CardPainter.class.getResource(pathToCardBack));
 
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();

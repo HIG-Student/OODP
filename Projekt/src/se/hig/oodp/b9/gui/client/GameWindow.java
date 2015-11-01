@@ -11,10 +11,13 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
@@ -41,14 +44,19 @@ import java.util.UUID;
 public class GameWindow
 {
     /**
+     * Painter of cards
+     */
+    ICardPainter cardPainter;
+
+    /**
      * The actual window
      */
     private JFrame frame;
 
     /**
-     * Painter of cards
+     * The content panel
      */
-    ICardPainter cardPainter;
+    private GameArea gameArea;
 
     /**
      * Compares player score (highest first)
@@ -95,18 +103,13 @@ public class GameWindow
     {
         initialize();
 
-        frame.setTitle("Kasino: " + game.getMe().getName());
-
         this.game = game;
 
-        game.onChange.add((bool) ->
-        {
-            frame.repaint();
-        });
+        frame.setTitle("Kasino: " + game.getMe().getName());
 
         try
         {
-            cardPainter = new CardPainter("cards/playingCards.png", "cards/playingCards.xml", "cards/Singles/cardBack_blue2.png", new Dimension(140, 190));
+            cardPainter = new CardPainter("/cards/playingCards.png", "cards/playingCards.xml", "/cards/Singles/cardBack_blue2.png", new Dimension(140, 190));
         }
         catch (Exception e)
         {
@@ -114,33 +117,12 @@ public class GameWindow
             System.exit(1);
         }
 
-        runGame();
-        game.sendGreeting();
-    }
-
-    /**
-     * Start the game logic
-     */
-    @SuppressWarnings("serial")
-    public void runGame()
-    {
-        List<Rectangle> boundings = new ArrayList<Rectangle>();
-        HashMap<Rectangle, UUID> boundingMaps = new HashMap<Rectangle, UUID>();
-        Move selection = new Move(null);
-
-        game.onTurnStatus.add(ok ->
-        {
-            if (!ok)
-                selection.setActiveCard(null);
-            frame.repaint();
-        });
-
         game.getNetworker().onClose.add((str) ->
         {
             System.out.println("Networker closed!");
-            
+
             JOptionPane.showMessageDialog(GameWindow.this.frame, "Closed:\n\n\t" + str, "Error", JOptionPane.ERROR_MESSAGE);
-            
+
             frame.setVisible(false);
             frame.dispose();
         });
@@ -163,244 +145,12 @@ public class GameWindow
             JOptionPane.showMessageDialog(frame, builder.toString());
         });
 
-        frame.add(new JPanel()
-        {
-            @Override
-            public void paint(Graphics g)
-            {
-                super.paint(g);
-
-                boundings.clear();
-                boundingMaps.clear();
-
-                if (game.getTable() == null)
-                    return;
-
-                Graphics2D g2d = (Graphics2D) g;
-
-                Stack<AffineTransform> transformStack = new Stack<AffineTransform>();
-
-                transformStack.push(g2d.getTransform());
-                {
-                    transformStack.push(g2d.getTransform());
-                    {
-                        g2d.translate(getWidth() / 2, getHeight() / 2);
-
-                        // Player draw
-                        for (int i = 0; i < 4; i++)
-                        {
-                            if (i == game.getTable().getPlayers().length)
-                                break;
-
-                            transformStack.push(g2d.getTransform());
-                            {
-                                double rot = (Math.PI / 2) * (i - game.getTable().getPlayerIndex(game.getMe()));
-
-                                g2d.rotate(rot);
-
-                                // Player card draw
-
-                                Player player = game.getTable().getPlayers()[i];
-                                UUID[] collection = game.getTable().getPlayerHandIds(player);
-
-                                int index = 0;
-                                for (int x = -2; x <= 1; x++)
-                                {
-                                    if (index >= collection.length)
-                                        break;
-
-                                    UUID card = collection[index];
-
-                                    transformStack.push(g2d.getTransform());
-                                    {
-                                        g2d.translate((cardPainter.getSize().getWidth() / 2 + 20) + x * (cardPainter.getSize().getWidth() + 10), getHeight() / 2 - cardPainter.getSize().getHeight() / 3 + 20);
-
-                                        Point2D start = g2d.getTransform().transform(new Point((int) (-cardPainter.getSize().getWidth() / 2), (int) (-cardPainter.getSize().getHeight() / 2)), null);
-                                        Rectangle rec = new Rectangle(new Point((int) start.getX(), (int) start.getY()));
-
-                                        // http://stackoverflow.com/questions/2244157/reverse-java-graphics2d-scaled-and-rotated-coordinates
-                                        rec.add(g2d.getTransform().transform(new Point((int) (-cardPainter.getSize().getWidth() / 2), (int) (-cardPainter.getSize().getHeight() / 2)), null));
-                                        rec.add(g2d.getTransform().transform(new Point((int) (cardPainter.getSize().getWidth() / 2), (int) (-cardPainter.getSize().getHeight() / 2)), null));
-                                        rec.add(g2d.getTransform().transform(new Point((int) (cardPainter.getSize().getWidth() / 2), (int) (cardPainter.getSize().getHeight() / 2)), null));
-                                        rec.add(g2d.getTransform().transform(new Point((int) (-cardPainter.getSize().getWidth() / 2), (int) (cardPainter.getSize().getHeight() / 2)), null));
-
-                                        boundings.add(0, rec);
-                                        boundingMaps.put(rec, card);
-
-                                        cardPainter.drawImage(g2d, game.getCardInfo(card));
-                                        if ((selection.getActiveCard() != null && selection.getActiveCard().equals(card)) || selection.takeContains(card))
-                                        {
-                                            g2d.setColor(new Color(0, 0, 0, 0.5f));
-                                            cardPainter.drawHighlightImage(g2d, game.getCardInfo(card));
-                                        }
-
-                                    }
-                                    g2d.setTransform(transformStack.pop());
-
-                                    index++;
-                                }
-
-                            }
-                            g2d.setTransform(transformStack.pop());
-                        }
-                    }
-                    g2d.setTransform(transformStack.pop());
-
-                    g2d.translate(getWidth() / 2, cardPainter.getSize().getHeight() / 3 + cardPainter.getSize().getHeight());
-
-                    // Pool draw
-                    int index = 0;
-
-                    UUID[] poolCardIds = game.getTable().getPoolIds();
-
-                    for (int y = 0; y < 5; y++)
-                    {
-                        if (index == poolCardIds.length)
-                            return;
-
-                        for (int x = -6; x < 5; x++)
-                        {
-                            if (index == poolCardIds.length)
-                                return;
-
-                            UUID card = poolCardIds[index];
-
-                            transformStack.push(g2d.getTransform());
-                            {
-                                g2d.translate(cardPainter.getSize().getWidth() / 3 + x * cardPainter.getSize().getWidth() / 3, y * 100);
-
-                                Point2D start = g2d.getTransform().transform(new Point((int) (-cardPainter.getSize().getWidth() / 2), (int) (-cardPainter.getSize().getHeight() / 2)), null);
-                                Rectangle rec = new Rectangle(new Point((int) start.getX(), (int) start.getY()));
-
-                                // http://stackoverflow.com/questions/2244157/reverse-java-graphics2d-scaled-and-rotated-coordinates
-                                rec.add(g2d.getTransform().transform(new Point((int) (-cardPainter.getSize().getWidth() / 2), (int) (-cardPainter.getSize().getHeight() / 2)), null));
-                                rec.add(g2d.getTransform().transform(new Point((int) (cardPainter.getSize().getWidth() / 2), (int) (-cardPainter.getSize().getHeight() / 2)), null));
-                                rec.add(g2d.getTransform().transform(new Point((int) (cardPainter.getSize().getWidth() / 2), (int) (cardPainter.getSize().getHeight() / 2)), null));
-                                rec.add(g2d.getTransform().transform(new Point((int) (-cardPainter.getSize().getWidth() / 2), (int) (cardPainter.getSize().getHeight() / 2)), null));
-
-                                boundings.add(0, rec);
-                                boundingMaps.put(rec, card);
-
-                                cardPainter.drawImage(g2d, game.getCardInfo(card));
-                                if (selection.takeContains(card))
-                                {
-                                    g2d.setColor(new Color(0, 0, 0, 0.5f));
-                                    cardPainter.drawHighlightImage(g2d, game.getCardInfo(card));
-                                }
-                                else
-                                    if (selection.currentTakeContains(card))
-                                    {
-                                        g2d.setColor(new Color(0, 1, 0, 0.5f));
-                                        cardPainter.drawHighlightImage(g2d, game.getCardInfo(card));
-                                    }
-                            }
-                            g2d.setTransform(transformStack.pop());
-
-                            index++;
-                        }
-                    }
-                }
-                g2d.setTransform(transformStack.pop());
-            }
-        }, BorderLayout.CENTER);
+        gameArea = new GameArea();
+        gameArea.setOpaque(true);
+        frame.setContentPane(gameArea);
         frame.pack();
 
-        frame.repaint();
-
-        frame.addMouseListener(new MouseListener()
-        {
-            @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                if (!game.isMyTurn())
-                    return;
-
-                for (Rectangle rec : boundings)
-                    if (rec.contains(e.getPoint()))
-                    {
-                        UUID card = boundingMaps.get(rec);
-
-                        UUID collectionId = game.getTable().getCardLocation(card);
-
-                        if (game.getTable().poolUUID.equals(collectionId))
-                        {
-                            if (selection.getActiveCard() == null)
-                                break;
-
-                            selection.toggleTake(card);
-                        }
-                        else
-                            if (game.getMe().equals(game.getTable().getOwnerOfCollectionId(collectionId)))
-                            {
-                                selection.toggleActive(card);
-                            }
-
-                        break;
-                    }
-
-                frame.repaint();
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e)
-            {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e)
-            {
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e)
-            {
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e)
-            {
-            }
-
-        });
-
-        frame.addKeyListener(new KeyListener()
-        {
-            @Override
-            public void keyTyped(KeyEvent e)
-            {
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e)
-            {
-                if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER)
-                {
-                    if (selection.getActiveCard() == null)
-                    {
-                        // Nothing to do
-                    }
-                    else
-                    {
-                        if (selection.getCurrentTakeCards().length == 0)
-                        {
-                            game.setMyTurn(false);
-                            game.makeMove(selection);
-                            selection.setActiveCard(null);
-                        }
-                        else
-                        {
-                            selection.nextTake();
-                        }
-                        frame.repaint();
-                    }
-                }
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e)
-            {
-            }
-        });
+        game.sendGreeting();
     }
 
     /**
@@ -410,7 +160,7 @@ public class GameWindow
     {
         frame = new JFrame();
         frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         Dimension size = new Dimension(1006, 1029 + 20);
 
@@ -418,8 +168,6 @@ public class GameWindow
         frame.setPreferredSize(size);
 
         frame.setLocationRelativeTo(null);
-
-        frame.setLayout(new BorderLayout());
 
         // http://stackoverflow.com/a/9093526
         frame.addWindowListener(new java.awt.event.WindowAdapter()
@@ -432,5 +180,247 @@ public class GameWindow
                 game.end("Closed window");
             }
         });
+    }
+
+    @SuppressWarnings("serial")
+    class GameArea extends JPanel
+    {
+        /**
+         * Card boundings
+         */
+        List<Rectangle> boundings;
+
+        /**
+         * Mapping to cards
+         */
+        HashMap<Rectangle, UUID> boundingMaps;
+
+        /**
+         * The selection
+         */
+        Move selection;
+
+        public GameArea()
+        {
+            boundings = new ArrayList<Rectangle>();
+            boundingMaps = new HashMap<Rectangle, UUID>();
+            selection = new Move(null);
+
+            game.onTurnStatus.add(ok ->
+            {
+                if (!ok)
+                    selection.setActiveCard(null);
+
+                repaint();
+            });
+
+            game.onChange.add((bool) ->
+            {
+                repaint();
+            });
+
+            frame.addKeyListener(new KeyAdapter()
+            {
+                @Override
+                public void keyReleased(KeyEvent e)
+                {
+                    System.out.println("KEY!");
+                    if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER)
+                    {
+                        if (selection.getActiveCard() == null)
+                        {
+                            // Nothing to do
+                        }
+                        else
+                        {
+                            if (selection.getCurrentTakeCards().length == 0)
+                            {
+                                game.setMyTurn(false);
+                                game.makeMove(selection);
+                                selection.setActiveCard(null);
+                            }
+                            else
+                            {
+                                selection.nextTake();
+                            }
+                            GameArea.this.repaint();
+                        }
+                    }
+                }
+            });
+
+            addMouseListener(new MouseAdapter()
+            {
+                @Override
+                public void mouseClicked(MouseEvent e)
+                {
+                    if (!game.isMyTurn())
+                        return;
+
+                    for (Rectangle rec : boundings)
+                        if (rec.contains(e.getPoint()))
+                        {
+                            UUID card = boundingMaps.get(rec);
+
+                            UUID collectionId = game.getTable().getCardLocation(card);
+
+                            if (game.getTable().poolUUID.equals(collectionId))
+                            {
+                                if (selection.getActiveCard() == null)
+                                    break;
+
+                                selection.toggleTake(card);
+                            }
+                            else
+                                if (game.getMe().equals(game.getTable().getOwnerOfCollectionId(collectionId)))
+                                {
+                                    selection.toggleActive(card);
+                                }
+
+                            break;
+                        }
+
+                    GameArea.this.repaint();
+                }
+            });
+        }
+
+        @Override
+        public void paintComponent(Graphics g)
+        {
+            super.paintComponent(g);
+
+            boundings.clear();
+            boundingMaps.clear();
+
+            if (game.getTable() == null)
+                return;
+
+            Graphics2D g2d = (Graphics2D) g;
+
+            Stack<AffineTransform> transformStack = new Stack<AffineTransform>();
+
+            transformStack.push(g2d.getTransform());
+            {
+                transformStack.push(g2d.getTransform());
+                {
+                    g2d.translate(getWidth() / 2, getHeight() / 2);
+
+                    // Player draw
+                    for (int i = 0; i < 4; i++)
+                    {
+                        if (i == game.getTable().getPlayers().length)
+                            break;
+
+                        transformStack.push(g2d.getTransform());
+                        {
+                            double rot = (Math.PI / 2) * (i - game.getTable().getPlayerIndex(game.getMe()));
+
+                            g2d.rotate(rot);
+
+                            // Player card draw
+
+                            Player player = game.getTable().getPlayers()[i];
+                            UUID[] collection = game.getTable().getPlayerHandIds(player);
+
+                            int index = 0;
+                            for (int x = -2; x <= 1; x++)
+                            {
+                                if (index >= collection.length)
+                                    break;
+
+                                UUID card = collection[index];
+
+                                transformStack.push(g2d.getTransform());
+                                {
+                                    g2d.translate((cardPainter.getSize().getWidth() / 2 + 20) + x * (cardPainter.getSize().getWidth() + 10), getHeight() / 2 - cardPainter.getSize().getHeight() / 3 + 20);
+
+                                    Point2D start = g2d.getTransform().transform(new Point((int) (-cardPainter.getSize().getWidth() / 2), (int) (-cardPainter.getSize().getHeight() / 2)), null);
+                                    Rectangle rec = new Rectangle(new Point((int) start.getX(), (int) start.getY()));
+
+                                    // http://stackoverflow.com/questions/2244157/reverse-java-graphics2d-scaled-and-rotated-coordinates
+                                    rec.add(g2d.getTransform().transform(new Point((int) (-cardPainter.getSize().getWidth() / 2), (int) (-cardPainter.getSize().getHeight() / 2)), null));
+                                    rec.add(g2d.getTransform().transform(new Point((int) (cardPainter.getSize().getWidth() / 2), (int) (-cardPainter.getSize().getHeight() / 2)), null));
+                                    rec.add(g2d.getTransform().transform(new Point((int) (cardPainter.getSize().getWidth() / 2), (int) (cardPainter.getSize().getHeight() / 2)), null));
+                                    rec.add(g2d.getTransform().transform(new Point((int) (-cardPainter.getSize().getWidth() / 2), (int) (cardPainter.getSize().getHeight() / 2)), null));
+
+                                    boundings.add(0, rec);
+                                    boundingMaps.put(rec, card);
+
+                                    cardPainter.drawImage(g2d, game.getCardInfo(card));
+                                    if ((selection.getActiveCard() != null && selection.getActiveCard().equals(card)) || selection.takeContains(card))
+                                    {
+                                        g2d.setColor(new Color(0, 0, 0, 0.5f));
+                                        cardPainter.drawHighlightImage(g2d, game.getCardInfo(card));
+                                    }
+
+                                }
+                                g2d.setTransform(transformStack.pop());
+
+                                index++;
+                            }
+
+                        }
+                        g2d.setTransform(transformStack.pop());
+                    }
+                }
+                g2d.setTransform(transformStack.pop());
+
+                g2d.translate(getWidth() / 2, cardPainter.getSize().getHeight() / 3 + cardPainter.getSize().getHeight());
+
+                // Pool draw
+                int index = 0;
+
+                UUID[] poolCardIds = game.getTable().getPoolIds();
+
+                for (int y = 0; y < 5; y++)
+                {
+                    if (index == poolCardIds.length)
+                        return;
+
+                    for (int x = -6; x < 5; x++)
+                    {
+                        if (index == poolCardIds.length)
+                            return;
+
+                        UUID card = poolCardIds[index];
+
+                        transformStack.push(g2d.getTransform());
+                        {
+                            g2d.translate(cardPainter.getSize().getWidth() / 3 + x * cardPainter.getSize().getWidth() / 3, y * 100);
+
+                            Point2D start = g2d.getTransform().transform(new Point((int) (-cardPainter.getSize().getWidth() / 2), (int) (-cardPainter.getSize().getHeight() / 2)), null);
+                            Rectangle rec = new Rectangle(new Point((int) start.getX(), (int) start.getY()));
+
+                            // http://stackoverflow.com/questions/2244157/reverse-java-graphics2d-scaled-and-rotated-coordinates
+                            rec.add(g2d.getTransform().transform(new Point((int) (-cardPainter.getSize().getWidth() / 2), (int) (-cardPainter.getSize().getHeight() / 2)), null));
+                            rec.add(g2d.getTransform().transform(new Point((int) (cardPainter.getSize().getWidth() / 2), (int) (-cardPainter.getSize().getHeight() / 2)), null));
+                            rec.add(g2d.getTransform().transform(new Point((int) (cardPainter.getSize().getWidth() / 2), (int) (cardPainter.getSize().getHeight() / 2)), null));
+                            rec.add(g2d.getTransform().transform(new Point((int) (-cardPainter.getSize().getWidth() / 2), (int) (cardPainter.getSize().getHeight() / 2)), null));
+
+                            boundings.add(0, rec);
+                            boundingMaps.put(rec, card);
+
+                            cardPainter.drawImage(g2d, game.getCardInfo(card));
+                            if (selection.takeContains(card))
+                            {
+                                g2d.setColor(new Color(0, 0, 0, 0.5f));
+                                cardPainter.drawHighlightImage(g2d, game.getCardInfo(card));
+                            }
+                            else
+                                if (selection.currentTakeContains(card))
+                                {
+                                    g2d.setColor(new Color(0, 1, 0, 0.5f));
+                                    cardPainter.drawHighlightImage(g2d, game.getCardInfo(card));
+                                }
+                        }
+                        g2d.setTransform(transformStack.pop());
+
+                        index++;
+                    }
+                }
+            }
+            g2d.setTransform(transformStack.pop());
+        }
     }
 }
