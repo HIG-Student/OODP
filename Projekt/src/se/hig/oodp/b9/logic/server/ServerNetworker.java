@@ -64,15 +64,11 @@ public abstract class ServerNetworker
      * 
      * @param table
      *            table to send
-     * @return success
      */
-    public boolean sendTable(Table table)
+    public void sendTable(Table table)
     {
-        boolean ok = true;
         for (ServerNetworkerClient client : clients)
-            if (!client.sendTable(table))
-                ok = false;
-        return ok;
+            client.sendTable(table);
     }
 
     /**
@@ -80,16 +76,12 @@ public abstract class ServerNetworker
      * 
      * @param player
      *            the new player
-     * @return success
      */
-    public boolean sendPlayerAdded(Player player)
+    public void sendPlayerAdded(Player player)
     {
-        boolean ok = true;
         for (ServerNetworkerClient client : clients)
             if (client.player != player)
-                if (!client.sendPlayerAdded(player))
-                    ok = false;
-        return ok;
+                client.sendPlayerAdded(player);
     }
 
     /**
@@ -97,15 +89,11 @@ public abstract class ServerNetworker
      * 
      * @param message
      *            the message to send
-     * @return success
      */
-    public boolean sendMessageToAll(String message)
+    public void sendMessageToAll(String message)
     {
-        boolean ok = true;
         for (ServerNetworkerClient client : clients)
-            if (!client.sendMessage(message))
-                ok = false;
-        return ok;
+            client.sendMessage(message);
     }
 
     /**
@@ -115,15 +103,11 @@ public abstract class ServerNetworker
      *            the player that are sending this message
      * @param message
      *            the message
-     * @return success
      */
-    public boolean sendMessageToAll(Player source, String message)
+    public void sendMessageToAll(Player source, String message)
     {
-        boolean ok = true;
         for (ServerNetworkerClient client : clients)
-            if (!client.sendMessage(source, message))
-                ok = false;
-        return ok;
+            client.sendMessage(source, message);
     }
 
     /**
@@ -133,11 +117,10 @@ public abstract class ServerNetworker
      *            player to send message to
      * @param message
      *            the message
-     * @return success
      */
-    public boolean sendMessageTo(Player target, String message)
+    public void sendMessageTo(Player target, String message)
     {
-        return sendMessageTo(null, target, message);
+        sendMessageTo(null, target, message);
     }
 
     /**
@@ -149,16 +132,12 @@ public abstract class ServerNetworker
      *            to player
      * @param message
      *            the message
-     * @return success
      */
-    public boolean sendMessageTo(Player source, Player target, String message)
+    public void sendMessageTo(Player source, Player target, String message)
     {
-        boolean ok = true;
         ServerNetworkerClient client = getClient(target);
         if (client != null)
-            if (!client.sendMessage(source, message))
-                ok = false;
-        return ok;
+            client.sendMessage(source, message);
     }
 
     /**
@@ -170,16 +149,12 @@ public abstract class ServerNetworker
      *            the card to send info about
      * @param info
      *            the info
-     * @return success
      */
-    public boolean sendCardInfo(Player target, UUID card, CardInfo info)
+    public void sendCardInfo(Player target, UUID card, CardInfo info)
     {
-        boolean ok = true;
         ServerNetworkerClient client = getClient(target);
         if (client != null)
-            if (!client.sendCardInfo(card, info))
-                ok = false;
-        return ok;
+            client.sendCardInfo(card, info);
     }
 
     /**
@@ -189,15 +164,11 @@ public abstract class ServerNetworker
      *            the scores of the players for the last game
      * @param totalScores
      *            the scores for all games
-     * @return success
      */
-    public boolean sendEndGame(HashMap<Player, Integer> scores, HashMap<Player, Integer> totalScores)
+    public void sendEndGame(HashMap<Player, Integer> scores, HashMap<Player, Integer> totalScores)
     {
-        boolean ok = true;
         for (ServerNetworkerClient client : clients)
-            if (!client.sendEndgame(scores, totalScores))
-                ok = false;
-        return ok;
+            client.sendEndgame(scores, totalScores);
     }
 
     /**
@@ -207,15 +178,11 @@ public abstract class ServerNetworker
      *            the card that moved
      * @param collection
      *            the destination
-     * @return success
      */
-    public boolean sendMoveCard(UUID card, UUID collection)
+    public void sendMoveCard(UUID card, UUID collection)
     {
-        boolean ok = true;
         for (ServerNetworkerClient client : clients)
-            if (!client.sendMoveCard(card, collection))
-                ok = false;
-        return ok;
+            client.sendMoveCard(card, collection);
     }
 
     /**
@@ -223,15 +190,11 @@ public abstract class ServerNetworker
      * 
      * @param player
      *            the new player
-     * @return success
      */
-    public boolean sendPlayerTurn(Player player)
+    public void sendPlayerTurn(Player player)
     {
-        boolean ok = true;
         for (ServerNetworkerClient client : clients)
-            if (!client.sendPlayerTurn(player))
-                ok = false;
-        return ok;
+            client.sendPlayerTurn(player);
     }
 
     /**
@@ -241,16 +204,12 @@ public abstract class ServerNetworker
      *            the player
      * @param info
      *            server info
-     * @return success
      */
-    public boolean sendGreeting(Player player, PServerInfo info)
+    public void sendGreeting(Player player, PServerInfo info)
     {
-        boolean ok = true;
         ServerNetworkerClient client = getClient(player);
         if (client != null)
-            if (!client.sendGreeting(info))
-                ok = false;
-        return ok;
+            client.sendGreeting(info);
     }
 
     /**
@@ -260,23 +219,19 @@ public abstract class ServerNetworker
      *            the player to drop
      * @param reason
      *            the reason
-     * @return success
      */
-    public boolean closeConnection(Player player, String reason)
+    public void closeConnection(Player player, String reason)
     {
-        boolean ok = true;
         ServerNetworkerClient client = getClient(player);
         if (client != null)
         {
-            if (!client.closeConnection(reason))
-                ok = false;
+            client.closeConnection(reason);
             synchronized (clients)
             {
                 clients.remove(client);
             }
             onPlayerDisconecting.invoke(player);
         }
-        return ok;
     }
 
     /**
@@ -286,33 +241,18 @@ public abstract class ServerNetworker
      *            the player
      * @param bool
      *            was the move allowed?
-     * @return success
      */
-    public boolean sendMoveResult(Player player, boolean bool)
+    public void sendMoveResult(Player player, boolean bool)
     {
-        boolean ok = true;
         ServerNetworkerClient client = getClient(player);
         if (client != null)
-            if (!client.sendMoveResult(bool))
-                ok = false;
-        return ok;
+            client.sendMoveResult(bool);
     }
 
     /**
      * Kill connection
      */
-    public void kill()
-    {
-        kill(null);
-    }
-
-    /**
-     * Kill connection
-     * 
-     * @param reason
-     *            the reason
-     */
-    public abstract void kill(String reason);
+    public abstract void kill();
 
     // Get
 

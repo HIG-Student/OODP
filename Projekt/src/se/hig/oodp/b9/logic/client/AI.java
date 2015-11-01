@@ -15,16 +15,6 @@ public class AI
     AIStrategy strategy;
 
     /**
-     * Get the game
-     * 
-     * @return the game
-     */
-    public ClientGame getGame()
-    {
-        return game;
-    }
-
-    /**
      * Create computer controller
      * 
      * @param game
@@ -62,7 +52,7 @@ public class AI
      */
     public void makeMove()
     {
-        game.makeMove(strategy.makeMove(game, game.getMe(), game.getTable()));
+        game.makeMove(strategy.makeMove(game, game.me, game.getTable()));
     }
 
     /**
@@ -72,6 +62,6 @@ public class AI
      */
     public boolean makeMoveAndWait()
     {
-        return game.makeMoveAndWait(strategy.makeMove(game, game.getMe(), game.getTable()));
+        return game.makeMoveAndWait(strategy.makeMove(game, game.me, game.getTable()));
     }
 }

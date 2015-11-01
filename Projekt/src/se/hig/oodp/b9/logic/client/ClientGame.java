@@ -18,17 +18,17 @@ public class ClientGame
     /**
      * The client's player
      */
-    private Player me;
+    Player me;
 
     /**
      * The table
      */
-    private Table table;
+    Table table;
 
     /**
      * The client's networker
      */
-    private ClientNetworker networker;
+    ClientNetworker networker;
 
     /**
      * Event invoked on a change
@@ -48,12 +48,12 @@ public class ClientGame
     /**
      * Is it this player's turn?
      */
-    private boolean myTurn = false;
+    boolean myTurn = false;
 
     /**
      * Mapped card info
      */
-    private HashMap<UUID, CardInfo> mappedCardInfo = new HashMap<UUID, CardInfo>();
+    HashMap<UUID, CardInfo> mappedCardInfo = new HashMap<UUID, CardInfo>();
 
     /**
      * Get card info<br>

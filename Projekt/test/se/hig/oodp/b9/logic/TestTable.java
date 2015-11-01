@@ -99,7 +99,7 @@ public class TestTable
 
         ServerNetworkerSocket server;
 
-        new ServerGame(server = new ServerNetworkerSocket(port), new Rules());
+        new ServerGame(server = new ServerNetworkerSocket(port));
 
         ClientNetworkerSocket client = new ClientNetworkerSocket("127.0.0.1", port);
 

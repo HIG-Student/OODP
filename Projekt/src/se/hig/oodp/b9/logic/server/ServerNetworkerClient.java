@@ -20,36 +20,33 @@ public abstract class ServerNetworkerClient
     /**
      * This client's player
      */
-    Player player;
+    public Player player;
 
     /**
      * Send table
      * 
      * @param table
      *            the table to send
-     * @return success
      */
-    public abstract boolean sendTable(Table table);
+    public abstract void sendTable(Table table);
 
     /**
      * Alert of new player added
      * 
      * @param player
      *            the new player
-     * @return success
      */
-    public abstract boolean sendPlayerAdded(Player player);
+    public abstract void sendPlayerAdded(Player player);
 
     /**
      * Send new message
      * 
      * @param message
      *            the message
-     * @return success
      */
-    public boolean sendMessage(String message)
+    public void sendMessage(String message)
     {
-        return sendMessage(null, message);
+        sendMessage(null, message);
     }
 
     /**
@@ -59,9 +56,8 @@ public abstract class ServerNetworkerClient
      *            the sender
      * @param message
      *            the message
-     * @return success
      */
-    public abstract boolean sendMessage(Player source, String message);
+    public abstract void sendMessage(Player source, String message);
 
     /**
      * Send card information
@@ -70,9 +66,8 @@ public abstract class ServerNetworkerClient
      *            the card the information is about
      * @param info
      *            the info
-     * @return success
      */
-    public abstract boolean sendCardInfo(UUID card, CardInfo info);
+    public abstract void sendCardInfo(UUID card, CardInfo info);
 
     /**
      * Send end-of-game alert and information
@@ -81,9 +76,8 @@ public abstract class ServerNetworkerClient
      *            the scores for the players in this game
      * @param highScores
      *            the scored for the players for all games
-     * @return success
      */
-    public abstract boolean sendEndgame(HashMap<Player, Integer> scores, HashMap<Player, Integer> highScores);
+    public abstract void sendEndgame(HashMap<Player, Integer> scores, HashMap<Player, Integer> highScores);
 
     /**
      * Send card movement
@@ -92,45 +86,40 @@ public abstract class ServerNetworkerClient
      *            the moved card
      * @param collection
      *            the destination
-     * @return success
      */
-    public abstract boolean sendMoveCard(UUID card, UUID collection);
+    public abstract void sendMoveCard(UUID card, UUID collection);
 
     /**
      * Send new player turn
      * 
      * @param player
      *            the player
-     * @return success
      */
-    public abstract boolean sendPlayerTurn(Player player);
+    public abstract void sendPlayerTurn(Player player);
 
     /**
      * Send greeting
      * 
      * @param info
      *            information about the server
-     * @return success
      */
-    public abstract boolean sendGreeting(PServerInfo info);
+    public abstract void sendGreeting(PServerInfo info);
 
     /**
      * Close the connection
      * 
      * @param reason
      *            the reason
-     * @return success
      */
-    public abstract boolean closeConnection(String reason);
+    public abstract void closeConnection(String reason);
 
     /**
      * Send move result
      * 
      * @param bool
      *            the result
-     * @return success
      */
-    public abstract boolean sendMoveResult(Boolean bool);
+    public abstract void sendMoveResult(Boolean bool);
 
     // Get
 
