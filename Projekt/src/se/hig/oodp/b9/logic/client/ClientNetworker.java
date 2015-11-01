@@ -21,17 +21,31 @@ public abstract class ClientNetworker
     /**
      * Close the communication
      * 
+     * @param clientIssued
+     *            issued by the client
+     * 
      * @param reason
      *            the reason
      */
-    public abstract void close(String reason);
+    public abstract void close(boolean clientIssued, String reason);
+
+    /**
+     * Close the communication
+     * 
+     * @param reason
+     *            the reason
+     */
+    public void close(String reason)
+    {
+        close(true, reason);
+    }
 
     /**
      * Close the communication
      */
     public void close()
     {
-        close(null);
+        close(true, "Client closed");
     }
 
     /**
@@ -39,8 +53,9 @@ public abstract class ClientNetworker
      * 
      * @param move
      *            the move to send
+     * @return success
      */
-    public abstract void sendMove(Move move);
+    public abstract boolean sendMove(Move move);
 
     /**
      * Send message to server
@@ -60,16 +75,18 @@ public abstract class ClientNetworker
      *            the player to send to
      * @param message
      *            the message
+     * @return success
      */
-    public abstract void sendMessageTo(Player target, String message);
+    public abstract boolean sendMessageTo(Player target, String message);
 
     /**
      * Send greeting to server
      * 
      * @param player
      *            our player
+     * @return success
      */
-    public abstract void sendGreeting(Player player);
+    public abstract boolean sendGreeting(Player player);
 
     // Get
 

@@ -3,19 +3,24 @@ package se.hig.oodp.b9.gui.server;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import se.hig.oodp.b9.gui.TextNode;
+import se.hig.oodp.b9.logic.Event;
 import se.hig.oodp.b9.logic.Rules;
 import se.hig.oodp.b9.logic.client.AI;
 import se.hig.oodp.b9.logic.client.AIStrategyPickSingleMore;
@@ -51,7 +56,7 @@ public class ServerWindowSetup extends JFrame
     /**
      * String containing the log messages (separated by '\n')
      */
-    private String logString = "[[LOG]]";
+    private String logString = "[[LOG]]\n";
 
     /**
      * Launch the application.
@@ -84,12 +89,26 @@ public class ServerWindowSetup extends JFrame
     protected int AINum = 1;
 
     /**
+     * On window closed
+     */
+    public final Event<Boolean> onClose = new Event<Boolean>();
+
+    /**
      * Create the frame.
      */
     public ServerWindowSetup()
     {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 464, 268);
+
+        // http://stackoverflow.com/a/19739532
+        addWindowListener(new WindowAdapter()
+        {
+            public void windowClosing(WindowEvent e)
+            {
+                onClose.invoke(true);
+            }
+        });
 
         JButton btnStart = new JButton("Start server");
         btnStart.addActionListener(new ActionListener()
@@ -109,13 +128,17 @@ public class ServerWindowSetup extends JFrame
                 panelPlayers.add(btnStartGame, BorderLayout.SOUTH);
 
                 JPanel panelPlayersList = new JPanel();
+                panelPlayersList.setLayout(new BoxLayout(panelPlayersList, BoxLayout.Y_AXIS));
                 panelPlayers.add(panelPlayersList, BorderLayout.CENTER);
 
                 JPanel panelLog = new JPanel();
                 tabbedPane.addTab("Log", null, panelLog, null);
 
                 TextNode labelLog = new TextNode(logString);
-                panelLog.add(labelLog);
+                panelLog.setLayout(new BorderLayout());
+                // http://stackoverflow.com/a/1053036
+                JScrollPane sp = new JScrollPane(labelLog);
+                panelLog.add(sp, BorderLayout.CENTER);
 
                 btnStart.setEnabled(false);
 
@@ -129,7 +152,8 @@ public class ServerWindowSetup extends JFrame
                 {
                     try
                     {
-                        new AI(new ClientGame(new Player("AI " + AINum++), new ClientNetworkerSocket("127.0.0.1", port)).sendGreeting(), new AIStrategyThrowAll());
+                        AI ai = new AI(new ClientGame(new Player("AI " + AINum++), new ClientNetworkerSocket("127.0.0.1", port)).sendGreeting(), new AIStrategyThrowAll());
+                        onClose.add(ok -> ai.getGame().end("Window closed"));
                     }
                     catch (Exception e)
                     {
@@ -143,7 +167,8 @@ public class ServerWindowSetup extends JFrame
                 {
                     try
                     {
-                        new AI(new ClientGame(new Player("AI " + AINum++), new ClientNetworkerSocket("127.0.0.1", port)).sendGreeting(), new AIStrategyPickSingle());
+                        AI ai = new AI(new ClientGame(new Player("AI " + AINum++), new ClientNetworkerSocket("127.0.0.1", port)).sendGreeting(), new AIStrategyPickSingle());
+                        onClose.add(ok -> ai.getGame().end("Window closed"));
                     }
                     catch (Exception e)
                     {
@@ -157,7 +182,8 @@ public class ServerWindowSetup extends JFrame
                 {
                     try
                     {
-                        new AI(new ClientGame(new Player("AI " + AINum++), new ClientNetworkerSocket("127.0.0.1", port)).sendGreeting(), new AIStrategyPickSingleMore());
+                        AI ai = new AI(new ClientGame(new Player("AI " + AINum++), new ClientNetworkerSocket("127.0.0.1", port)).sendGreeting(), new AIStrategyPickSingleMore());
+                        onClose.add(ok -> ai.getGame().end("Window closed"));
                     }
                     catch (Exception e)
                     {
@@ -167,13 +193,15 @@ public class ServerWindowSetup extends JFrame
 
                 try
                 {
-                    ServerGame server = new ServerGame(new ServerNetworkerSocket(port));
+                    ServerGame server = new ServerGame(new ServerNetworkerSocket(port), new Rules());
 
-                    server.getNetworker().onLog.add(message -> labelLog.setText((logString += message)));
+                    onClose.add(ok -> server.kill());
 
-                    server.getNetworker().onPlayerConnecting.add(player ->
+                    server.getNetworker().onLog.add(message -> labelLog.setText((logString += (message + "\n"))));
+
+                    server.playerAdded.add(player ->
                     {
-                        panelPlayers.add(new JLabel(player.getName()), BorderLayout.NORTH);
+                        panelPlayersList.add(new JLabel(player.getName()), BorderLayout.NORTH);
 
                         if (server.getPlayers().length >= 2)
                             btnStartGame.setEnabled(true);
@@ -188,7 +216,6 @@ public class ServerWindowSetup extends JFrame
 
                     final ActionListener al = (e) ->
                     {
-                        server.rules = new Rules();
                         server.startGame();
                         btnStartGame.setEnabled(false);
                     };

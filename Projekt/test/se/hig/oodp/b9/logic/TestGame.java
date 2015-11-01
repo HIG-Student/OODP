@@ -17,32 +17,20 @@ import se.hig.oodp.b9.logic.server.ServerGame;
 import se.hig.oodp.b9.logic.server.ServerNetworkerSocket;
 import se.hig.oodp.b9.model.Player;
 
-/**
- * Test for the game
- */
+@SuppressWarnings("javadoc")
 public class TestGame
 {
-    /**
-     * Server game
-     */
+
     public static ServerGame serverGame;
-    /**
-     * List of clients
-     */
+
     public static List<ClientGame> clientGame;
 
-    /**
-     * Set up a server and clients
-     * 
-     * @throws Exception
-     *             if fails
-     */
     @Before
     public void setUp() throws Exception
     {
         int port = 59440;
 
-        serverGame = new ServerGame(new ServerNetworkerSocket(port));
+        serverGame = new ServerGame(new ServerNetworkerSocket(port), new Rules());
 
         clientGame = new ArrayList<ClientGame>();
         for (int i = 0; i < 4; i++)
@@ -53,69 +41,77 @@ public class TestGame
             clientGame.get(i).getNetworker().onMoveResult.add(action -> System.out.println("onResult: " + action));
         }
 
-        serverGame.rules = new Rules();
         serverGame.newGame();
     }
 
-    /**
-     * Clean up
-     * 
-     * @throws Exception
-     *             if stuff fails
-     */
     @After
     public void tearDown() throws Exception
     {
         serverGame.kill();
     }
 
-    /**
-     * Test a give
+    /*
+     * @Test(timeout = 5000) public void testGive() throws InterruptedException
+     * { for (int turn = 0; turn < 4; turn++) { for (ClientGame game :
+     * clientGame) { game.makeMoveAndWait(new Move(game.getMyHand()[0])); } }
      * 
-     * @throws InterruptedException
-     *             if interrupted
-     */
-    @Test
-    // (timeout = 5000)
-    public void testGive() throws InterruptedException
-    {
-        for (int turn = 0; turn < 4; turn++)
-        {
-            for (ClientGame game : clientGame)
-            {
-                game.makeMoveAndWait(new Move(game.getMyHand()[0]));
-            }
-        }
-
-        assertTrue("Hand not empty!", clientGame.get(0).getMyHand().length == 0);
-
-        clientGame.get(0).onTurnStatus.waitFor();
-
-        assertTrue("Hand not full!", clientGame.get(0).getMyHand().length == 4);
-    }
-
-    /**
-     * Test a game with only throws
+     * assertTrue("Hand not empty!", clientGame.get(0).getMyHand().length == 0);
      * 
-     * @throws InterruptedException
-     *             if interrupted
+     * clientGame.get(0).onTurnStatus.waitFor();
+     * 
+     * assertTrue("Hand not full!", clientGame.get(0).getMyHand().length == 4);
+     * }
      */
+
     @Test
-    // (timeout = 5000)
     public void testThrowGame() throws InterruptedException
     {
+        clientGame.get(0).onEndGame.add(res ->
+        {
+            System.out.println("!");
+        });
+
         for (int turn = 0; turn < 4; turn++)
         {
             for (ClientGame game : clientGame)
             {
                 game.makeMoveAndWait(new Move(game.getMyHand()[0]));
+                assertEquals("Incorrect hand!", 4 - (turn + 1), game.getMyHand().length);
             }
         }
-
-        assertTrue("Hand not empty!", clientGame.get(0).getMyHand().length == 0);
 
         clientGame.get(0).onTurnStatus.waitFor();
 
         assertTrue("Hand not full!", clientGame.get(0).getMyHand().length == 4);
+
+        for (int turn = 0; turn < 4; turn++)
+        {
+            for (ClientGame game : clientGame)
+            {
+                game.makeMoveAndWait(new Move(game.getMyHand()[0]));
+                assertEquals("Incorrect hand!", 4 - (turn + 1), game.getMyHand().length);
+            }
+        }
+
+        clientGame.get(0).onTurnStatus.waitFor();
+
+        assertTrue("Hand not full!", clientGame.get(0).getMyHand().length == 4);
+
+        for (int turn = 0; turn < 4; turn++)
+        {
+            for (int clientIndex = 0; clientIndex < clientGame.size(); clientIndex++)
+            {
+                if (turn == 3 && clientIndex == clientGame.size() - 1)
+                    continue;
+
+                ClientGame game = clientGame.get(clientIndex);
+                game.makeMoveAndWait(new Move(game.getMyHand()[0]));
+                assertEquals("Incorrect hand!", 4 - (turn + 1), game.getMyHand().length);
+            }
+        }
+
+        ClientGame game = clientGame.get(clientGame.size() - 1);
+        game.makeMove(new Move(game.getMyHand()[0]));
+        clientGame.get(0).onEndGame.waitFor();
     }
 }
