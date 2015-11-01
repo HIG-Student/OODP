@@ -50,20 +50,25 @@ public class TestGame
         serverGame.kill();
     }
 
-    /*
-     * @Test(timeout = 5000) public void testGive() throws InterruptedException
-     * { for (int turn = 0; turn < 4; turn++) { for (ClientGame game :
-     * clientGame) { game.makeMoveAndWait(new Move(game.getMyHand()[0])); } }
-     * 
-     * assertTrue("Hand not empty!", clientGame.get(0).getMyHand().length == 0);
-     * 
-     * clientGame.get(0).onTurnStatus.waitFor();
-     * 
-     * assertTrue("Hand not full!", clientGame.get(0).getMyHand().length == 4);
-     * }
-     */
+    @Test(timeout = 5000)
+    public void testGive() throws InterruptedException
+    {
+        for (int turn = 0; turn < 4; turn++)
+        {
+            for (ClientGame game : clientGame)
+            {
+                game.makeMoveAndWait(new Move(game.getMyHand()[0]));
+            }
+        }
 
-    @Test
+        assertTrue("Hand not empty!", clientGame.get(0).getMyHand().length == 0);
+
+        clientGame.get(0).onTurnStatus.waitFor();
+
+        assertTrue("Hand not full!", clientGame.get(0).getMyHand().length == 4);
+    }
+
+    @Test(timeout = 5000)
     public void testThrowGame() throws InterruptedException
     {
         clientGame.get(0).onEndGame.add(res ->
