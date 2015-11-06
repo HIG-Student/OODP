@@ -150,10 +150,6 @@ public class FigureHandlerImpl implements FigureHandler
      *            y-coordinate
      * @param a
      *            width
-     * @param b
-     *            height
-     * @throws Exception
-     *             thrown if not a square
      */
     @Override
     public void createSquare(double x, double y, double a)
@@ -168,14 +164,10 @@ public class FigureHandlerImpl implements FigureHandler
      *            x-coordinate
      * @param y
      *            y-coordinate
-     * @param a
-     *            width
      * @param size
      *            size
      * @param rotation
      *            rotation
-     * @throws Exception
-     *             thrown if not a square
      */
     public void createSquare(double x, double y, double size, double rotation)
     {

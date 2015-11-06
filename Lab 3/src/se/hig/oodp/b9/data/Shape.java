@@ -19,7 +19,7 @@ public abstract class Shape implements Drawable , Serializable
     /**
      * Creates a shape
      * 
-     * @param nodes
+     * @param nodes the nodes
      */
     public Shape(Vertex2D[] nodes)
     {

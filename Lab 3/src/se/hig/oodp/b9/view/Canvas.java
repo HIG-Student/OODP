@@ -12,6 +12,7 @@ import se.hig.oodp.b9.logic.Graphix;
 import se.hig.oodp.b9.logic.PrimitivesPainterImpl;
 import se.hig.oodp.b9.logic.ShapeLists;
 
+@SuppressWarnings("serial")
 public class Canvas extends JPanel
 {
     Graphix graphix;
