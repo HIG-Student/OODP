@@ -17,7 +17,7 @@ public class FigurePainterImpl extends FigureAction implements FigurePainter
     @Override
     public void paintAll()
     {
-        for (Shape s : lists.shapes)
+        for (Shape s : lists.getShapes())
         {
             s.draw(painter);
         }

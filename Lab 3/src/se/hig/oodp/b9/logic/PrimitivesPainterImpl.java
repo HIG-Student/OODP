@@ -15,7 +15,7 @@ public class PrimitivesPainterImpl implements PrimitivesPainter
     @Override
     public void paintPoint(Vertex2D v)
     {
-        if (g == null)
+        if (g.getGraphics() == null)
             return;
 
         g.getGraphics().fillOval((int) v.getX(), (int) v.getY(), 5, 5);
@@ -24,7 +24,7 @@ public class PrimitivesPainterImpl implements PrimitivesPainter
     @Override
     public void paintLine(Vertex2D v0, Vertex2D v1)
     {
-        if (g == null)
+        if (g.getGraphics() == null)
             return;
 
         g.getGraphics().drawLine((int) v0.getX(), (int) v0.getY(), (int) v1.getX(), (int) v1.getY());
@@ -33,7 +33,7 @@ public class PrimitivesPainterImpl implements PrimitivesPainter
     @Override
     public void paintEllipse(Vertex2D v, double a, double b)
     {
-        if (g == null)
+        if (g.getGraphics() == null)
             return;
 
         g.getGraphics().drawOval((int) v.getX() - (int) a / 2, (int) v.getY() - (int) b / 2, (int) a, (int) b);

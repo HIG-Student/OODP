@@ -1,6 +1,3 @@
-/**
- * 
- */
 package se.hig.oodp.b9.view;
 
 public class PairField<T extends Number>

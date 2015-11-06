@@ -1,15 +1,14 @@
-/**
- * 
- */
 package se.hig.oodp.b9.view;
 
 import java.awt.Component;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -88,6 +87,19 @@ public class ShapeIO
             {
                 out.writeObject(shapeControl.getShapes());
             }
+        }
+    }
+
+    public static void saveShapesScreenShoot(Component owner, BufferedImage image)
+    {
+        try
+        {
+            File file = ShapeIO.saveFileDialog(owner, "Export to image", "png");
+            ImageIO.write(image, "png", file);
+        }
+        catch (Exception exception)
+        {
+            JOptionPane.showMessageDialog(owner.getParent(), "Could not export to image!\n\n" + exception.getMessage(), "IOException!", JOptionPane.WARNING_MESSAGE);
         }
     }
 
