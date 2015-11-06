@@ -217,9 +217,12 @@ public class Window extends JFrame
                 PairField<Integer> height = new PairField<Integer>("Height", new Pair<Integer>(null, 1, Integer.MAX_VALUE, 1, 1));
                 arr.add(height);
 
-                PairField<Integer> rotation = new PairField<Integer>("Rotation", new Pair<Integer>(null, 0, Integer.MAX_VALUE, Integer.MIN_VALUE, 1));
-                arr.add(rotation);
-
+                /*
+                 * PairField<Integer> rotation = new
+                 * PairField<Integer>("Rotation", new Pair<Integer>(null, 0,
+                 * Integer.MAX_VALUE, Integer.MIN_VALUE, 1)); arr.add(rotation);
+                 */
+                
                 if (InitParamsDialog.showDialog("Create rectangle", arr))
                 {
                     figureHandler.createRectangle((double) center.get(), (double) center.get(), (double) width.get(), (double) height.get());
