@@ -15,11 +15,11 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import se.hig.oodp.b9.data.Shape;
-import se.hig.oodp.b9.model.ShapeControl;
+import se.hig.oodp.b9.logic.ShapeLists;
 
 public class ShapeIO
 {
-    public static void showLoadShapesDialog(Component owner, ShapeControl shapeControl)
+    public static void showLoadShapesDialog(Component owner, ShapeLists shapeControl)
     {
         try
         {
@@ -49,7 +49,7 @@ public class ShapeIO
         }
     }
 
-    public static void loadShapes(File fileToLoad, ShapeControl shapeControl) throws Exception
+    public static void loadShapes(File fileToLoad, ShapeLists shapeControl) throws Exception
     {
         try (FileInputStream fileIn = new FileInputStream(fileToLoad))
         {
@@ -61,7 +61,7 @@ public class ShapeIO
         }
     }
 
-    public static void showSaveShapesDialog(Component owner, ShapeControl shapeControl)
+    public static void showSaveShapesDialog(Component owner, ShapeLists shapeControl)
     {
         try
         {
@@ -74,7 +74,7 @@ public class ShapeIO
         }
     }
 
-    public static void saveShapes(File file, ShapeControl shapeControl) throws Exception
+    public static void saveShapes(File file, ShapeLists shapeControl) throws Exception
     {
         // http://www.tutorialspoint.com/java/java_serialization.htm
 

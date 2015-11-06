@@ -3,20 +3,14 @@
  */
 package se.hig.oodp.b9.view;
 
-import java.awt.BasicStroke;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Paint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.StringJoiner;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -27,25 +21,21 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import se.hig.oodp.FigurePainter;
-import se.hig.oodp.PrimitivesPainter;
-import se.hig.oodp.Vertex2D;
-import se.hig.oodp.b9.data.Ellipse;
-import se.hig.oodp.b9.data.Shape;
-import se.hig.oodp.b9.model.ShapeControl;
+import se.hig.oodp.FigureHandler;
+import se.hig.oodp.FigureMover;
+import se.hig.oodp.FigurePrinter;
+import se.hig.oodp.FigureRotor;
+import se.hig.oodp.FigureScalor;
+import se.hig.oodp.b9.logic.FigureHandlerImpl;
+import se.hig.oodp.b9.logic.FigureMoverImpl;
+import se.hig.oodp.b9.logic.FigurePrinterImpl;
+import se.hig.oodp.b9.logic.FigureRotorImpl;
+import se.hig.oodp.b9.logic.FigureScalorImpl;
+import se.hig.oodp.b9.logic.ShapeLists;
 
 @SuppressWarnings("serial")
 public class Window extends JFrame
 {
-    private ShapeControl shapeControl;
-
-    private abstract class Canvas extends JPanel implements PrimitivesPainter , FigurePainter
-    {
-   
-    }
-
-    private JPanel contentPane;
-
     /**
      * Launch the application.
      */
@@ -79,76 +69,19 @@ public class Window extends JFrame
         setBounds(100, 100, 800, 800);
         setLocationRelativeTo(null);
 
-        contentPane = new Canvas()
-        {
-            private Graphics2D g;
-            private Shape toDraw;
+        final ShapeLists shapeLists = new ShapeLists();
+        final JPanel contentPane = new Canvas(shapeLists);
 
-            @Override
-            public void paint(Graphics g)
-            {
-                super.paint(g);
-                this.g = (Graphics2D) g;
+        final FigureHandler figureHandler = new FigureHandlerImpl(shapeLists);
+        final FigurePrinter figurePrinter = new FigurePrinterImpl(shapeLists);
+        final FigureMover figureMover = new FigureMoverImpl(shapeLists);
+        final FigureRotor figureRotor = new FigureRotorImpl(shapeLists);
+        final FigureScalor figureScalor = new FigureScalorImpl(shapeLists);
 
-                System.out.println("DRAW!");
-
-                paintAll();
-            }
-
-            @Override
-            public void paintPoint(Vertex2D node)
-            {
-                g.fillOval((int) node.getX(), (int) node.getY(), 5, 5);
-            }
-
-            @Override
-            public void paintEllipse(Vertex2D center, double width, double height)
-            {
-                g.rotate(Math.toRadians(((Ellipse) toDraw).getRotation()), toDraw.getNodes()[0].getX(), toDraw.getNodes()[0].getY());
-                g.drawOval((int) center.getX() - (int) width / 2, (int) center.getY() - (int) height / 2, (int) width, (int) height);
-            }
-
-            @Override
-            public void paintLine(Vertex2D a, Vertex2D b)
-            {
-                g.drawLine((int) a.getX(), (int) a.getY(), (int) b.getX(), (int) b.getY());
-            }
-
-            @Override
-            public void paintAll()
-            {
-                for (Shape s : shapeControl.getShapes())
-                {
-                    toDraw = s;
-                    g.setColor(Color.black);
-                    g.setStroke(new BasicStroke(3));;
-                    AffineTransform transform = this.g.getTransform();
-                    s.draw(this);
-                    this.g.setTransform(transform);
-                }
-            }
-        };
+        shapeLists.onChange.add(shape -> contentPane.repaint());
 
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(new BorderLayout(0, 0));
-
-        shapeControl = new ShapeControl()
-        {
-            @Override
-            public void onChange()
-            {
-                contentPane.repaint();
-            }
-
-            @Override
-            public void printAll()
-            {
-                StringJoiner joiner = new StringJoiner("\n");
-                for (Shape s : shapeControl.getShapes())
-                    joiner.add(s.asString());
-                new TextPopUp("Printout", joiner.toString());
-            }
-        };
 
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
@@ -161,7 +94,7 @@ public class Window extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                ShapeIO.showLoadShapesDialog(me, shapeControl);
+                ShapeIO.showLoadShapesDialog(me, shapeLists);
             }
         });
         mnFile.add(mntmLoad);
@@ -171,7 +104,7 @@ public class Window extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                ShapeIO.showSaveShapesDialog(me, shapeControl);
+                ShapeIO.showSaveShapesDialog(me, shapeLists);
             }
         });
         mnFile.add(mntmSave);
@@ -217,7 +150,7 @@ public class Window extends JFrame
 
                 if (InitParamsDialog.showDialog("Create point", arr))
                 {
-                    shapeControl.createPoint(center.get(), center.get());
+                    figureHandler.createPoint(center.get(), center.get());
                 }
             }
         });
@@ -238,7 +171,7 @@ public class Window extends JFrame
 
                 if (InitParamsDialog.showDialog("Create line", arr))
                 {
-                    shapeControl.createLine(nodeA.get(), nodeA.get(), nodeB.get(), nodeB.get());
+                    figureHandler.createLine(nodeA.get(), nodeA.get(), nodeB.get(), nodeB.get());
                 }
             }
         });
@@ -262,7 +195,7 @@ public class Window extends JFrame
 
                 if (InitParamsDialog.showDialog("Create triangle", arr))
                 {
-                    shapeControl.createTriangle(nodeA.get(), nodeA.get(), nodeB.get(), nodeB.get(), nodeC.get(), nodeC.get());
+                    figureHandler.createTriangle(nodeA.get(), nodeA.get(), nodeB.get(), nodeB.get(), nodeC.get(), nodeC.get());
                 }
             }
         });
@@ -289,7 +222,7 @@ public class Window extends JFrame
 
                 if (InitParamsDialog.showDialog("Create rectangle", arr))
                 {
-                    shapeControl.createRectangle(center.get(), center.get(), width.get(), height.get(), rotation.get());
+                    figureHandler.createRectangle((double) center.get(), (double) center.get(), (double) width.get(), (double) height.get());
                 }
             }
         });
@@ -308,12 +241,15 @@ public class Window extends JFrame
                 PairField<Integer> size = new PairField<Integer>("Size", new Pair<Integer>(null, 1, Integer.MAX_VALUE, 1, 1));
                 arr.add(size);
 
-                PairField<Integer> rotation = new PairField<Integer>("Rotation", new Pair<Integer>(null, 0, Integer.MAX_VALUE, Integer.MIN_VALUE, 1));
-                arr.add(rotation);
+                /*
+                 * PairField<Integer> rotation = new
+                 * PairField<Integer>("Rotation", new Pair<Integer>(null, 0,
+                 * Integer.MAX_VALUE, Integer.MIN_VALUE, 1)); arr.add(rotation);
+                 */
 
                 if (InitParamsDialog.showDialog("Create square", arr))
                 {
-                    shapeControl.createSquare(center.get(), center.get(), size.get(), rotation.get());
+                    figureHandler.createSquare(center.get(), center.get(), size.get());
                 }
             }
         });
@@ -335,12 +271,15 @@ public class Window extends JFrame
                 PairField<Integer> height = new PairField<Integer>("Height", new Pair<Integer>(null, 1, Integer.MAX_VALUE, 1, 1));
                 arr.add(height);
 
-                PairField<Integer> rotation = new PairField<Integer>("Rotation", new Pair<Integer>(null, 0, Integer.MAX_VALUE, Integer.MIN_VALUE, 1));
-                arr.add(rotation);
+                /*
+                 * PairField<Integer> rotation = new
+                 * PairField<Integer>("Rotation", new Pair<Integer>(null, 0,
+                 * Integer.MAX_VALUE, Integer.MIN_VALUE, 1)); arr.add(rotation);
+                 */
 
                 if (InitParamsDialog.showDialog("Create ellipse", arr))
                 {
-                    shapeControl.createEllipse(center.get(), center.get(), width.get(), height.get(), rotation.get());
+                    figureHandler.createEllipse(center.get(), center.get(), width.get(), height.get());
                 }
             }
         });
@@ -361,7 +300,7 @@ public class Window extends JFrame
 
                 if (InitParamsDialog.showDialog("Create circle", arr))
                 {
-                    shapeControl.createCircle(center.get(), center.get(), size.get());
+                    figureHandler.createCircle(center.get(), center.get(), size.get());
                 }
             }
         });
@@ -375,8 +314,7 @@ public class Window extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                shapeControl.printAll();
-
+                figurePrinter.printAll();
             }
         });
         mnAction.add(mntmPrintAll);
@@ -393,7 +331,7 @@ public class Window extends JFrame
 
                 if (InitParamsDialog.showDialog("Move all", arr))
                 {
-                    shapeControl.moveAll(center.get(), center.get());
+                    figureMover.moveAll(center.get(), center.get());
                 }
             }
         });
@@ -412,7 +350,7 @@ public class Window extends JFrame
                 if (InitParamsDialog.showDialog("Scale all", arr))
                 {
                     double factor = scale.get();
-                    shapeControl.scaleAll(factor, factor);
+                    figureScalor.scaleAll(factor, factor);
                 }
             }
         });
@@ -430,7 +368,7 @@ public class Window extends JFrame
 
                 if (InitParamsDialog.showDialog("Rotate all", arr))
                 {
-                    shapeControl.rotateAll(angle.get());
+                    figureRotor.rotateAll(angle.get());
                 }
             }
         });
@@ -441,7 +379,7 @@ public class Window extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                shapeControl.removeAll();
+                shapeLists.clear();
             }
         });
         mnAction.add(mntmRemoveAll);
